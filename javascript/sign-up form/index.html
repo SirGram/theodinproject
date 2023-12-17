@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="left">
+        <div class="icon-container">
+          <div class="icon"></div>
+        </div>
+      </div>
+
+      <div class="right">
+        <div class="inner-container">
+          <header>
+            <h1>Your power is too strong to be left alone.</h1>
+            <p>It's <em>time</em> to join the right side.</p>
+          </header>
+          <main>
+            <fieldset>
+              <legend>
+                <h2>Join NOW</h2>
+              </legend>
+              <form action="submit" id="form-id">
+                <div class="inputs">
+                  <label for="first-name">FIRST NAME</label>
+                  <input
+                    type="text"
+                    id="first-name"
+                    name="first-name"
+                    placeholder="FIRST NAME"
+                    required
+                  />
+                </div>
+                <div class="inputs">
+                  <label for="last-name">LAST NAME</label>
+                  <input
+                    type="text"
+                    id="last-name"
+                    name="last-name"
+                    placeholder="LAST NAME"
+                    required
+                  />
+                </div>
+                <div class="inputs">
+                  <label for="email">EMAIL</label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    placeholder="E-MAIL"
+                    required
+                  />
+                </div>
+                <div class="inputs">
+                  <label for="phone">PHONE NUMBER</label>
+                  <input
+                    type="number"
+                    id="phone"
+                    name="phone"
+                    placeholder="PHONE NUMBER"
+                  />
+                </div>
+                <div class="inputs">
+                  <label for="password">PASSWORD</label>
+                  <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="PASSWORD"
+                    required
+                  />
+                </div>
+                <div class="inputs">
+                  <label for="confirm-password">PASSWORD</label>
+                  <input
+                    type="password"
+                    id="confirm-password"
+                    name="confirm-password"
+                    placeholder="CONFIRM PASSWORD"
+                    required
+                  />
+                </div>
+              </form>
+            </fieldset>
+          </main>
+          <footer>
+            <button type="submit" name="create-account" form="form-id">Create Account</button>
+            <p>Already have an account? <a href="#">LOG IN</a></p>
+          </footer>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script>
+ document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("form-id").addEventListener("input", function (e) {
+        if (e.target.tagName === 'INPUT' && e.target.hasAttribute("required")) {
+            const label = e.target.parentNode.querySelector("label");
+            if (e.target.value.trim() === '') {
+                label.classList.remove("show");
+            } else {
+                label.classList.add("show");
+            }
+        }
+    });
+});
+   
+  </script>
+</html>
