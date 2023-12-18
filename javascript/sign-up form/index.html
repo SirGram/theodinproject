@@ -38,6 +38,7 @@
                     id="first-name"
                     name="first-name"
                     placeholder="FIRST NAME"
+                    value=""
                     required
                   />
                 </div>
@@ -48,6 +49,7 @@
                     id="last-name"
                     name="last-name"
                     placeholder="LAST NAME"
+                    value=""
                     required
                   />
                 </div>
@@ -58,6 +60,7 @@
                     id="email"
                     name="email"
                     placeholder="E-MAIL"
+                    value=""
                     required
                   />
                 </div>
@@ -67,6 +70,7 @@
                     type="number"
                     id="phone"
                     name="phone"
+                    value=""
                     placeholder="PHONE NUMBER"
                   />
                 </div>
@@ -77,6 +81,7 @@
                     id="password"
                     name="password"
                     placeholder="PASSWORD"
+                    value=""
                     required
                   />
                 </div>
@@ -87,6 +92,7 @@
                     id="confirm-password"
                     name="confirm-password"
                     placeholder="CONFIRM PASSWORD"
+                    value=""
                     required
                   />
                 </div>
@@ -94,7 +100,9 @@
             </fieldset>
           </main>
           <footer>
-            <button type="submit" name="create-account" form="form-id">Create Account</button>
+            <button type="submit" name="create-account" form="form-id">
+              Create Account
+            </button>
             <p>Already have an account? <a href="#">LOG IN</a></p>
           </footer>
         </div>
@@ -102,18 +110,22 @@
     </div>
   </body>
   <script>
- document.addEventListener("DOMContentLoaded", function () {
-    document.getElementById("form-id").addEventListener("input", function (e) {
-        if (e.target.tagName === 'INPUT' && e.target.hasAttribute("required")) {
+    document.addEventListener("DOMContentLoaded", function () {
+      document
+        .getElementById("form-id")
+        .addEventListener("input", function (e) {
+          if (
+            e.target.tagName === "INPUT" &&
+            e.target.hasAttribute("required")
+          ) {
             const label = e.target.parentNode.querySelector("label");
-            if (e.target.value.trim() === '') {
-                label.classList.remove("show");
+            if (e.target.value.trim() === "") {
+              label.classList.remove("show");
             } else {
-                label.classList.add("show");
+              label.classList.add("show");
             }
-        }
+          }
+        });
     });
-});
-   
   </script>
 </html>

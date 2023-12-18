@@ -88,13 +88,12 @@ input{
     background-color: var(--color1);
     text-align: center;
 }
-input:valid{
+
+input:not(:placeholder-shown) {
+    
     border: 2px solid greenyellow;
 }
-input:invalid{
 
-    border: 2px solid red;
-}
 
 .inner-container{
     flex: 1 ; 
