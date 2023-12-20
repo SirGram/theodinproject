@@ -239,8 +239,10 @@ button {
   align-items: center;
 }
 .user > img {
-  padding: 1rem;
+  padding: 0.2rem;
   border-radius: 100%;
+width: 3rem;
+height:3rem;
 }
 #user1 {
   background-color: rgb(213, 213, 130);
