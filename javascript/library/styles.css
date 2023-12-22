@@ -7,6 +7,9 @@ html {
 }
 body {
   margin: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
 }
 
 h1 {
@@ -30,9 +33,10 @@ header {
   z-index: 4;
 }
 #book-container {
+    flex: 7;
   padding: 2rem;
   justify-content: center;
-  margin-top: 7rem;
+  margin-top:6rem;
   display: grid;
   grid-template-columns: repeat(auto-fill, 200px);
   gap: 2rem 1rem;
@@ -135,8 +139,11 @@ label {
   cursor: pointer;
   transition: background-color 0.5s;
   font-size: larger;
+  
 }
-
+#submit-button{
+    width: 100%;
+}
 #toggle-hidden:hover {
   background-color: rgb(200, 0, 0);
 }
@@ -153,7 +160,7 @@ label {
 }
 
 .book-title,
-.book-author {
+.book-author, .book-pages {
   margin: 0; /* Remove default margin for paragraphs */
   padding: 0.5rem 0; /* Adjust the padding as needed */
 }
@@ -166,5 +173,55 @@ label {
 
 .book-author {
   font-style: italic;
-  color: #aaa;
 }
+.book-pages {
+    font-style: italic;
+    color: #aaa;
+  }
+  #form-pages {
+    padding-top: 0.5rem;
+    display: flex;
+    max-width: 50%;
+    align-items: center;
+    justify-content: space-around;
+    
+  }
+  #read-check{
+    display: flex;
+    
+    padding-bottom: 0.5rem;
+  }
+  #read{
+    flex:0.5;
+    max-width: 20px;
+  }
+
+  footer{
+    color: var(--color2);
+    opacity: 0.5;
+    font-size: large;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    flex:1;
+    justify-content: center;
+    align-items: flex-end;
+    display: flex;
+  }
+  a{
+    text-decoration: none;
+    font-weight: bold;
+
+  }
+ a:visited{
+    color: var(--color2);
+ }
+ @media screen and (max-width :350px ){
+    header{
+        flex-direction: column;
+        height: 100px;
+        padding:1rem  0 ;
+        align-items: center;
+    }#book-container {
+        margin-top: 9rem;}
+ }

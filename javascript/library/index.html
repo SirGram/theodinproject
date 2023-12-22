@@ -6,25 +6,45 @@
     <script src="script.js"></script>
     <title>Library</title>
   </head>
-  <body><header>
-    <h1>MyBookLib</h1><button id="toggle-hidden" >+</button></header>
-    <div id="form" > 
-      <label for="image">Cover Img URL</label>   
-         
-      <input id="image" type="text" placeholder="https://image.jpg" />
-      <label for="title">Title</label>  
-      
-      <input id="title" type="text" placeholder="Title" required/>
-      <label for="author">Author</label>  
-      <input id="author" type="text" placeholder="Author" required/>
-      
-      <label for="numPages">Number of Pages</label> 
-      <input id="numPages" placeholder="Total pages" required/>
-      <label for="numPagesRead">PagesRead </label>  
-      <input id="numPagesRead" type="number" placeholder="Pages read" value="0"required/>      
+  <body>
+    <header>
+      <h1>MyBookLib</h1>
+      <button id="toggle-hidden">+</button>
+    </header>
+    <div id="form">
+      <label for="image">Cover Img URL</label>
+
+      <input id="image" type="text" placeholder="e.g. https://image.jpg" />
+      <label for="title">Title</label>
+
+      <input
+        id="title"
+        type="text"
+        placeholder="e.g. Harry Potter and the Chamber of Secrets"
+      />
+      <label for="author">Author</label>
+      <input id="author" type="text" placeholder="e.g. J. K. Rowling" />
+      <div id="form-pages">
+        <div class="left">
+        <label for="numPages">Total Pages</label>
+        <input id="numPages" placeholder="e.g. 312" /></div><div class="right">
+        <label for="numPagesRead">Read Pages </label>
+        <input
+        id="numPagesRead"
+        type="number"
+        placeholder="e.g. 169"
+        value="0"
+      />
+    </div></div>
+    <div id="read-check"><label for="read">Already Read</label>
+    <input id="read" type="checkbox" /></div>
+    
         <button id="submit-button" type="submit">Add Book</button>
     </div>
-    
+
     <div id="book-container"></div>
+    <footer>  <p>&copy; Copyright 2023 <a href="https://github.com/SirGram" target="_blank" >SirGram</a></p>    
+        
+    </a></footer>
   </body>
 </html>
