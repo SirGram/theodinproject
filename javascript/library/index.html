@@ -6,16 +6,17 @@
     <script src="script.js"></script>
     <title>Library</title>
   </head>
-  <body>
-    <h1>MyBookLib</h1>
-    <div id="book-container"></div>
-    <div id="form">
+  <body><header>
+    <h1>MyBookLib</h1><button id="toggle-hidden" >&plus;</button></header>
+    <div id="form" class="hidden">      
+      <input id="image" type="text" placeholder="cover img url" />
       <input id="title" type="text" placeholder="Title" />
       <input id="author" type="text" placeholder="Author" />
-      <input id="total-pages" placeholder="Total pages" />
-      <input id="pages-read" type="number" placeholder="Pages read" />
-      
-        <button id="submit-button" type="submit">Add book</button>
+      <input id="numPages" placeholder="Total pages" />
+      <input id="numPagesRead" type="number" placeholder="Pages read" value="0"/>      
+        <button id="submit-button" type="submit">Enter</button>
     </div>
+    
+    <div id="book-container"></div>
   </body>
 </html>
