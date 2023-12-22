@@ -7,14 +7,22 @@
     <title>Library</title>
   </head>
   <body><header>
-    <h1>MyBookLib</h1><button id="toggle-hidden" >&plus;</button></header>
-    <div id="form" class="hidden">      
-      <input id="image" type="text" placeholder="cover img url" />
-      <input id="title" type="text" placeholder="Title" />
-      <input id="author" type="text" placeholder="Author" />
-      <input id="numPages" placeholder="Total pages" />
-      <input id="numPagesRead" type="number" placeholder="Pages read" value="0"/>      
-        <button id="submit-button" type="submit">Enter</button>
+    <h1>MyBookLib</h1><button id="toggle-hidden" >+</button></header>
+    <div id="form" > 
+      <label for="image">Cover Img URL</label>   
+         
+      <input id="image" type="text" placeholder="https://image.jpg" />
+      <label for="title">Title</label>  
+      
+      <input id="title" type="text" placeholder="Title" required/>
+      <label for="author">Author</label>  
+      <input id="author" type="text" placeholder="Author" required/>
+      
+      <label for="numPages">Number of Pages</label> 
+      <input id="numPages" placeholder="Total pages" required/>
+      <label for="numPagesRead">PagesRead </label>  
+      <input id="numPagesRead" type="number" placeholder="Pages read" value="0"required/>      
+        <button id="submit-button" type="submit">Add Book</button>
     </div>
     
     <div id="book-container"></div>
