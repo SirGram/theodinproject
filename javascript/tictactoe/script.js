@@ -1,68 +1,160 @@
-const gameBoard = () => {
+const playerController = (() => {
+  const playerFactory = (name, mark, isActive) => {
+    let wonMatches = 0;
+    const winMatch = function () {
+      this.wonMatches++;
+    };
+    const score = [];
+    const changeActiveStatus = function () {
+      this.isActive = !this.isActive;
+    };
+
+    return {
+      name,
+      mark,
+      score,
+      isActive,
+      changeActiveStatus,
+      wonMatches,
+      winMatch,
+    };
+  };
+
+  const player1 = playerFactory("Player1", "X", true);
+  const player2 = playerFactory("Player2", "O", false);
+  const players = [player1, player2];
+
+  return { players };
+})();
+
+const gameBoard = (() => {
+  let isOver = false;
+  showBoard(1);
+  $message = document.querySelector("#message");
+  $resetButton = document.querySelector("#reset");
+  $score = document.querySelector("#score");
   $squares = document.querySelectorAll(".square");
-  $squares.forEach((square) => {
+  $resetButton.addEventListener("click", () =>
+    resetBoard(true, "Welcome to 3D TicTacToe")
+  );
+
+  resetBoard(false, "Welcome to 3D TicTacToe");
+  $squares.forEach((square, index) => {
+    // chessboard pattern
+    const row = Math.floor(index / 4);
+    const col = index % 4;
+    square.style.backgroundColor =
+      (row + col) % 2 === 0 ? "lightyellow" : "whitesmoke";
+
     square.addEventListener("click", function (e) {
-      const activePlayer = players.find((player) => player.isActive);
+      const activePlayer = playerController.players.find(
+        (player) => player.isActive
+      );
+
       if (!square.dataset.mark) {
+        $message.innerHTML = `${activePlayer.name}'s turn`;
         putMark(square, activePlayer.mark);
 
         activePlayer.score.push(getSquareIndex(square));
+
         console.log(activePlayer);
-        console.log(checkWin(activePlayer));
+        isOver = checkWin(activePlayer);
+
+        if (isOver) {
+          console.log("why");
+          $message.innerHTML = `${activePlayer.name} wins!`;
+          activePlayer.winMatch();
+          setTimeout(() => resetBoard(false, "New Game"), 1000);
+        }
 
         switchTurns();
       }
     });
   });
-};
-gameBoard();
-
-function getSquareIndex(sq) {
-  const squaresArray = Array.from($squares);
-  const index = squaresArray.findIndex((square) => square === sq);
-  return index;
-}
-
-function putMark(sq, sign) {
-  const sword = "./src/sword.png";
-  const shield = "./src/shield.png";
-  sq.dataset.mark = sign;
-  if (sign === "X"){
-
-    sq.innerHTML = `<img src="${sword}" alt="${sign}">`;
+  function deleteMark(sq) {
+    sq.innerHTML = "";
+    sq.removeAttribute("data-mark");
   }
-  else{
-    sq.innerHTML = `<img src="${shield}" alt="${sign}">`;}
-}
 
-function checkWin(player) {
-  for (winningLine of winningLines) {
-    if (winningLine.every((value) => player.score.includes(value))) {
-      console.log(player.name, "wins");
+  function resetBoard(completeReset, message) {
+    $squares.forEach((square) => {
+      deleteMark(square);
+    });
+    for (player of playerController.players) {
+      player.score = [];
+      if (completeReset) {
+        player.wonMatches = 0;
+      }
+    }
 
-      return true;
+    $score.innerHTML = `${playerController.players[0].wonMatches} - ${playerController.players[1].wonMatches}`;
+
+    $message.innerHTML = message;
+    isOver = false;
+  }
+
+  function showBoard(boardNumber) {
+    for (let i = 1; i < 5; i++) {
+      document.getElementById(`board-${i}`).style.display = "none";
+    }
+
+    document.getElementById(`board-${boardNumber}`).style.display = "";
+  }
+
+  function getSquareIndex(sq) {
+    const squaresArray = Array.from($squares);
+    const index = squaresArray.findIndex((square) => square === sq);
+    return index;
+  }
+
+  const putMark = function (sq, sign) {
+    const sword = "./src/sword.png";
+    const shield = "./src/shield.png";
+    sq.dataset.mark = sign;
+    if (sign === "X") {
+      sq.innerHTML = `<img src="${sword}" alt="${sign}">`;
+    } else {
+      sq.innerHTML = `<img src="${shield}" alt="${sign}">`;
+    }
+  };
+
+  function checkWin(player) {
+    for (winningLine of winningLines) {
+      if (winningLine.every((value) => player.score.includes(value))) {
+        console.log(player.name, "wins");
+
+        return true;
+      }
+    }
+    return false;
+  }
+
+  function switchTurns() {
+    for (player of playerController.players) {
+      player.changeActiveStatus();
     }
   }
-  return false;
-}
 
-function switchTurns() {
-  for (player of players) {
-    player.changeActiveStatus();
-  }
-}
+  return { showBoard };
+})();
 
-const playerFactory = (name, mark, isActive) => {
-  score = [];
-  const changeActiveStatus = function () {
-    this.isActive = !this.isActive;
-  };
-  return { name, mark, score, isActive, changeActiveStatus };
-};
+const buttonController=(() => {
+  buttonSlider = document.querySelector("#btn-slider");
+  buttons = Array.from(buttonSlider.children);
+  console.log(buttons);
 
-const player1 = playerFactory("Player1", "X", true);
-const player2 = playerFactory("Player2", "O", false);
-const players = [player1, player2];
+  buttons[0].style.backgroundColor = "green";
+
+  buttons.forEach((button, index) => {
+    button.addEventListener("click", function () {
+      buttons.forEach((btn) => {
+        btn.style.backgroundColor = "";
+      });
+      gameBoard.showBoard(index + 1);
+      button.style.backgroundColor = "green";
+    });
+  });
+})();
 
 const winningLines = [
   //x-y
