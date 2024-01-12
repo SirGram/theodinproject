@@ -1,5 +1,39 @@
-const playerController = (() => {
-  const playerFactory = (name, mark, isActive) => {
+const homeScreen = (() => {
+  let players;
+  let game;
+  $homeScreen = document.querySelector("#homescreen");
+  $player1Input = document.querySelector("#player1-color");
+  $player2Input = document.querySelector("#player2-color");
+  $player1Input.value = "#6495ED";
+  $player2Input.value = "#e66465";
+
+  $startButton = document.querySelector("#start");
+
+  $startButton.addEventListener("click", function () {
+    const player1Character = $homeScreen.querySelector(
+      "input[name=image]:checked"
+    );
+    const player2Character = $homeScreen.querySelector(
+      "input[name=image2]:checked"
+    );
+    const player1color = $player1Input.value;
+    const player2color = $player2Input.value;
+
+    $homeScreen.style.display = "none";
+    players = playerController(
+      player1color,
+      player2color,
+      player1Character.value,
+      player2Character.value
+    );
+    game = gameBoard(players);
+    game.showBoard(1);
+    buttonController(game);
+  });
+})();
+
+const playerController = (color1, color2, character1, character2) => {
+  const playerFactory = (name, mark, isActive, color, character) => {
     let wonMatches = 0;
     const winMatch = function () {
       this.wonMatches++;
@@ -17,88 +51,117 @@ const playerController = (() => {
       changeActiveStatus,
       wonMatches,
       winMatch,
+      color,
+      character,
     };
   };
 
-  const player1 = playerFactory("Player1", "X", true);
-  const player2 = playerFactory("Player2", "O", false);
+  const player1 = playerFactory("Player1", "X", true, color1, character1);
+  const player2 = playerFactory("Player2", "O", false, color2, character2);
   const players = [player1, player2];
 
-  return { players };
-})();
+  return players;
+};
 
-const gameBoard = (() => {
+const gameBoard = (players) => {
+  console.log(players);
   let isOver = false;
+  $board = document.querySelector("#board-container");
+  $board.style.display = "flex";
+
   showBoard(1);
+
   $message = document.querySelector("#message");
+  $message.style.borderTopLeftRadius = "10px";
+  $message.style.borderTopRightRadius = "10px";
+
+  $homeButton = document.querySelector("#home");
   $resetButton = document.querySelector("#reset");
   $score = document.querySelector("#score");
+  $score.style.display = "flex";
   $squares = document.querySelectorAll(".square");
   $resetButton.addEventListener("click", () =>
-    resetBoard(true, "Welcome to 3D TicTacToe")
+    resetBoard(true, "Player1's turn")
   );
-
-  resetBoard(false, "Welcome to 3D TicTacToe");
+  $homeButton.addEventListener("click", () => location.reload());
+  let activePlayer = findActivePlayer(players);
+  resetBoard(false, "Player1's turn");
   $squares.forEach((square, index) => {
+    const characterImage = document.createElement("img");
+    square.appendChild(characterImage);
     // chessboard pattern
     const row = Math.floor(index / 4);
     const col = index % 4;
     square.style.backgroundColor =
-      (row + col) % 2 === 0 ? "lightyellow" : "whitesmoke";
+      (row + col) % 2 === 0 ? "rgb(240,240,240)" : "rgba(125, 125, 232,0.1)";
 
-    square.addEventListener("click", function (e) {
-      const activePlayer = playerController.players.find(
-        (player) => player.isActive
-      );
+    square.addEventListener("click", function () {
+      console.log(activePlayer.mark);
 
-      if (!square.dataset.mark) {
-        $message.innerHTML = `${activePlayer.name}'s turn`;
-        putMark(square, activePlayer.mark);
+      if (!square.dataset.mark && !isOver) {
+        putMark(square, characterImage, activePlayer.mark, activePlayer);
 
         activePlayer.score.push(getSquareIndex(square));
 
         console.log(activePlayer);
         isOver = checkWin(activePlayer);
 
-        if (isOver) {
-          console.log("why");
+        if (!isOver) {
+          switchTurns();
+          activePlayer = findActivePlayer(players);
+          $message.innerHTML = `${activePlayer.name}'s turn`;
+        } else {
+          activePlayer = findActivePlayer(players);
           $message.innerHTML = `${activePlayer.name} wins!`;
-          activePlayer.winMatch();
-          setTimeout(() => resetBoard(false, "New Game"), 1000);
-        }
 
-        switchTurns();
+          activePlayer.winMatch();
+          switchTurns();
+
+          activePlayer = findActivePlayer(players);
+          setTimeout(
+            () => resetBoard(false, `${activePlayer.name}'s turn`),
+            1000
+          );
+        }
       }
     });
   });
-  function deleteMark(sq) {
-    sq.innerHTML = "";
-    sq.removeAttribute("data-mark");
+
+  function findActivePlayer(players) {
+    let activePlayer = players.find((player) => player.isActive == true);
+    return activePlayer;
   }
 
   function resetBoard(completeReset, message) {
     $squares.forEach((square) => {
-      deleteMark(square);
+      currentCharacterImage = square.querySelector("img");
+      if (currentCharacterImage) {
+        currentCharacterImage.removeAttribute("src");
+      }
+      square.style.border = "";
+
+      square.removeAttribute("data-mark");
     });
-    for (player of playerController.players) {
+    for (player of players) {
       player.score = [];
       if (completeReset) {
         player.wonMatches = 0;
       }
     }
 
-    $score.innerHTML = `${playerController.players[0].wonMatches} - ${playerController.players[1].wonMatches}`;
-
     $message.innerHTML = message;
+
+    $score.innerHTML = `<img src="${players[0].character}">${players[0].wonMatches} - ${players[1].wonMatches}<img src="${players[1].character}">`;
+
     isOver = false;
   }
 
   function showBoard(boardNumber) {
     for (let i = 1; i < 5; i++) {
-      document.getElementById(`board-${i}`).style.display = "none";
+      const board = document.getElementById(`board-${i}`);
+      board.style.display = i === boardNumber ? "" : "none";
+      board.style.pointerEvents = i === boardNumber ? "auto" : "none";
     }
-
-    document.getElementById(`board-${boardNumber}`).style.display = "";
   }
 
   function getSquareIndex(sq) {
@@ -107,15 +170,11 @@ const gameBoard = (() => {
     return index;
   }
 
-  const putMark = function (sq, sign) {
-    const sword = "./src/sword.png";
-    const shield = "./src/shield.png";
+  const putMark = function (sq, characterImage, sign, activePlayer) {
     sq.dataset.mark = sign;
-    if (sign === "X") {
-      sq.innerHTML = `<img src="${sword}" alt="${sign}">`;
-    } else {
-      sq.innerHTML = `<img src="${shield}" alt="${sign}">`;
-    }
+    console.log(activePlayer.character);
+    characterImage.src = activePlayer.character;
+    sq.style.border = `solid 2px ${activePlayer.color}`;
   };
 
   function checkWin(player) {
@@ -130,31 +189,31 @@ const gameBoard = (() => {
   }
 
   function switchTurns() {
-    for (player of playerController.players) {
+    for (player of players) {
       player.changeActiveStatus();
     }
   }
 
   return { showBoard };
-})();
+};
 
-const buttonController=(() => {
+const buttonController = (game) => {
   buttonSlider = document.querySelector("#btn-slider");
   buttons = Array.from(buttonSlider.children);
   console.log(buttons);
 
-  buttons[0].style.backgroundColor = "green";
+  buttons[0].style.backgroundColor = "var(--slider)";
 
   buttons.forEach((button, index) => {
     button.addEventListener("click", function () {
       buttons.forEach((btn) => {
         btn.style.backgroundColor = "";
       });
-      gameBoard.showBoard(index + 1);
-      button.style.backgroundColor = "green";
+      game.showBoard(index + 1);
+      button.style.backgroundColor = "var(--slider)";
     });
   });
-})();
+};
 
 const winningLines = [
   //x-y

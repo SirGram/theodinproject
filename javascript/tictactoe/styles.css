@@ -1,63 +1,243 @@
-:root{
-    --color1:rgb(216, 216, 216);
+:root {
+  --background:  rgba(190, 190, 212, 0.838);
+  --slider: rgb(125, 125, 232);
+  --slider2: rgb(255, 255, 255);
+  --console: black;
+  --char: rgb(134, 134, 213);
+  --reset: rgb(214, 72, 64);
+
+  --home: rgb(214, 186, 64);
 }
-html{
-    background-color: var(--color1);
+html {
+  background-color: var(--background);
+  color: black;
+  font-family: "MedievalSharp", "Arial";
+}
+body {
     
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
 }
-body{
-    display: flex;
-    flex-direction: column;
+#board-1,
+#board-2,
+#board-3,
+#board-4 {
+  display: grid;
+  gap: 2px;
+  grid-template: repeat(4, 100px) / repeat(4, 100px);
+
+  margin: 0;
 }
-#board-1,#board-2,#board-3, #board-4{
-    display: grid;
-    grid-template: repeat(4, 100px) / repeat(4, 100px);
-   
-    margin: 0;
-}
-.square{
-    border: 2px solid rgb(125, 125, 232);
-    
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-img {
-    padding: 5px;
-    
-    max-width: 100%;  /* Make sure the image doesn't exceed the width of the container */
-    max-height: 100%; /* Make sure the image doesn't exceed the height of the container */
-    width: auto;      /* Maintain the image's aspect ratio */
-  }
-#container{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 80%;
-    gap: 3rem;
-}
-#board-container{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 2rem;
-    
+.square {
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  box-sizing: content-box;
+
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 
-#btn-slider{
+#container {
+    
+  border: 2px solid var(--slider);
+  height: 90%;
+  gap: 3rem;
+  background-color: #f0f0f0; /* Added background color for the container */
+  padding: 20px; /* Added padding for the container */
+  max-width: 900px;
+}
+#board-container {
+    padding: 2rem;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+#btn-slider {
+  display: flex;
+  flex-direction: column;
+  height: 400px;
+  width: 100px;
+  border: 2px solid var(--slider);
+  border-radius: 10px;
+  overflow: hidden;
+}
+#btn-slider > button {
+  height: 100%;
+  border: 0;
+  font-size: 3rem;
+}
+#btn-slider > button:active,
+#btn-slider > button:hover {
+  background-color: rgb(
+    170,
+    170,
+    249
+  ); /* Change color on hover or when pressed */
+  /* other styles */
+}
+#message {
+  font-size: xx-large;
+  font-weight: bold;
+  background-color: var(--console);
+  color: white;
+  padding: 2rem;
+  text-align: center;
+}
+
+[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+[type="radio"] + img {
+  cursor: pointer;
+}
+[type="radio"]:checked + img {
+  outline: 2px solid var(--char);
+}
+img {
+  display: none;
+}
+
+img[src] {
+  display: inline;
+  width: 5rem;
+  height: 5rem;
+}
+#homescreen,
+#players {
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: auto;
+  height: 80%;
+}
+.image-selector {
+  margin-bottom: 2rem;
+  margin-top: 1rem;
+}
+#start {
+  padding: 15px 30px; /* Added padding for the button */
+  background-color: var(--slider);
+  color: white;
+  font-size: 1.5rem;
+  border: none;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: background-color 0.3s ease-in-out;
+}
+#start:hover {
+  background-color: rgb(100, 100, 200); /* Change color on hover */
+}
+#players {
+  background-color: white;
+  border-radius: 10px;
+  padding: 0.5rem 1rem;
+  margin: 0;
+}
+#score {
+  background-color: #fff;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  padding: 10px;
+  display: none;
+  justify-content: space-evenly;
+  align-items: center;
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+#reset,
+#home {
+    height: 5rem;
+  margin-top: 2rem;
+  padding: 15px 30px;
+  color: white;
+  font-size: 1.5rem;
+  border: none;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: background-color 0.3s ease-in-out;
+  width: min-content;
+}
+#reset {
+  background-color: var(--reset);
+}
+#home {
+  background-color: var(--home);
+}
+
+#reset:hover {
+  background-color: rgb(152, 43, 43);
+}
+#home:hover {
+  background-color: rgb(152, 114, 43);
+}
+button {
+  font-family: "MedievalSharp", "Arial" !important;
+}
+footer {
+  width: 100%;
+  position: relative;
+  text-align: center;
+  
+}
+
+#board-buttons{
     display: flex;
     flex-direction: column;
-    height: 400px;
-    width: 100px;
 }
-#btn-slider > button{
+@media screen and (max-width: 750px) {
+  #board-1,
+  #board-2,
+  #board-3,
+  #board-4 {
+    display: grid;
+    gap: 2px;
+    grid-template: repeat(4, 50px) / repeat(4, 50px);
+
+    margin: 0;
+  }
+
+  body {
+    margin: 0;
+    justify-content: flex-start;
+    box-sizing: content-box;
+    height: 100vh;
+  }
+
+  #container {
+    margin-top: -10;
+    padding-top: 0;
+    width: 100%;
     height: 100%;
+  }
+  #board-container {
+    flex-direction: column;
+  }
+  #btn-slider {
+    width: 200px;
+    height: 60px;
+    flex-direction: row;
+  }
+  #btn-slider > button {
+    width: 100%;
+  }
+  .square > img[src] {
+    width: 2rem;
+    height: 2rem;
+  }
+  #board-buttons{
+    display: block
 }
-#message{
-    font-size: xx-large;
-    font-weight: bold;
-    background-color: black;
-    color: white;
-    padding: 2rem;
 }
