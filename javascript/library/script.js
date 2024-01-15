@@ -63,199 +63,228 @@ let books = [
     numPagesRead: 332,
   },
 ];
-
 let editIndex = null;
 const unavailableCover =
   "https://blog.springshare.com/wp-content/uploads/2010/02/nc-md.gif";
 
-function Book(image, title, author, numPages, numPagesRead) {
-  this.image = image;
-  this.title = title;
-  this.author = author;
-  this.numPages = numPages;
-  this.numPagesRead = numPagesRead;
+//Selectors
+const $form = document.querySelector("#form");
+const $image = $form.querySelector("#image");
+const $title = $form.querySelector("#title");
+const $author = $form.querySelector("#author");
+const $numPages = $form.querySelector("#numPages");
+const $numPagesRead = $form.querySelector("#numPagesRead");
+const $checkBox = $form.querySelector("#read");
+const $toggleHidden = document.querySelector("#toggle-hidden");
+const $bookContainer = document.querySelector("#book-container");
+
+class Book {
+  constructor(image, title, author, numPages, numPagesRead) {
+    this.image = image;
+    this.title = title;
+    this.author = author;
+    this.numPages = numPages;
+    this.numPagesRead = numPagesRead;
+  }
+  edit(bookData) {
+    const { image, title, author, numPages, numPagesRead } = bookData;
+    this.image = image;
+    this.title = title;
+    this.author = author;
+    this.numPages = numPages;
+    this.numPagesRead = numPagesRead;
+  }
 }
-function addBookToLibrary() {
-  image = $image.value;
-  title = $title.value;
-  author = $author.value;
-  numPages = $numPages.value;
-  $checkBox.checked
-    ? (numPagesRead = numPages)
-    : (numPagesRead = $numPagesRead.value);
-  newBook = new Book(image, title, author, numPages, numPagesRead);
-  //New or Edit
-  if (editIndex !== null) {
-    books[editIndex] = newBook;
-    editIndex = null;
-  } else {
-    books.push(newBook);
+class Library {
+  constructor() {
+    this.books = [];
+    this.init();
+  }
+  addBook(bookData) {
+    const { image, title, author, numPages, numPagesRead } = bookData;
+    const newBook = new Book(image, title, author, numPages, numPagesRead);
+    this.books.push(newBook);
+    console.log(this.books);
+    displayBooks(this.books);
   }
 
-  $image.value = "";
-  $title.value = "";
-  $author.value = "";
-  $numPages.value = "";
-  $numPagesRead.value = "";
+  removeBook(index) {
+    this.books.splice(index, 1);
+    console.log(this.books);
+    displayBooks(this.books);
+  }
+  editBook(index, bookData) {
+    const { image, title, author, numPages, numPagesRead } = bookData;
+    console.log(this.books[index]);
+    this.books[index].edit({ image, title, author, numPages, numPagesRead });
+    console.log(this.books);
 
+    displayBooks(this.books);
+  }
+  init() {
+    books.forEach((book) => {
+      this.addBook(book);
+    });
+  }
+}
+const library = new Library();
+displayBooks(library.books);
+
+function addFormBookToLibrary(index) {
+  const bookData = {
+    image: $image.value,
+    title: $title.value,
+    author: $author.value,
+    numPages: $numPages.value,
+    numPagesRead:
+      $checkBox.value === "yes" ? $numPages.value : $numPagesRead.value,
+  };
+  if (index === null) {
+    library.addBook(bookData);
+  } else {
+    console.log(index);
+    library.editBook(index, bookData);
+    editIndex = null;
+    toggleDivs();
+  }
+
+  [$image, $title, $author, $numPages, $numPagesRead, $checkBox].forEach(
+    (input) => (input.value = "")
+  );
   $checkBox.value = "no";
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-  //Selectors
-  $form = document.querySelector("#form");
-  $image = $form.querySelector("#image");
-  $title = $form.querySelector("#title");
-  $author = $form.querySelector("#author");
-  $numPages = $form.querySelector("#numPages");
-  $numPagesRead = $form.querySelector("#numPagesRead");
-  $checkBox = $form.querySelector("#read");
-
-  //Add new books
-  const addBookButton = document.getElementById("submit-button");
-  addBookButton.addEventListener("click", function () {
-    if (validateForm()) {
-      addBookButton.innerHTML = "Add Book";
-      console.log("click");
-      addBookToLibrary();
-      console.log(books);
-      displayBooks(books);
-    }
-  });
-
-  displayBooks(books);
-  //Toggle Hidden
-  $toggleHidden = document.querySelector("#toggle-hidden");
-  $bookContainer = document.querySelector("#book-container");
-  $toggleHidden.addEventListener("click", function () {
-    toggleDivs();
-  });
-
-  //Validate Form
-  function validateForm() {
-    if ($title.value.length < 4 || $author.value.length < 4) {
-      alert("Title/author must be at least 4 characters long.");
-      return;
-    }
-
-    const numPagesValue = parseInt($numPages.value, 10);
-    if (isNaN(numPagesValue)) {
-      alert("Number of Pages must be a valid number.");
-      return;
-    }
-
-    // Validate numPages is required
-    if ($numPages.value.trim() === "") {
-      alert("Number of Pages is required.");
-      return;
-    }
-
-    return true;
-  }
-
-  function toggleDivs() {
-    $toggleHidden.innerHTML = $toggleHidden.innerHTML === "+" ? "Return" : "+";
-    $form.style.display = $form.style.display === "flex" ? "none" : "flex";
-    $bookContainer.style.display =
-      $bookContainer.style.display === "none" ? "grid" : "none";
-  }
-
-  function displayBooks(books) {
-    const bookContainer = document.getElementById("book-container");
-    console.log("boooks", bookContainer);
-    bookContainer.innerHTML = "";
-    for (const [index, book] of books.entries()) {
-      let bookData = document.createElement("div");
-      bookData.className = "book-data";
-      bookData.id = `book-${index}`;
-
-      let bookImage = document.createElement("img");
-      bookImage.className = "book-image";
-      console.log(book.image);
-      if (book.image === "") {
-        bookImage.src = unavailableCover;
-      } else {
-        bookImage.src = book.image;
-      }
-      bookData.appendChild(bookImage);
-      let bookLabel = document.createElement("div");
-      let labelText;
-      if (book.numPagesRead - book.numPages === 0) {
-        bookImage.style.filter = "grayscale(100%)";
-
-        bookImage.style.opacity = "0.3";
-        labelText = document.createTextNode("READ");
-        bookLabel.style.width = "200px";
-
-        bookLabel.style.padding = "0.5rem 0 ";
-      } else {
-        let percentage = Math.round((book.numPagesRead / book.numPages) * 100);
-        labelText = document.createTextNode(`${percentage} %`);
-      }
-      bookLabel.className = "read-label";
-      bookLabel.appendChild(labelText);
-
-      bookData.appendChild(bookLabel);
-
-      let bookRemove = document.createElement("button");
-      bookRemove.className = "book-remove";
-
-      let bookRemoveIcon = document.createElement("img");
-      bookRemoveIcon.src = "src/delete.png";
-      bookRemove.addEventListener("click", function () {
-        let confirmed = window.confirm(
-          "Are you sure you want to delete this book?"
-        );
-        if (confirmed) {
-          removeBook(index);
-        }
-      });
-      bookRemove.appendChild(bookRemoveIcon);
-      bookData.appendChild(bookRemove);
-
-      let bookEdit = document.createElement("button");
-      bookEdit.className = "book-edit";
-
-      let bookEditIcon = document.createElement("img");
-      bookEditIcon.src = "src/edit.png";
-      bookEdit.addEventListener("click", function (e) {
-        editIndex = index;
-        console.log(index);
-        $image.value = `${books[index].image}`;
-        $title.value = `${books[index].title}`;
-        $author.value = `${books[index].author}`;
-        $numPages.value = `${books[index].numPages}`;
-        $numPagesRead.value = `${books[index].numPagesRead}`;
-        console.log(`${books[index]}`);
-        addBookButton.innerHTML = "Edit Book";
-        toggleDivs();
-      });
-      bookEdit.appendChild(bookEditIcon);
-      bookData.appendChild(bookEdit);
-
-      let bookInformation = document.createElement("div");
-      bookInformation.className = "book-information";
-      let bookTitle = document.createElement("p");
-      bookTitle.className = "book-title";
-      bookTitle.innerHTML = book.title;
-      let bookAuthor = document.createElement("p");
-      bookAuthor.className = "book-author";
-      bookAuthor.innerHTML = book.author;
-      bookInformation.appendChild(bookTitle);
-      bookInformation.appendChild(bookAuthor);
-      let bookPages = document.createElement("p");
-      bookPages.className = "book-pages";
-      bookPages.innerHTML = `${book.numPagesRead}/${book.numPages}`;
-      bookInformation.appendChild(bookPages);
-
-      bookData.appendChild(bookInformation);
-
-      bookContainer.appendChild(bookData);
-    }
-  }
-
-  function removeBook(index) {
-    books.splice(index, 1);
-    displayBooks(books);
+//Add new books button
+const addBookButton = document.getElementById("submit-button");
+addBookButton.addEventListener("click", function () {
+  if (validateForm()) {
+    addBookButton.innerHTML = "Add Book";
+    console.log(editIndex);
+    addFormBookToLibrary(editIndex);
   }
 });
+
+//Toggle Hidden
+$toggleHidden.addEventListener("click", function () {
+  toggleDivs();
+});
+
+//Validate Form
+function validateForm() {
+  if ($title.value.length < 4 || $author.value.length < 4) {
+    alert("Title/author must be at least 4 characters long.");
+    return;
+  }
+
+  const numPagesValue = parseInt($numPages.value, 10);
+  if (isNaN(numPagesValue)) {
+    alert("Number of Pages must be a valid number.");
+    return;
+  }
+
+  // Validate numPages is required
+  if ($numPages.value.trim() === "") {
+    alert("Number of Pages is required.");
+    return;
+  }
+
+  return true;
+}
+
+function toggleDivs() {
+  $toggleHidden.innerHTML = $toggleHidden.innerHTML === "+" ? "Return" : "+";
+  $form.style.display = $form.style.display === "flex" ? "none" : "flex";
+  $bookContainer.style.display =
+    $bookContainer.style.display === "none" ? "grid" : "none";
+}
+
+function displayBooks(books) {
+  $bookContainer.innerHTML = "";
+  for (const [index, book] of books.entries()) {
+    let bookData = document.createElement("div");
+    bookData.className = "book-data";
+    bookData.id = `book-${index}`;
+
+    let bookImage = document.createElement("img");
+    bookImage.className = "book-image";
+    if (book.image === "") {
+      bookImage.src = unavailableCover;
+    } else {
+      bookImage.src = book.image;
+    }
+    bookData.appendChild(bookImage);
+
+    //Read percentage
+    let bookLabel = document.createElement("div");
+    let labelText;
+    if (book.numPagesRead - book.numPages === 0) {
+      bookImage.style.filter = "grayscale(100%)";
+
+      bookImage.style.opacity = "0.3";
+      labelText = document.createTextNode("READ");
+      bookLabel.style.width = "200px";
+
+      bookLabel.style.padding = "0.5rem 0 ";
+    } else {
+      let percentage = Math.round((book.numPagesRead / book.numPages) * 100);
+      labelText = document.createTextNode(`${percentage} %`);
+    }
+    bookLabel.className = "read-label";
+    bookLabel.appendChild(labelText);
+    bookData.appendChild(bookLabel);
+
+    let bookRemove = document.createElement("button");
+    bookRemove.className = "book-remove";
+    let bookRemoveIcon = document.createElement("img");
+    bookRemoveIcon.src = "src/delete.png";
+    bookRemove.addEventListener("click", function () {
+      let confirmed = window.confirm(
+        "Are you sure you want to delete this book?"
+      );
+      if (confirmed) {
+        library.removeBook(index);
+      }
+    });
+    bookRemove.appendChild(bookRemoveIcon);
+    bookData.appendChild(bookRemove);
+
+    let bookEdit = document.createElement("button");
+    bookEdit.className = "book-edit";
+
+    let bookEditIcon = document.createElement("img");
+    bookEditIcon.src = "src/edit.png";
+    bookEdit.addEventListener("click", function (e) {
+      editIndex = index;
+      console.log(editIndex);
+      console.log(book.image);
+      $image.value = `${book.image}`;
+      $title.value = `${book.title}`;
+      $author.value = `${library.books[index].author}`;
+      $numPages.value = `${library.books[index].numPages}`;
+      $numPagesRead.value = `${library.books[index].numPagesRead}`;
+      addBookButton.innerHTML = "Edit Book";
+      toggleDivs();
+    });
+    bookEdit.appendChild(bookEditIcon);
+    bookData.appendChild(bookEdit);
+
+    let bookInformation = document.createElement("div");
+    bookInformation.className = "book-information";
+    let bookTitle = document.createElement("p");
+    bookTitle.className = "book-title";
+    bookTitle.innerHTML = book.title;
+    let bookAuthor = document.createElement("p");
+    bookAuthor.className = "book-author";
+    bookAuthor.innerHTML = book.author;
+    bookInformation.appendChild(bookTitle);
+    bookInformation.appendChild(bookAuthor);
+    let bookPages = document.createElement("p");
+    bookPages.className = "book-pages";
+    bookPages.innerHTML = `${book.numPagesRead}/${book.numPages}`;
+    bookInformation.appendChild(bookPages);
+
+    bookData.appendChild(bookInformation);
+
+    $bookContainer.appendChild(bookData);
+  }
+}

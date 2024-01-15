@@ -60,9 +60,26 @@ header {
   outline: 2px solid var(--color1);
   z-index: 3;
 }
-.book-data:hover > .book-information {
+.book-remove, .book-edit{
+  display: none;
+}
+.book-data:hover > .book-remove,
+.book-data:hover > .book-edit  {
   display: block;
 }
+.book-data:hover > .book-information {
+  max-height: 200px; /* Set an appropriate max-height value */
+  transition: max-height 1; /* Adjust the transition duration as needed */
+}
+
+.book-information {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 4s ; /* Adjust the transition duration as needed */
+  text-align: center;
+  background-color: var(--color2);
+}
+
 .read-label {
   position: absolute;
   top: 0;
@@ -153,11 +170,7 @@ label {
   transition: none;
 }
 
-.book-information {
-  display: none;
-  text-align: center; /* Center-align text */
-  background-color: var(--color2);
-  overflow: hidden;
+
 }
 
 .book-title,
