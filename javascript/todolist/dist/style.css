@@ -103,7 +103,8 @@ body, h1, h2, p, button, input {
     justify-content: space-between;
     align-items: center;
     
-    padding: 0.3rem;
+    border-radius: 4px;
+    padding: 0.2rem 0.5rem;
 font-size: large;}
   
   .add-task-menu {
@@ -190,6 +191,10 @@ font-size: large;}
     gap: 1rem;
     width: 1rem;
 }
+.priority-buttons>button{
+  opacity: 0.5;
+  padding: 1rem;
+}
 .task-right{
     display: flex;
     gap: 0.5rem;
@@ -200,6 +205,7 @@ font-size: large;}
     border:2px solid rgb(62, 62, 62);
     width: 2rem;
     height: 2rem;
+    border-radius: 4px;
 }
 .add-task-buttons{
     display: flex;
@@ -247,4 +253,11 @@ button:hover{
   }
   a:visited{
     color: #dadada;
+  }
+  #sortOrder {
+    padding: 0.5rem;
+    font-size: 16px;
+    border: 0;
+    border-radius: 4px;
+    cursor: pointer;
   }

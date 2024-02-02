@@ -1,14 +1,8 @@
 const data = JSON.parse(localStorage.getItem("tasks"));
 
-dummyData =[
-    {},{},{
-        
-    }
-]
-
 const priorityColors = {
   low: "lightgreen",
-  medium: "gold",
+  med: "gold",
   high: "tomato",
 };
 class Task {
@@ -26,9 +20,9 @@ class Task {
 const DOM = () => {
   let tasksContainer;
   let taskContainer;
-  let addTaskButton;
   let projectContainer;
   function displayHome() {
+    document.body.innerHTML = "";
     const header = document.createElement("header");
     const title = document.createElement("h1");
     title.textContent = "TODO Manager";
@@ -58,7 +52,7 @@ const DOM = () => {
     const medprioButton = document.createElement("button");
     const highprioButton = document.createElement("button");
     lowprioButton.style.backgroundColor = priorityColors["low"];
-    medprioButton.style.backgroundColor = priorityColors["medium"];
+    medprioButton.style.backgroundColor = priorityColors["med"];
     highprioButton.style.backgroundColor = priorityColors["high"];
     priorityButtons.appendChild(lowprioButton);
     priorityButtons.appendChild(medprioButton);
@@ -87,11 +81,22 @@ const DOM = () => {
     const tasksContainerHeader = document.createElement("div");
     const tasksContainerHeaderTitle = document.createElement("h1");
     tasksContainerHeaderTitle.textContent = "Tasks";
-    addTaskButton = document.createElement("button");
+    const addTaskButton = document.createElement("button");
     addTaskButton.textContent = "+";
+    const selectionOrder = document.createElement("select");
+    selectionOrder.id = "sortOrder";
+    const optionAsc = document.createElement("option");
+    optionAsc.value = "asc";
+    optionAsc.textContent = "Date Asc";
+    const optionDesc = document.createElement("option");
+    optionDesc.value = "desc";
+    optionDesc.textContent = "Date Desc";
 
     tasksContainerHeader.appendChild(addTaskButton);
     tasksContainerHeader.appendChild(tasksContainerHeaderTitle);
+    tasksContainerHeader.appendChild(selectionOrder);
+    selectionOrder.appendChild(optionDesc);
+    selectionOrder.appendChild(optionAsc);
     tasksContainerHeader.classList = "task-container-header";
     taskContainer = document.createElement("div");
     taskContainer.classList = "task-container";
@@ -118,6 +123,7 @@ const DOM = () => {
       medprioButton,
       highprioButton,
       finishedButton,
+      selectionOrder,
     };
   }
   function displayTasks(taskList) {
@@ -155,7 +161,8 @@ const DOM = () => {
 
       moreinfoDivRight.classList = "edit-delete";
       moreinfoDivLeft.innerHTML = `
-      <p><b>Due Date: </b>${task.dueDate}</p><p><b>Description: </b>${task.description}</p>`;
+      <p><b>Due Date: </b>${task.dueDate}</p><p><b>Description: </b>${task.description}</p>
+      <p><b>Project: </b>${task.project}</p>`;
 
       const taskSubDiv1 = document.createElement("p");
       taskSubDiv1.classList = "task-title";
@@ -281,7 +288,7 @@ const DOM = () => {
     addTaskMenuRight.appendChild(projectInput);
 
     const priorityInput = document.createElement("select");
-    const priorityOptions = ["Low", "Medium", "High"];
+    const priorityOptions = ["Low", "med", "High"];
     priorityOptions.forEach((option) => {
       const optionElement = document.createElement("option");
       optionElement.value = option;
@@ -333,7 +340,6 @@ const DOM = () => {
     const addTaskMenu = document.querySelector(".add-task-menu");
     document.body.removeChild(addTaskMenu);
   }
-
   return {
     displayHome,
     displayTasks,
@@ -342,9 +348,8 @@ const DOM = () => {
     displayProjects,
   };
 };
-
 const myDOM = DOM();
-const {
+let {
   addTaskButton,
   todayButton,
   starredButton,
@@ -353,6 +358,7 @@ const {
   medprioButton,
   highprioButton,
   finishedButton,
+  selectionOrder,
 } = myDOM.displayHome();
 
 let tasks = [];
@@ -370,13 +376,6 @@ if (data) {
     tasks.push(existingTask);
   });
 }
-//sort tasks by date
-tasks.sort((a, b) => {
-  const dateA = new Date(a.dueDate);
-  const dateB = new Date(b.dueDate);
-  return dateB - dateA;
-});
-console.log("tasks", tasks);
 
 const saveTasks = () => {
   localStorage.setItem("tasks", JSON.stringify(tasks));
@@ -384,10 +383,18 @@ const saveTasks = () => {
 const buttonController = (() => {
   let filters = [];
   let projectButtons = [];
-
-  addTaskButton.addEventListener("click", () => {
-    updateCreateReturnButtons(false, tasks);
-  });
+  let sortBy;
+  function updateProjectButtons() {
+    projectButtons = [];
+    let projects = [];
+    tasks.forEach((task) => {
+      if (task.project !== "" && !projects.includes(task.project)) {
+        projects.push(task.project);
+      }
+    });
+    projectButtons = myDOM.displayProjects(projects);
+  }
+  updateProjectButtons();
   //filters
   function isFilterActive(name) {
     const existingFilterIndex = filters.findIndex((f) => {
@@ -404,91 +411,126 @@ const buttonController = (() => {
     }
     updateTaskButtons();
   }
-
-  todayButton.addEventListener("click", () => {
-    const formattedToday = new Date().toISOString().slice(0, 10);
-
-    const todayFilter = tasks.filter((task) => task.dueDate === formattedToday);
-    introduceFilter("todayFilter", todayFilter);
-    if (isFilterActive("todayFilter")) {
-      console.log("on");
-      todayButton.style.backgroundColor = "#2980b9";
-    } else {
-      console.log("off");
-      todayButton.style.backgroundColor = "";
-    }
-  });
-  weekButton.addEventListener("click", () => {
-    const today = new Date();
-    const startOfWeek = new Date(today);
-    startOfWeek.setDate(
-      today.getDate() - today.getDay() + (today.getDay() === 0 ? -6 : 1)
-    );
-    const endOfWeek = new Date(today);
-    endOfWeek.setDate(today.getDate() - today.getDay() + 7);
-    const weekFilter = tasks.filter((task) => {
-      const taskDueDate = new Date(task.dueDate);
-      return taskDueDate >= startOfWeek && taskDueDate <= endOfWeek;
+  function updateListeners() {
+    addTaskButton.addEventListener("click", () => {
+      updateCreateReturnButtons(false, tasks);
     });
-    introduceFilter("weekFilter", weekFilter);
-    if (isFilterActive("weekFilter")) {
-      weekButton.style.backgroundColor = "#2980b9";
-    } else {
-      weekButton.style.backgroundColor = "";
-    }
-  });
-  starredButton.addEventListener("click", () => {
-    const starFilter = tasks.filter((task) => task.star === true);
-    introduceFilter("starFilter", starFilter);
-    if (isFilterActive("starFilter")) {
-      starredButton.style.backgroundColor = "#2980b9";
-    } else {
-      starredButton.style.backgroundColor = "";
-    }
-  });
-  lowprioButton.addEventListener("click", () => {
-    const lowFilter = tasks.filter(
-      (task) => task.priority.toLowerCase() === "low"
-    );
-    introduceFilter("lowFilter", lowFilter);
-    if (isFilterActive("lowFilter")) {
-      lowprioButton.style.backgroundColor = "#2980b9";
-    } else {
-      lowprioButton.style.backgroundColor = "";
-    }
-  });
-  medprioButton.addEventListener("click", () => {
-    const medFilter = tasks.filter(
-      (task) => task.priority.toLowerCase() === "medium"
-    );
-    introduceFilter("medFilter", medFilter);
-    if (isFilterActive("medFilter")) {
-      medprioButton.style.backgroundColor = "#2980b9";
-    } else {
-      medprioButton.style.backgroundColor = "";
-    }
-  });
-  highprioButton.addEventListener("click", () => {
-    const highFilter = tasks.filter(
-      (task) => task.priority.toLowerCase() === "high"
-    );
-    introduceFilter("highFilter", highFilter);
-    if (isFilterActive("highFilter")) {
-      highprioButton.style.backgroundColor = "#2980b9";
-    } else {
-      highprioButton.style.backgroundColor = "";
-    }
-  });
-  finishedButton.addEventListener("click", () => {
-    const finishedFilter = tasks.filter((task) => task.done === true);
-    introduceFilter("finishedFilter", finishedFilter);
-    if (isFilterActive("finishedFilter")) {
-      finishedButton.style.backgroundColor = "#2980b9";
-    } else {
-      finishedButton.style.backgroundColor = "";
-    }
-  });
+    selectionOrder.addEventListener("change", () => {
+      sortBy = selectionOrder.value;
+      console.log(sortBy);
+      updateTaskButtons();
+    });
+    todayButton.addEventListener("click", () => {
+      const formattedToday = new Date().toISOString().slice(0, 10);
 
+      const todayFilter = tasks.filter(
+        (task) => task.dueDate === formattedToday
+      );
+      introduceFilter("todayFilter", todayFilter);
+      if (isFilterActive("todayFilter")) {
+        console.log("on");
+        todayButton.style.backgroundColor = "#2980b9";
+      } else {
+        console.log("off");
+        todayButton.style.backgroundColor = "";
+      }
+    });
+    weekButton.addEventListener("click", () => {
+      const today = new Date();
+      const startOfWeek = new Date(today);
+      startOfWeek.setDate(
+        today.getDate() - today.getDay() + (today.getDay() === 0 ? -6 : 1)
+      );
+      const endOfWeek = new Date(today);
+      endOfWeek.setDate(today.getDate() - today.getDay() + 7);
+      const weekFilter = tasks.filter((task) => {
+        const taskDueDate = new Date(task.dueDate);
+        return taskDueDate >= startOfWeek && taskDueDate <= endOfWeek;
+      });
+      introduceFilter("weekFilter", weekFilter);
+      if (isFilterActive("weekFilter")) {
+        weekButton.style.backgroundColor = "#2980b9";
+      } else {
+        weekButton.style.backgroundColor = "";
+      }
+    });
+    starredButton.addEventListener("click", () => {
+      const starFilter = tasks.filter((task) => task.star === true);
+      introduceFilter("starFilter", starFilter);
+      if (isFilterActive("starFilter")) {
+        starredButton.style.backgroundColor = "#2980b9";
+      } else {
+        starredButton.style.backgroundColor = "";
+      }
+    });
+    function handlePriorityButtonClick(priority, button) {
+      const filter = tasks.filter(
+        (task) => task.priority.toLowerCase() === priority.toLowerCase()
+      );
+
+      if (
+        !isFilterActive("low") &&
+        !isFilterActive("med") &&
+        !isFilterActive("high")
+      ) {
+        button.style.opacity = 1;
+        introduceFilter(priority, filter);
+      } else if (isFilterActive(priority)) {
+        button.style.opacity = 0.5;
+        introduceFilter(priority, filter);
+      }
+
+      console.log(filters);
+    }
+    lowprioButton.addEventListener("click", () =>
+      handlePriorityButtonClick("low", lowprioButton)
+    );
+    medprioButton.addEventListener("click", () =>
+      handlePriorityButtonClick("med", medprioButton)
+    );
+    highprioButton.addEventListener("click", () =>
+      handlePriorityButtonClick("high", highprioButton)
+    );
+    finishedButton.addEventListener("click", () => {
+      const finishedFilter = tasks.filter((task) => task.done === true);
+      introduceFilter("finishedFilter", finishedFilter);
+      if (isFilterActive("finishedFilter")) {
+        finishedButton.style.backgroundColor = "#2980b9";
+      } else {
+        finishedButton.style.backgroundColor = "";
+      }
+    });
+    let count = 0;
+    projectButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        console.log(projectButtons);
+        const projectName = button.textContent.toLowerCase();
+        if (isFilterActive(projectName)) {
+          count -= 1;
+          button.style.backgroundColor = "";
+          console.log("unpress");
+          const projectFilter = tasks.filter(
+            (task) => task.project.toLowerCase() === projectName
+          );
+
+          introduceFilter(projectName, projectFilter);
+          console.log(filters);
+          console.log(projectFilter);
+        } else if (count === 0) {
+          count += 1;
+          button.style.backgroundColor = "#2980b9";
+          console.log("press");
+          const projectFilter = tasks.filter(
+            (task) => task.project.toLowerCase() === projectName
+          );
+
+          introduceFilter(projectName, projectFilter);
+          console.log(filters);
+          console.log(projectFilter);
+        }
+      });
+    });
+  }
   function updateCreateReturnButtons(editMode, tasks, index) {
     const {
       createButton,
@@ -500,22 +542,16 @@ const buttonController = (() => {
       priorityInput,
     } = myDOM.displayAddTask(editMode, tasks, index);
     createButton.addEventListener("click", () => {
-      if (
-        verifyForm(
-          titleInput.value,
-          descriptionInput.value,
-          dateInput.value,
-          projectInput.value,
-          priorityInput.value
-        )
-      ) {
+      if (verifyForm(titleInput.value, dateInput.value)) {
         if (!editMode) {
           const newTask = new Task(
             titleInput.value,
             descriptionInput.value,
             dateInput.value,
+            priorityInput.value,
             projectInput.value,
-            priorityInput.value
+            false,
+            false
           );
           tasks.push(newTask);
         } else {
@@ -526,31 +562,45 @@ const buttonController = (() => {
           tasks[index].priority = priorityInput.value;
         }
 
+        ({
+          addTaskButton,
+          todayButton,
+          starredButton,
+          weekButton,
+          lowprioButton,
+          medprioButton,
+          highprioButton,
+          finishedButton,
+          selectionOrder,
+        } = myDOM.displayHome());
+
         console.log(tasks);
         updateProjectButtons();
         updateTaskButtons();
-        myDOM.removeAddTask();
+        updateListeners();
       }
     });
     returnButton.addEventListener("click", () => {
       myDOM.removeAddTask();
     });
   }
-  function updateProjectButtons() {
-    projectButtons = [];
-    let projects = [];
-    tasks.forEach((task) => {
-      if (!projects.includes(task.project)) {
-        projects.push(task.project);
-      }
-    });
-    projectButtons = myDOM.displayProjects(projects);
-  }
+
   function updateTaskButtons() {
     saveTasks(tasks);
-    const filteredTasks = filters.reduce((result, currentFilter) => {
+    let filteredTasks = filters.reduce((result, currentFilter) => {
       return result.filter((task) => currentFilter.filter.includes(task));
     }, tasks);
+    //sort tasks by date
+    filteredTasks = filteredTasks.sort((a, b) => {
+      const dateA = new Date(a.dueDate);
+      const dateB = new Date(b.dueDate);
+      if (sortBy === "asc") {
+        return dateB - dateA;
+      } else {
+        return dateA - dateB;
+      }
+    });
+    console.log("tasks", tasks);
     const {
       starButtons,
       editButtons,
@@ -559,24 +609,6 @@ const buttonController = (() => {
       moreinfoButtons,
       moreinfoDivs,
     } = myDOM.displayTasks(filteredTasks);
-
-    projectButtons.forEach((button) => {
-      button.addEventListener("click", () => {
-        const projectName = button.textContent.toLowerCase();
-        if (isFilterActive(projectName)) {
-          button.style.backgroundColor = "";
-          console.log("pressed");
-        } else {
-          button.style.backgroundColor = "#2980b9";
-          console.log("unpress");
-        }
-        const projectFilter = tasks.filter((task) => {
-          return task.project.toLowerCase() === projectName;
-        });
-
-        introduceFilter(projectName, projectFilter);
-      });
-    });
 
     starButtons.forEach((button, index) => {
       button.addEventListener("click", () => {
@@ -618,13 +650,13 @@ const buttonController = (() => {
       });
     });
   }
-
-  updateProjectButtons();
   updateTaskButtons();
+  updateListeners();
 })();
 
-const verifyForm = (title, description, date, project, priority) => {
+const verifyForm = (title, date) => {
   const isValidDate = (dateString) => {
+    console.log(dateString);
     const regex = /^\d{4}-\d{2}-\d{2}$/;
     return regex.test(dateString);
   };
