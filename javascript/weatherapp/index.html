@@ -1,0 +1,45 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WeatherSearcher</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <button id="change-units">ºC / KPH</button>
+    <h1>Weather Searcher</h1>
+    <div id="search-container">
+      <input type="text" id="search-input" placeholder="Paris" />
+      <button id="search-submit">Search</button>
+      <div id="message"></div>
+    </div>
+
+    <div id="weather">
+      <div>
+        <div id="city"></div>
+        <div id="country"></div>
+        <div class="space"></div>
+        <div id="temperature"></div>
+        <img src="" alt="" id="icon" />
+      </div>
+      <div id="right-weather">
+        <div class="row">
+          <img src="src/humid.png" alt="" />
+          <div id="humidity"></div>
+        </div>
+        <div class="row">
+          <img src="src/wind.png" alt="" />
+          <div id="wind"></div>
+        </div>
+        <div class="row">
+          <img src="src/precip.png" alt="" />
+          <div id="precip"></div>
+        </div>
+      </div>
+    </div>
+    <footer>
+      <p><a href="https://github.com/SirGram" target="_blank">SirGram</a> 2024</p>
+    </footer>
+    <script src="script.js"></script>
+  </body>
+</html>
