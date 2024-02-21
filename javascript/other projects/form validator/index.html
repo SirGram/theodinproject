@@ -1,0 +1,93 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Form Validator</title>
+  </head>
+  <body>
+    <style>
+      
+      body {
+        background-color: #291b2c; /* Dark violet background color */
+        color: #eee; /* Light text color */
+        font-family: Arial, sans-serif; /* Font stack */
+      }
+      
+      h1 {
+        color: #d3a4f8; /* Violet header color */
+      }
+      
+      input[type="text"],
+      input[type="email"] {
+        background-color: #3d3151; /* Dark violet input background color */
+        border: 2px solid #4d3f63; /* Violet border color */
+        color: #eee; /* Light text color */
+        padding: 10px; /* Padding */
+        margin-bottom: 10px; /* Spacing between inputs */
+        border-radius: 5px; /* Rounded corners */
+      }
+      
+      input[type="text"]:focus,
+      input[type="email"]:focus {
+        border-color: #d3a4f8; /* Violet border color on focus */
+      }
+      
+      input:invalid {
+        border: 2px solid #ff5f5f; /* Red border color for invalid input */
+      }
+      
+      input:valid {
+        border: 2px solid #80e27e; /* Green border color for valid input */
+      }
+      
+      button[type="submit"] {
+        background-color: #d3a4f8; /* Violet button background color */
+        border: none; /* No border */
+        color: #fff; /* White text color */
+        padding: 10px 20px; /* Padding */
+        cursor: pointer; /* Cursor on hover */
+        border-radius: 5px; /* Rounded corners */
+      }
+      
+      button[type="submit"]:hover {
+        background-color: #a579d6; /* Darker violet button background color on hover */
+      }
+      body, form{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+      #error-message{
+        margin-top: 2rem;
+        color: #eee;
+      }
+    </style>
+    <h1>Contact</h1>
+    <form novalidate>
+      <input
+        type="text"
+        name="first name"
+        placeholder="Edward"
+        id="firstname"
+        required
+        minlength="3"
+      />
+      <input
+        type="text"
+        name="lastname"
+        id="lastname"
+        placeholder="Salom"
+        required
+        minlength="3"
+      />
+      <input type="email" id = "email" name="name" required placeholder="salomed@gmail.com"/>
+      <input type="text" id="zipcode" name="zipcode" required placeholder="011933">
+      <input type="text" id="password" name="password" required placeholder="password">
+      <input type="text" id="password-confirmation" name="password-confirmation" required placeholder="confirm password" >
+      <button type="submit">SUBMIT</button>
+      <div id="error-message"></div>
+    </form>
+    <script src="script.js"></script>
+  </body>
+</html>
