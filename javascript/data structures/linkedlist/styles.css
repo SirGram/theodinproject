@@ -1,0 +1,173 @@
+:root{
+    font-family:'Arial Narrow', Arial, sans-serif
+    
+}
+body{
+    background-color: rgb(217, 236, 236);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content:center;
+}
+body, input{
+    
+    font-size: 18px;
+}
+#numbers{
+    display: flex;
+    padding: 0.5rem;
+    background-color: rgb(200, 186, 215); 
+    border-radius: 10px;  
+    width: fit-content;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;max-width: 90%;
+    padding-top: 1rem;
+}
+
+.number{
+    padding: 0.5rem;
+    background-color: aliceblue;
+    border-radius: 50%; 
+    min-width: 2rem; 
+  width: max-content;
+    height: 2rem;display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+}
+.head{
+    background-color: greenyellow;
+}
+.tail{
+    background-color: rgb(254, 102, 102);
+}
+.hyphen{
+    width: 1rem;
+    height: 0.2rem;
+    background-color: azure;
+}
+#arrow {
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    transform: translate(-50%, -50%);
+    width: 0;
+    height: 0;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-left: 20px solid black; /* Adjust the size and color as needed */
+  }
+
+#log-area{
+    margin-bottom: 2rem;
+    display: flex;
+    gap: 1rem;
+}
+#log{
+    padding: 1rem;
+    border: 2px solid gray;
+    border-radius: 8px;
+    background-color: whitesmoke;
+    color: gray;
+}
+button{
+    border-radius: 8px;
+opacity: 0.7;}
+button:hover{
+    opacity: 1;
+}
+#buttons{
+    align-items: center;
+    justify-content: center;
+    display: flex;   
+    flex-direction: column;
+}
+#buttons > .column> button{
+    padding: 0.5rem;
+    background-color: rgb(143, 87, 134);
+    font-size: large;
+    color: aliceblue; 
+}
+#logs {
+    visibility: hidden;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgb(234, 234, 234);
+    border-radius: 5px;
+    max-width: max-content;
+    max-height: 40vh;
+    z-index: 2;
+    padding: 1.5rem;
+    padding-top: 1rem;
+}
+#logs-text{ background-color: rgb(234, 234, 234);
+    max-height: calc(30vh - 6rem); 
+    overflow-y: auto; 
+    line-height: 1.8rem;
+    font-style: italic;
+}
+
+#exit {
+    position: absolute;  
+    top: -1rem;
+    right: -1rem;
+    background-color: rgb(254, 102, 102);
+    border-radius: 8px;
+    color: whitesmoke;
+    font-size: xx-large;
+    width: 3rem; 
+    line-height: 3rem; 
+    z-index: 3;
+    opacity: 1;
+}
+#exit:hover{
+    
+    background-color: rgb(226, 62, 62);
+}
+.number, #logs, #buttons>button, #exit, #numbers{
+    border:2px solid rgb(101, 101, 101);
+}
+#control-board {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+}
+#buttons > .column{
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+#input-fields {
+    margin-bottom: 2rem;
+    
+}#input-fields> input {
+    padding: 0.5rem;
+    border-radius: 8px;
+    border: 2px solid gray;
+min-width: 2rem;
+width: 6rem;
+}
+h4{
+    text-align: center;
+}
+.tooltip {
+    display: none;
+    position: absolute;
+    padding: 5px 10px;
+    border-radius: 8px;
+    padding: 1rem;
+    color: gray;
+    background-color: whitesmoke;
+    border: 2px solid gray;
+    opacity: 0.9;
+  }
