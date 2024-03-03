@@ -1,0 +1,141 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LinkedList</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    />
+  </head>
+  <body>
+    <header>
+      <button id="switchToScreen1" class="active-button-menu">
+        <h1>LinkedList</h1>
+      </button>
+      <div class="header-line"></div>
+      <button id="switchToScreen2"><h1>HashMap</h1></button>
+      <div class="header-line"></div>
+      <button id="switchToScreen3"><h1>Binary Tree</h1></button>
+    </header>
+    <div id="log-area">
+      <button id="button-logs">
+        <span class="material-symbols-outlined"> notes </span>
+      </button>
+      <div id="log"></div>
+      <div id="logs">
+        <button id="exit">x</button>
+        <h4>List of Logs</h4>
+        <div id="logs-text">
+          <div id="logs-text-1"></div>
+          <div id="logs-text-2"></div>
+          <div id="logs-text-3"></div>
+        </div>
+      </div>
+    </div>
+    <div id="screen1">
+      <!-- Content for screen 1 -->
+      <div id="numbers"></div>
+
+      <div id="control-board">
+        <div id="input-fields"><p class="buttonName"></p>
+          <input type="number" name="value" id="value" placeholder="Value" />
+          <p class="buttonName"></p>
+          <input type="number" name="index" id="index" placeholder="Index" />
+          
+        </div>
+        <div id="buttons">
+          <div class="column">
+            <button id="get-head" class="control">GET HEAD</button>
+            <button id="get-tail" class="control">GET TAIL</button>
+            <button id="pop" class="control">POP</button>
+          </div>
+          <div class="column">
+            <button id="append" class="control">APPEND</button>
+            <button id="prepend" class="control">PREPEND</button>
+            <button id="contains-value" class="control">CONTAINS VALUE</button>
+            <button id="get-index-from" class="control">GET INDEX FROM</button>
+          </div>
+          <div class="column">
+            <button id="get-value-at" class="control">GET VALUE AT</button>
+            <button id="remove-value-at" class="control">
+              REMOVE VALUE AT
+            </button>
+            <button id="put-value-at" class="control">PUT VALUE AT</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="screen2">
+      <!-- Content for screen 2 -->
+
+      <div id="hashmap">
+        <div id="load-factor-upper">
+          <div id="load-factor"></div>
+          <div id="load-factor-limit"></div>
+        </div>
+        <div id="buckets"></div>
+      </div>
+      <div id="control-board-2">
+        <div id="cb2-input-fields"><div class="column">
+          <p class="buttonName"></p>
+          <input name="value" id="cb2-key" placeholder="Key" /></div><div class="column">
+          <p class="buttonName"></p>
+          <input name="value" id="cb2-value" placeholder="Value" /></div>
+        </div>
+        <div id="cb2-buttons">
+          <div>
+            <button id="cb2-set">SET KEY VALUE</button>
+            <button id="cb2-get">GET VALUE</button>
+            <button id="cb2-has">HAS KEY</button>
+          </div>
+          <div>
+            <button id="cb2-remove">REMOVE KEY</button>
+            <button id="cb2-clear">CLEAR</button>
+            <button id="cb2-keys">KEYS</button>
+            <button id="cb2-values">VALUES</button>
+          </div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+    <div id="screen3">
+      <div id="tree"></div>
+      <div id="control-board-3">
+        <div id="cb3-input-fields"><p class="buttonName"></p>
+          <input
+            name="node-value"
+            id="cb3-node-value"
+            placeholder="Node Value"
+          />
+          
+        </div>
+        <div id="cb3-buttons">
+          <div class="row">
+            <button id="cb3-insert">INSERT</button>
+            <button id="cb3-has">HAS</button>
+            <button id="cb3-rebalance">REBALANCE</button>
+            <button id="cb3-delete">DELETE</button>
+            <button id="cb3-clear">CLEAR</button>
+          </div>
+          <div class="row">
+            <button id="cb3-levelorder">LEVELORDER</button>
+            <button id="cb3-inorder">INORDER</button>
+            <button id="cb3-preorder">PREORDER</button>
+            <button id="cb3-postorder">POSTORDER</button>
+          </div>
+        </div>
+        <div></div>
+      </div>
+    </div>
+    <div class="tooltip" id="tooltip"></div>
+    <footer>
+      <p>
+        <a href="https://github.com/SirGram" target="_blank">SirGram</a> 2024
+      </p>
+    </footer>
+
+    <script src="main.js" type="module"></script>
+  </body>
+</html>

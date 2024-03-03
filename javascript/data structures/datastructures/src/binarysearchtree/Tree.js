@@ -1,14 +1,8 @@
-class Node {
-  constructor(data, leftNode = null, rightNode = null) {
-    this.data = data;
-    this.left = leftNode;
-    this.right = rightNode;
-  }
-}
+import Node from "./Node.js";
 
 class Tree {
-  constructor(array) {
-    this.root = this.buildTree(array);
+  constructor() {
+    this.root = this.buildTree(randomArray());
   }
   removeDuplicates(array) {
     const newArray = [];
@@ -56,11 +50,11 @@ class Tree {
   }
 
   insert(value) {
-    if (this.find(value)) return 
+    if (this.has(value)) return null;
     const newNode = new Node(value);
     if (this.root === null) {
       this.root = newNode;
-      return;
+      return newNode;
     }
     let currentNode = this.root;
     while (true) {
@@ -68,14 +62,14 @@ class Tree {
       if (value < currentNode.data) {
         if (currentNode.left === null) {
           currentNode.left = newNode;
-          return;
+          return newNode;
         } else {
           currentNode = currentNode.left;
         }
       } else {
         if (currentNode.right === null) {
-          currentNode.right = new Node(value);
-          return;
+          currentNode.right = newNode;
+          return newNode;
         } else {
           currentNode = currentNode.right;
         }
@@ -84,64 +78,77 @@ class Tree {
   }
 
   delete(value) {
+    if (this.root === null) return null;
+
     let parentNode = null;
     let currentNode = this.root;
-    while (true) {
-      if (currentNode === null) return null;
+
+    // Function to find and return the immediate successor of a given node
+    const findImmediateSuccessor = (node) => {
+      let parent = node;
+      let successor = node.right;
+      while (successor.left !== null) {
+        parent = successor;
+        successor = successor.left;
+      }
+      return { parent, successor };
+    };
+
+    while (currentNode !== null) {
       if (currentNode.data === value) {
-        //no children
         if (currentNode.left === null && currentNode.right === null) {
-          if (parentNode.data > currentNode.data) parentNode.left = null;
-          else parentNode.right = null;
-          return;
-        }
-        //1 child
-        else if (
+          if (parentNode === null) {
+            this.root = null;
+          } else if (parentNode.data > currentNode.data) {
+            parentNode.left = null;
+          } else {
+            parentNode.right = null;
+          }
+          return; // Return after deletion
+        } else if (
           (currentNode.right === null && currentNode.left !== null) ||
           (currentNode.left === null && currentNode.right !== null)
         ) {
           const childNode = currentNode.left || currentNode.right;
-          if (parentNode.data > childNode.data) parentNode.left = childNode;
-          else parentNode.right = childNode;
-          return;
-        }
-        //2 children
-        else {
-          let nearUpperNode = currentNode.right;
-          let parentNearupperNode = currentNode;
-          while (nearUpperNode.left) {
-            parentNearupperNode = nearUpperNode;
-            nearUpperNode = nearUpperNode.left;
-          }
-          currentNode.data = nearUpperNode.data;
-          //subchildren within nearer next value
-          if (nearUpperNode.right) {
-            if (parentNearupperNode === currentNode) {
-              parentNearupperNode.right = nearUpperNode.right;
-            } else {
-              parentNearupperNode.left = nearUpperNode.right;
-            }
+          if (parentNode === null) {
+            this.root = childNode;
+          } else if (parentNode.data > currentNode.data) {
+            parentNode.left = childNode;
           } else {
-            if (parentNearupperNode === currentNode) {
-              currentNode.right = null;
-            } else {
-              parentNearupperNode.left = null;
-            }
+            parentNode.right = childNode;
           }
-          return;
+          return; // Return after deletion
+        } else {
+          const { parent: successorParent, successor } =
+            findImmediateSuccessor(currentNode);
+          currentNode.data = successor.data;
+          if (successorParent === currentNode) {
+            successorParent.right = successor.right;
+          } else {
+            successorParent.left = successor.right;
+          }
+          return; // Return after deletion
         }
       }
       if (currentNode.data < value) {
         parentNode = currentNode;
         currentNode = currentNode.right;
-      } else if (currentNode.data > value) {
+      } else {
         parentNode = currentNode;
         currentNode = currentNode.left;
       }
     }
   }
-
-  find(value) {
+  has(value) {
+    let currentNode = this.root;
+    while (currentNode) {
+      if (currentNode.data === value) return true;
+      if (currentNode.data < value) currentNode = currentNode.right;
+      else currentNode = currentNode.left;
+    }
+    return false;
+  }
+  getNode(value){
     let currentNode = this.root;
     while (currentNode) {
       if (currentNode.data === value) return currentNode;
@@ -150,6 +157,10 @@ class Tree {
     }
     return null;
   }
+  clear(){this.root=this.buildTree([])
+
+  }
+  
   levelOrder(callback) {
     const arr = [];
     if (!this.root) return arr;
@@ -165,6 +176,7 @@ class Tree {
 
     return arr;
   }
+
   inOrder(callback, currentNode = this.root) {
     const arr = [];
     if (currentNode === null) return arr;
@@ -212,18 +224,25 @@ class Tree {
     return -1;
   }
   isBalanced(node = this.root) {
-    const leftHeight = this.height(node.left);
-    const rightHeight = this.height(node.right);
-    if (leftHeight - rightHeight > 1 || rightHeight - leftHeight > 1) {
-      return false;
+    if (node === null) {
+      return true; 
     }
-    return true;
+    const leftHeight = this.height(node.left);
+    const rightHeight = this.height(node.right);  
+    const leftBalanced = this.isBalanced(node.left);
+    const rightBalanced = this.isBalanced(node.right);
+    if (Math.abs(leftHeight - rightHeight) <= 1 && leftBalanced && rightBalanced) {
+      return true;
+    }
+    return false;
   }
   rebalance() {
     if (!this.isBalanced()) {
       const arr = this.inOrder();
       this.root = this.buildTree(arr);
+      return 'rebalanced'
     }
+    return 'already balanced'
   }
 
   prettyPrint(node = this.root, prefix = "", isLeft = true) {
@@ -251,7 +270,7 @@ function squareRootValue(node) {
 }
 function randomArray() {
   const arr = [];
-  const numElements = 1 + Math.floor(Math.random() * 16);
+  const numElements = 4 + Math.floor(Math.random() * 13);
 
   for (let i = 0; i < numElements; i += 1) {
     const randomNum = Math.floor(Math.random() * 101);
@@ -259,29 +278,5 @@ function randomArray() {
   }
   return arr;
 }
-const sortedArray = randomArray();
-const tree = new Tree(sortedArray);
 
-tree.prettyPrint();
-tree.insert(552);
-tree.prettyPrint();
-tree.insert(552);
-tree.prettyPrint();
-tree.levelOrder();
-tree.prettyPrint();
-console.log(tree.inOrder());
-tree.prettyPrint();
-console.log(tree.preOrder());
-tree.prettyPrint();
-console.log(tree.postOrder());
-tree.prettyPrint();
-console.log(tree.height(tree.find(150)));
-console.log(tree.depth(tree.find(551)));
-console.log(tree.depth(tree.find(999)));
-tree.insert(1);
-tree.insert(2);
-tree.insert(4);
-tree.prettyPrint();
-console.log(tree.isBalanced());
-tree.rebalance();
-tree.prettyPrint();
+export default Tree;
