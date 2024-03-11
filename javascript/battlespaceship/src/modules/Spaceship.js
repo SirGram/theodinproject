@@ -1,4 +1,4 @@
-class Ship {
+class Spaceship {
   constructor(length) {
     this.length = length;
     this.hits = 0;
@@ -12,4 +12,4 @@ class Ship {
     return this.hits === this.length;
   }
 }
-module.exports = Ship;
+export default Spaceship;
