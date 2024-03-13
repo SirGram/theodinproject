@@ -1,20 +1,23 @@
+/* eslint-disable */
 class Gameboard {
   constructor(size = 10) {
     this.size = size;
-    this.matrix = Array.from({ length: this.size }, () =>
-      Array(this.size).fill(0)
-    );
+    this.matrix = Array.from({ length: this.size }, () => Array(this.size).fill(0));
     this.missed = [];
     this.spaceships = [];
+    this.hits = [];
   }
 
   placeSpaceship(spaceship, x, y) {
     const coordinates = [];
-    const y1 = y + spaceship.length - 1;
-    if (y1 >= this.size || x < 0 || y < 0 || y1 < 0) return;
-    for (let j = y; j <= y1; j++) {
-      this.matrix[x][j] = 1;
-      coordinates.push([x, j]);
+    const x1 = x + spaceship.lengthX - 1;
+    const y1 = y + spaceship.lengthY - 1;
+    if (y1 >= this.size || x < 0 || y < 0 || x1 >= this.size) return;
+    for (let i = x; i <= x1; i++) {
+      for (let j = y; j <= y1; j++) {
+        this.matrix[i][j] = 1;
+        coordinates.push([i, j]);
+      }
     }
     this.spaceships.push([spaceship, coordinates]);
   }
@@ -23,11 +26,12 @@ class Gameboard {
     if (this.matrix[x][y] === 1) {
       const spaceship = this.getSpaceship(x, y);
       spaceship.hit();
+      this.hits.push([x, y]);
     } else {
-      console.log(x, y);
       this.missed.push([x, y]);
     }
   }
+
   getSpaceship(x, y) {
     let foundSpaceship = null;
     this.spaceships.forEach(([spaceship, coordinates]) => {
