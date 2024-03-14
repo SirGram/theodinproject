@@ -1,3 +1,4 @@
+/* eslint-disable */
 class Gameboard {
   constructor(size = 10) {
     this.size = size;

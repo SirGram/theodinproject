@@ -9,6 +9,7 @@ import playBackgroundMusic from "./Music.js";
 const $gameMode = document.getElementById("game-mode");
 const $gameModeButton1 = document.getElementById("mode1");
 const $gameModeButton2 = document.getElementById("mode2");
+const $gameModeButton3 = document.getElementById("mode3");
 let gameMode;
 let gameOver = false;
 const spaceshipType = {
@@ -44,35 +45,27 @@ const spaceshipType = {
   },
 };
 
-const placeRandomly = (playerBoard) => {
-  Object.keys(spaceshipType).forEach((spaceship) => {
-    const spaceshipName = spaceshipType[spaceship];
-    const newSpaceship = new Spaceship(spaceshipName);
-    playerBoard.placeSpaceshipRandomly(newSpaceship);
-  });
-};
+
 // set board
-const initializeGame = (mode) => {
-  gameMode = mode;
+const initializeGame = () => {
   playBackgroundMusic();
   const newDom = new Dom();
+  
+  $gameMode.style.display = 'none'
+  const $boardgames = document.querySelector("#boardgames");
+  $boardgames.style.display = 'flex'
   const $boardgame = document.querySelector("#boardgame1");
   const $boardgame2 = document.querySelector("#boardgame2");
-  $boardgame.style.opacity = 1
-  $boardgame2.style.opacity = 1
-  $gameMode.style.display = 'none'
+  setTimeout(()=>{
+    $boardgame.style.opacity = 1
+    $boardgame2.style.opacity = 1
+  }, 1000)
+
   const player = new Player("Player 1", true);
   const player2 = new Player("Player 2");
   const playerBoard = new Gameboard();
   const player2Board = new Gameboard();
-  // place ships randomly
-  placeRandomly(player2Board);
-  placeRandomly(playerBoard);
-  console.log(playerBoard.spaceships);
-  console.log(player2Board.spaceships);
-  newDom.displayBoard($boardgame, playerBoard);
-  newDom.displayBoard($boardgame2, player2Board);
-  boardListeners();
+  
   return {
     newDom,
     $boardgame,
@@ -84,36 +77,31 @@ const initializeGame = (mode) => {
   };
 };
 let newDom, $boardgame, $boardgame2, player, player2, playerBoard, player2Board;
+function handleGameModeClick(mode) {
+  gameMode = mode;
+  ({
+    newDom,
+    $boardgame,
+    $boardgame2,
+    player,
+    player2,
+    playerBoard,
+    player2Board,
+  } = initializeGame());
+  startGame()
+}
 
-$gameModeButton1.addEventListener("click", () => {
-  ({
-    newDom,
-    $boardgame,
-    $boardgame2,
-    player,
-    player2,
-    playerBoard,
-    player2Board,
-  } = initializeGame("normal"));
-});
-$gameModeButton2.addEventListener("click", () => {
-  ({
-    newDom,
-    $boardgame,
-    $boardgame2,
-    player,
-    player2,
-    playerBoard,
-    player2Board,
-  } = initializeGame("ai"));
-});
+$gameModeButton1.addEventListener("click", () => handleGameModeClick('mode1'));
+$gameModeButton2.addEventListener("click", () => handleGameModeClick('mode2'));
+$gameModeButton3.addEventListener("click", () => handleGameModeClick('mode3'));
+
 
 const toggleTurn = () => {
   player.turn = !player.turn;
   player2.turn = !player2.turn;
 };
 
-const playerTurn = (e, player, playerBoard, boardGame, mode = "normal") => {
+const playerTurn = (e, player, playerBoard, boardGame) => {
   const findClickedSquare = () => {
     const squareClicked = e.target;
     const x = parseInt(squareClicked.dataset.x);
@@ -136,6 +124,35 @@ const playerTurn = (e, player, playerBoard, boardGame, mode = "normal") => {
   gameOver = playerBoard.allSunk();
   console.log("game over", gameOver);
 };
+
+// Game Modes
+const startGame = ()=>{
+  const setBoardsSameSize = ()=>{
+    //set both boards same size
+    const squareBoard1 = $boardgame.querySelector(".square")
+    const squareBoard2 = $boardgame2.querySelector(".square")
+    console.log(squareBoard1)
+    squareBoard1.style.padding = squareBoard2.style.padding 
+  }
+  const placeRandomly = (playerBoard) => {
+    Object.keys(spaceshipType).forEach((spaceship) => {
+      const spaceshipName = spaceshipType[spaceship];
+      const newSpaceship = new Spaceship(spaceshipName);
+      console.log(playerBoard)
+      playerBoard.placeSpaceshipRandomly(newSpaceship);
+    });
+  };
+  if (gameMode === "mode3"){
+    //place random ships both boards
+    placeRandomly(player2Board);
+    placeRandomly(playerBoard);  
+    console.log(playerBoard.spaceships);
+    console.log(player2Board.spaceships);
+    newDom.displayBoard($boardgame, playerBoard);
+    newDom.displayBoard($boardgame2, player2Board);
+    setBoardsSameSize()
+  }
+}
 
 // board clicks
 const boardListeners = () => {

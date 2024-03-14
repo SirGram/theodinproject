@@ -74,6 +74,7 @@ body {
 }
 #boardgame1,
 #boardgame2 {
+  opacity: 0;
   position: relative;
   display: grid;
   grid-template-columns: repeat(10, 1fr);
