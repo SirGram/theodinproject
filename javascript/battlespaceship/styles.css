@@ -1,13 +1,73 @@
+:root {
+  --space-blue: #0a192f;
+  --light-sky-blue: #66c2ff;
+  --midnight-blue: #2c3e50;
+  --silver: #8d9296;
+  --charcoal-gray: #34495e;
+  --red: rgb(226, 6, 6);
+  --coral: #ff6b6b;
+  --blue1: rgb(47, 28, 225);
+  --transparent: transparent;
+  --whitey: rgb(216, 216, 216);
+}
+body,html {
+  margin: 0;
+  padding: 0;
+}
+* {
+  box-sizing: border-box;
+}
+@keyframes sparkle {
+  0% {
+    opacity: 1;
+    color: var(--whitey);
+  }
+  20% {
+    opacity: 0.8;
+    color: rgb(210, 0, 0);
+  }
+  80% {
+    opacity: 1;
+    color: rgb(210, 0, 0);
+  }
+  100% {
+    opacity: 1;
+    color: var(--whitey);
+  }
+}
+
+h1 {
+  color: var(--whitey);
+  font-weight: bolder;
+  font-size: 3rem;
+  margin: 1rem;
+  position: relative;
+  animation: sparkle 20s ease infinite;
+}
+
+header{display: flex;}
 body {
-  background-color: gainsboro;
+  background-image: url(./src/img/bg.jpg);
+  background-repeat: no-repeat;
+  background-size: auto;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+#boardgame1 > .square {
+  padding: 0.9rem;
+}
+#boardgame2 > .square {
+  padding: 1.1rem;
 }
 .square {
-  padding: 1rem;
   margin: 0;
-  background-color: rgb(234, 234, 234);
-  width: 1rem;
-  height: 1rem;
-  outline: 1px solid rgb(121, 121, 121);
+  background-color: var(--transparent);
+  outline: 1px solid var(--silver);
+}
+.square:hover {
+  background-color: var(--charcoal-gray);
 }
 .square:hover {
   background-color: gray;
@@ -19,21 +79,26 @@ body {
   grid-template-columns: repeat(10, 1fr);
   grid-template-rows: repeat(10, 1fr);
   width: fit-content;
-  outline: 1px solid black;
+  outline: 1px solid var(--blue1);
   overflow: hidden;
-  border-radius: 10px;
+  padding: 1%;
+  background-color: var(--transparent);
+  transition: 2s ease-in;
 }
 
 #boardgames {
-  display: flex;
-  gap: 1rem;
+  display: none;
+  justify-content: space-evenly;
+  align-items: center;
 }
 
 .missed {
-  background-color: lightblue;
+  background-color: var(--blue1);
+  transition: 1s ease;
 }
 .hit {
-  background-color: lightcoral;
+  background-color: rgb(211, 46, 34);
+  transition: 1s ease;
 }
 .spaceship {
   position: absolute;
@@ -41,6 +106,99 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
+  opacity: 0.3;
+  transition: opacity 2s;
+  pointer-events: none;
+}
+.spaceship.sunk {
+  opacity: 0.3;
+  transition: opacity 2s ease-in-out;
+}
+.black-ops {
+  font-family: "Black Ops One", system-ui;
+  font-weight: 400;
+  font-style: normal;
+}
+#volumeControl {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  right: 0;
+  top: 0;
+  gap: 0.2rem;
+  margin: 1.4rem 1rem;
+}
+
+#volumeIcon {
+  cursor: pointer;
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.4s ease;
+}
+
+#volumeIcon:hover {
+  transform: scale(1.2);
+}
+
+#volumeRange {
+  position: relative;
+  height: 100%;
+  width: 3rem;
+  background-color: transparent;
+  border-radius: 10px;
   opacity: 0;
-  transition: 1s ease-in;
+  transition: opacity 1s ease, transform 1s ease;
+}
+input[type="range"] {
+  -webkit-appearance: none;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  width: 300px;
+  height: 5px;
+  background: var(--whitey);
+  border: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  border: none;
+  height: 12px;
+  width: 8px;
+  background: var(--blue1);
+  margin-top: -4px;
+}
+
+input[type="range"]:focus {
+  outline: none;
+}
+.material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 500, "GRAD" 0, "opsz" 40;
+}
+.material-symbols-sharp {
+  color: var(--whitey);
+  font-size: 1.5rem;
+}
+#boardgames {
+  margin: 15% 0;
+}
+#game-mode {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;  flex-grow: 0.6;
+}
+#game-mode > button {
+  font-size: 1.5rem;
+  font-weight: bolder;
+  font-variant: small-caps;
+  font-style: oblique;
+  width: 50%;
+  min-width: max-content;
+  padding: 1rem 0rem;
 }

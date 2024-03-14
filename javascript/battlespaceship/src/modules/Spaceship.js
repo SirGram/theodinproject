@@ -1,7 +1,8 @@
 /* eslint-disable */
 class Spaceship {
   constructor(data) {
-    const { lengthX, lengthY, imgPath } = data;
+    const { name, lengthX, lengthY, imgPath } = data;
+    this.name = name;
     this.lengthX = lengthX;
     this.lengthY = lengthY;
     this.hits = 0;

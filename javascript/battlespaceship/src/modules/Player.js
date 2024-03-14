@@ -1,6 +1,7 @@
 class Player {
-  constructor(name) {
+  constructor(name, turn = false) {
     this.name = name;
+    this.turn = turn;
   }
   attack(gameBoard, x, y) {
     console.log(x, y);
@@ -10,7 +11,7 @@ class Player {
     //AI attack
     const x = Math.floor(Math.random() * gameBoard.size);
     const y = Math.floor(Math.random() * gameBoard.size);
-    enemyGameboard.receiveAttack(x, y);
+    gameBoard.receiveAttack(x, y);
   }
 }
 
