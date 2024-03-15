@@ -62,10 +62,13 @@ class Gameboard {
       const spaceship = this.getSpaceship(x, y);
       spaceship.hit();
       this.hits.push([x, y]);
+      return true
     } else {
       this.missed.push([x, y]);
+      return false
     }
   }
+ 
 
   getSpaceship(x, y) {
     let foundSpaceship = null;

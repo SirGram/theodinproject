@@ -5,7 +5,6 @@ import Spaceship from "./modules/Spaceship.js";
 import Dom from "./modules/Dom.js";
 import playBackgroundMusic from "./Music.js";
 
-
 const $gameMode = document.getElementById("game-mode");
 const $gameModeButton1 = document.getElementById("mode1");
 const $gameModeButton2 = document.getElementById("mode2");
@@ -45,27 +44,26 @@ const spaceshipType = {
   },
 };
 
-
 // set board
 const initializeGame = () => {
   playBackgroundMusic();
   const newDom = new Dom();
-  
-  $gameMode.style.display = 'none'
+
+  $gameMode.style.display = "none";
   const $boardgames = document.querySelector("#boardgames");
-  $boardgames.style.display = 'flex'
+  $boardgames.style.display = "flex";
   const $boardgame = document.querySelector("#boardgame1");
   const $boardgame2 = document.querySelector("#boardgame2");
-  setTimeout(()=>{
-    $boardgame.style.opacity = 1
-    $boardgame2.style.opacity = 1
-  }, 1000)
+  setTimeout(() => {
+    $boardgame.style.opacity = 1;
+    $boardgame2.style.opacity = 1;
+  }, 1000);
 
   const player = new Player("Player 1", true);
   const player2 = new Player("Player 2");
   const playerBoard = new Gameboard();
   const player2Board = new Gameboard();
-  
+
   return {
     newDom,
     $boardgame,
@@ -88,18 +86,12 @@ function handleGameModeClick(mode) {
     playerBoard,
     player2Board,
   } = initializeGame());
-  startGame()
+  startGame();
 }
 
-$gameModeButton1.addEventListener("click", () => handleGameModeClick('mode1'));
-$gameModeButton2.addEventListener("click", () => handleGameModeClick('mode2'));
-$gameModeButton3.addEventListener("click", () => handleGameModeClick('mode3'));
-
-
-const toggleTurn = () => {
-  player.turn = !player.turn;
-  player2.turn = !player2.turn;
-};
+$gameModeButton1.addEventListener("click", () => handleGameModeClick("mode1"));
+$gameModeButton2.addEventListener("click", () => handleGameModeClick("mode2"));
+$gameModeButton3.addEventListener("click", () => handleGameModeClick("mode3"));
 
 const playerTurn = (e, player, playerBoard, boardGame) => {
   const findClickedSquare = () => {
@@ -121,40 +113,78 @@ const playerTurn = (e, player, playerBoard, boardGame) => {
   newDom.updateBoard(boardGame, playerBoard);
 
   // check game state
-  gameOver = playerBoard.allSunk();
   console.log("game over", gameOver);
 };
 
-// Game Modes
-const startGame = ()=>{
-  const setBoardsSameSize = ()=>{
+const startGame = () => {
+  const setBoardsSameSize = () => {
     //set both boards same size
-    const squareBoard1 = $boardgame.querySelector(".square")
-    const squareBoard2 = $boardgame2.querySelector(".square")
-    console.log(squareBoard1)
-    squareBoard1.style.padding = squareBoard2.style.padding 
-  }
+    const squareBoard1 = $boardgame.querySelector(".square");
+    const squareBoard2 = $boardgame2.querySelector(".square");
+    const computedStyleBoard2 = window.getComputedStyle(squareBoard2);
+    const paddingBoard2 = computedStyleBoard2.getPropertyValue("padding");
+    squareBoard1.style.padding = paddingBoard2;
+  };
   const placeRandomly = (playerBoard) => {
     Object.keys(spaceshipType).forEach((spaceship) => {
       const spaceshipName = spaceshipType[spaceship];
       const newSpaceship = new Spaceship(spaceshipName);
-      console.log(playerBoard)
+      console.log(playerBoard);
       playerBoard.placeSpaceshipRandomly(newSpaceship);
     });
   };
-  if (gameMode === "mode3"){
+  const toggleTurn = () => {
+    player.turn = !player.turn;
+    player2.turn = !player2.turn;
+  };
+  const isGameOver = (board) => {
+    return board.allSunk();
+  };
+  const playerTurn = (player, playerBoard, boardGame) => {
+    setTimeout(() => {
+      //attack enemy
+      player.randomAttack(playerBoard);
+      newDom.updateBoard(boardGame, playerBoard);
+      gameOver = isGameOver(playerBoard);
+    }, 1000);
+  };
+  const getCurrentTurns = async () => {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    let currentPlayer, currentEnemyBoard, currentEnemyBoardGame;
+    if (player.turn) {
+      currentPlayer = player;
+      currentEnemyBoard = player2Board;
+      currentEnemyBoardGame = $boardgame2;
+    } else {
+      currentPlayer = player2;
+      currentEnemyBoard = playerBoard;
+      currentEnemyBoardGame = $boardgame;
+    }
+    return { currentPlayer, currentEnemyBoard, currentEnemyBoardGame };
+  };
+  const gameLoop = async () => {
+    while (!gameOver) {
+      const { currentPlayer, currentEnemyBoard, currentEnemyBoardGame } =
+        await getCurrentTurns();
+      const hit = playerTurn(currentPlayer, currentEnemyBoard, currentEnemyBoardGame);
+      if (!hit) toggleTurn();
+    }
+  };
+  // Game Modes
+  if (gameMode === "mode3") {
     //place random ships both boards
     placeRandomly(player2Board);
-    placeRandomly(playerBoard);  
+    placeRandomly(playerBoard);
     console.log(playerBoard.spaceships);
     console.log(player2Board.spaceships);
     newDom.displayBoard($boardgame, playerBoard);
     newDom.displayBoard($boardgame2, player2Board);
-    setBoardsSameSize()
+    setBoardsSameSize();
   }
-}
+  gameLoop();
+};
 
-// board clicks
+/* // board clicks
 const boardListeners = () => {
   $boardgame2.addEventListener("click", (e) => {
     if (!gameOver) {
@@ -173,4 +203,4 @@ const boardListeners = () => {
       playerTurn(e, player2, playerBoard, $boardgame);
     }
   });
-};
+}; */

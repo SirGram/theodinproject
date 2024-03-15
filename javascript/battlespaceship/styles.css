@@ -45,7 +45,7 @@ h1 {
   animation: sparkle 20s ease infinite;
 }
 
-header{display: flex;}
+header{display: flex; width: 100%;}
 body {
   background-image: url(./src/img/bg.jpg);
   background-repeat: no-repeat;
@@ -54,6 +54,7 @@ body {
   display: flex;
   flex-direction: column;
   height: 100vh;
+  align-items: center;
 }
 #boardgame1 > .square {
   padding: 0.9rem;
@@ -65,6 +66,9 @@ body {
   margin: 0;
   background-color: var(--transparent);
   outline: 1px solid var(--silver);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .square:hover {
   background-color: var(--charcoal-gray);
@@ -89,17 +93,23 @@ body {
 
 #boardgames {
   display: none;
-  justify-content: space-evenly;
+  justify-content: space-between;
   align-items: center;
+  width: 100%;
 }
 
 .missed {
   background-color: var(--blue1);
-  transition: 1s ease;
 }
 .hit {
-  background-color: rgb(211, 46, 34);
+  background-color: rgb(211, 46, 34);}
+  
+.missed, .hit{
+  position: absolute;
   transition: 1s ease;
+  border-radius: 50%;
+  padding: 0.4rem;
+
 }
 .spaceship {
   position: absolute;
@@ -185,7 +195,7 @@ input[type="range"]:focus {
   font-size: 1.5rem;
 }
 #boardgames {
-  margin: 15% 0;
+  margin-top: 2rem;
 }
 #game-mode {
   display: flex;
@@ -193,13 +203,36 @@ input[type="range"]:focus {
   gap: 1rem;
   justify-content: center;
   align-items: center;  flex-grow: 0.6;
+  width: 50%;
 }
 #game-mode > button {
   font-size: 1.5rem;
   font-weight: bolder;
   font-variant: small-caps;
   font-style: oblique;
-  width: 50%;
   min-width: max-content;
   padding: 1rem 0rem;
+  transition: 1s ease;
+  background-color: var(--midnight-blue);
+  color: var(--whitey);
+  border: 0.5rem solid var(--space-blue);
+  width:100%;
+}
+#game-mode > button:hover {
+  color: var(--space-blue);
+  background-color: var(--light-sky-blue);
+  border-color: var(--space-blue);
+}
+#log{
+  border: 1px solid var(--blue1);
+  padding: 0.5rem;
+  background-color: transparent;
+  width: 100%;
+  color: var(--whitey);
+}
+#game{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 80%;
 }

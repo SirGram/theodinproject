@@ -24,7 +24,6 @@ volumeControl.addEventListener("mouseleave", function () {
 function updateVolumeIcon() {
   const icon = document.querySelector(".material-symbols-sharp");
   if (audio.volume === 0) {
-    volumeIcon.style.backgroundColor = "var(--red)";
     icon.textContent = "volume_off";
   } else {
     volumeIcon.style.backgroundColor = "var(--transparent)";

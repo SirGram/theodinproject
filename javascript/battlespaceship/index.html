@@ -16,29 +16,34 @@
     />
     <title>BattleSpaceship</title>
   </head>
-  <body><header>
-    <h1 class="black-ops">BattleSpaceship</h1>
-    <div id="volumeControl">
-      <input
-        type="range"
-        id="volumeRange"
-        min="0"
-        max="1"
-        step="0.1"
-        value="0.5"
-      />
-      <div id="volumeIcon">
-        <span class="material-symbols-sharp"> volume_up </span>
+  <body>
+    <header>
+      <h1 class="black-ops">BattleSpaceship</h1>
+      <div id="volumeControl">
+        <input
+          type="range"
+          id="volumeRange"
+          min="0"
+          max="1"
+          step="0.1"
+          value="0.5"
+        />
+        <div id="volumeIcon">
+          <span class="material-symbols-sharp"> volume_up </span>
+        </div>
       </div>
-    </div></header>
+    </header>
     <div id="game-mode">
-      <button id="mode1" class = 'black-ops'>2 PLAYERS</button>
-      <button id="mode2" class = 'black-ops'>PLAYER VS AI</button>
-      <button id="mode3" class = 'black-ops'>AI VS AI</button>
+      <button id="mode1" class="black-ops">2 PLAYERS</button>
+      <button id="mode2" class="black-ops">PLAYER VS AI</button>
+      <button id="mode3" class="black-ops">AI VS AI</button>
     </div>
-    <div id="boardgames">
-      <div id="boardgame1"></div>
-      <div id="boardgame2"></div>
+    <div id="game">
+      <div id="log"></div>
+      <div id="boardgames">
+        <div id="boardgame1"></div>
+        <div id="boardgame2"></div>
+      </div>
     </div>
     <script src="dist/bundle.js"></script>
   </body>
