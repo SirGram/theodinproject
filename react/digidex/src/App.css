@@ -1,0 +1,271 @@
+
+@font-face {
+  font-family: 'Digicode';
+  src: url('../public/digicode/Digicode\ Bold.ttf') format('truetype');
+  src: url('../public/digicode/Digicode\ Regular.ttf') format('truetype');
+}
+body, #root{
+  display: flex;height: 100vh;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(32, 22, 22);
+  background-image: url('../public/bg.png');
+  
+}
+*{
+  border: none;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+.container{
+  margin: 2rem;
+  max-width: 50rem;
+}
+.card-container{
+  display: flex;
+  gap: 2rem;
+  width: 40rem ;
+  height: 22rem;
+  padding: 1rem;
+  margin-top: 4rem;
+}
+
+
+.card{
+  font-family: 'Digicode', sans-serif;
+  
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: whitesmoke;
+  filter: sepia(0.4);
+transition: 0.5s ease-out; }
+
+.card-name,.card-number{
+  width: 100%;
+  text-align: center;
+  justify-content: center;
+  overflow: hidden;
+}.card-number{
+
+  margin-bottom: 0.5rem;
+  font-size: 0.8rem;
+
+}.card-name{
+
+  margin-top: 0.5rem;
+}
+
+
+
+img{
+  border: 3px solid rgb(179, 179, 179);
+  padding: 2rem 0.5rem;
+  background-color: white;
+  border-top-right-radius: 50px;
+  border-top-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+  border-bottom-left-radius: 50px;
+  width: 100%;
+
+  filter: opacity(0.9);
+}
+
+.dex>.card> .inner.fresh, .dex>.card> .inner.training,.dex>.card> .inner.in.training, .dex>.card> .inner.rookie, .dex> .card> .inner.champion, 
+.dex> .card> .inner.ultimate, .dex> .card> .inner.armor, .dex> .card> .inner.mega, .dex> .card> .inner.ultra {
+  box-shadow: 0px 0px 0px 5px rgb(95, 95, 95);}
+.fresh,  .fresh.seen{
+  box-shadow: 0px 0px 0px 5px lightgreen;
+}
+
+.in.training, .dex>.card>.in.training.seen {
+  box-shadow: 0px 0px 0px 5px lightblue;
+}
+.training, .dex>.card>.training.seen {
+  box-shadow: 0px 0px 0px 5px lightblue;
+}
+
+.rookie, .dex>.card>.rookie.seen {
+  box-shadow: 0px 0px 0px 5px lightcoral;
+}
+
+.champion, .dex>.card>.champion.seen {
+  box-shadow: 0px 0px 0px 5px lightsalmon; 
+}
+
+.ultimate , .dex>.card>.ultimate.seen{
+  box-shadow: 0px 0px 0px 5px lightseagreen;
+}
+
+.armor, .dex>.card>.armor.seen {
+  box-shadow: 0px 0px 0px 5px lightyellow;
+}
+
+.mega, .dex>.card>.mega.seen{
+  box-shadow: 0px 0px 0px 5px lightpink;
+}
+
+.ultra, .dex>.card>.ultra.seen {
+  box-shadow: 0px 0px 0px 5px lightsteelblue;
+}
+
+.game-image{
+  width: 5rem;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: transparent;
+  transition: transform 1s ease;
+}
+.game-image:hover{
+  filter: blur(0.3px);
+  animation: rotateAnimation 2s infinite linear;
+}
+
+@keyframes rotateAnimation {
+  0% {
+    transform: rotate(0deg);
+    background: radial-gradient(circle at center, rgb(225, 58, 255), transparent 30%); /* Initial radial gradient */
+  }
+  100% {
+    transform: rotate(360deg);
+    background: radial-gradient(circle at center, rgb(225, 58, 255), transparent 0%); /* Final radial gradient with smaller size */
+  }
+}
+
+
+
+.game-image> img{
+  
+  width: 100%;
+  border: none;
+  background-color: transparent;
+}
+h2,h3{
+  color: whitesmoke;
+  margin-bottom: 2rem;
+  width: 100%;
+  text-align: center;
+}
+
+.dex{
+  display: flex;
+  flex-wrap: wrap;
+  background-color: rgb(52, 50, 49);
+  margin: 1rem;
+  margin-left: 5rem;
+  justify-content: center;
+  max-height: 100%;
+  overflow-y: scroll;
+  padding: 1rem;
+  border-radius: 4px;
+  gap: 1rem;
+}
+.dex>.card {
+  width: 6.9rem;
+  height: 100%;
+  padding: 0.5rem 0.3rem;
+  transition: 0.2s ease;
+  font-family: 'Digicode', sans-serif;
+  font-size: 8px;
+  transition: none;
+}
+.dex>.card>.inner{
+  position: relative;
+  padding: 0.3rem ;
+}
+.dex>.card>.inner:hover{transform: unset;}
+.dex>.card > .inner> img{
+  width: 100%;
+  height: 100%;
+  padding: 1rem 0;
+  margin-top: 0.5rem ;
+  filter: grayscale(1);
+  opacity: 0.4;
+  filter:sepia(1);
+}  
+.dex>.card >.inner.seen> img {filter: grayscale(0);
+  opacity: 1;
+}
+.dex>.card >.inner.seen{
+  font-family: sans-serif;
+font-size:0.7rem
+
+}
+
+.flip {
+  animation: flip 0.5s linear;
+}
+
+@keyframes flip {
+  0% {
+    transform: rotateY(0deg);
+  }
+  100% {
+    transform: rotateY(180deg);
+  }
+}
+
+
+.card {
+  width: 100%;
+  height: 100%;
+  perspective: 1000px; 
+}
+
+.inner {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transition: ease 1s;
+  transform-style: preserve-3d;
+ background-image: linear-gradient(rgb(76, 20, 98), rgba(120, 91, 136, 1)); /* Gradient with same color */
+
+  border-radius: 4px; display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.inner:hover{  transform: translateY(-30px);}
+.inner.flip:hover{  transform: translateY(0px);}
+
+
+.card-front, .card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  padding: 0 0.5rem;
+  align-items: center;
+  flex: 1;
+}
+
+.card-back {
+  transform: rotateY(180deg);}
+
+
+  footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background-color: rgb(15, 16, 16);
+  color: rgb(149, 173, 144);
+  font-size: larger;
+  width: 100%;
+  bottom: 0;
+  position: absolute;
+}
+a{  text-decoration: none;
+font-weight: bold;}
+
+a:visited {
+  color: inherit;}
