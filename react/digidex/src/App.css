@@ -50,19 +50,23 @@ transition: 0.5s ease-out; }
   overflow: hidden;
 }.card-number{
 
-  margin-bottom: 0.5rem;
-  font-size: 0.8rem;
+  margin-bottom: 0rem;
+  font-size: 0.6rem;
+  justify-content: right;
+  display: flex;
+  opacity: 0.6;
 
 }.card-name{
 
   margin-top: 0.5rem;
 }
+.show{font-family:  sans-serif;}
 
 
 
 img{
   border: 3px solid rgb(179, 179, 179);
-  padding: 2rem 0.5rem;
+  padding: 2.5rem 0.5rem;
   background-color: white;
   border-top-right-radius: 50px;
   border-top-left-radius: 4px;
@@ -117,21 +121,32 @@ img{
   top: 0;
   left: 0;
   background-color: transparent;
-  transition: transform 1s ease;
+  transition:  1s ease;
+  opacity: 0.5
 }
 .game-image:hover{
   filter: blur(0.3px);
   animation: rotateAnimation 2s infinite linear;
+  opacity: 0.8;
 }
 
 @keyframes rotateAnimation {
   0% {
     transform: rotate(0deg);
-    background: radial-gradient(circle at center, rgb(225, 58, 255), transparent 30%); /* Initial radial gradient */
+    background: radial-gradient(circle at center, rgb(0, 255, 17), transparent 20%);
+  }
+  40% {
+    transform: rotate(0deg);
+    background: radial-gradient(circle at center,  rgb(0, 255, 17), transparent 60%);
+  }
+  
+  60% {
+    transform: rotate(0deg);
+    background: radial-gradient(circle at center, rgb(0, 255, 17), transparent 30%);
   }
   100% {
     transform: rotate(360deg);
-    background: radial-gradient(circle at center, rgb(225, 58, 255), transparent 0%); /* Final radial gradient with smaller size */
+    background: radial-gradient(circle at center,  rgb(0, 255, 17), transparent 20%); 
   }
 }
 
@@ -153,7 +168,7 @@ h2,h3{
 .dex{
   display: flex;
   flex-wrap: wrap;
-  background-color: rgb(52, 50, 49);
+  background-color: rgba(52, 50, 49, 0.5);
   margin: 1rem;
   margin-left: 5rem;
   justify-content: center;
@@ -221,7 +236,7 @@ font-size:0.7rem
   height: 100%;
   transition: ease 1s;
   transform-style: preserve-3d;
- background-image: linear-gradient(rgb(76, 20, 98), rgba(120, 91, 136, 1)); /* Gradient with same color */
+ background-image: linear-gradient(rgb(56, 14, 73), rgb(97, 72, 110)); /* Gradient with same color */
 
   border-radius: 4px; display: flex;
   flex-direction: column;
@@ -269,3 +284,15 @@ font-weight: bold;}
 
 a:visited {
   color: inherit;}
+
+  .title{
+    position: absolute;
+  
+    top: 11rem;
+    left: -2rem;
+    color: white;
+
+    transform: rotate(90deg);
+    transition: 1s ease;
+    opacity: 0.5;
+  }

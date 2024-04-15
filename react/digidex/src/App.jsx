@@ -23,8 +23,9 @@ function App() {
       <div onClick={handleClick} className={`card`}>
         <div className={`inner ${data.level.toLowerCase()}`}>
           <div className="card-front">
-            <div className="card-name">{data.name}</div>
+            <div className="card-name show">{data.name.toUpperCase()}</div>
             <img src={data.img} alt={data.name} />
+            <div className="card-name">{data.name}</div>
             <div className="card-number">{data.number}</div>
           </div>
           <div className="card-back">
@@ -40,6 +41,7 @@ function App() {
   function Dex({ data }) {
     return (
       <div className="dex">
+        <h1 className="title">DIGIDEX</h1>
         {data.map((el, index) => (
           <div key={index} className="card">
             <div
@@ -58,6 +60,7 @@ function App() {
 
   const numberCards = 3;
   const [score, setScore] = useState(0);
+  const [gameOver, setGameOver] = useState(false);
   const [showDex, setShowDex] = useState(false);
   const [maxScore, setMaxScore] = useState(0);
   const [digimonData, setDigimonData] = useState(null);
@@ -70,6 +73,10 @@ function App() {
       try {
         const response = await fetch(api);
         const data = await response.json();
+        data.forEach((digimon) => {
+          const index = data.findIndex((item) => item === digimon);
+          digimon.number = index;
+        });
         setDigimonData(data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -99,26 +106,43 @@ function App() {
   }, [digimonData, clickedDigimon]);
 
   function changeCurrentDigimonData() {
+    const seenDigimon = (newNum) => {
+      return clickedDigimon.some((el) => el.number === newNum);
+    };
+    
     const randomNumber = () => {
       return Math.floor(Math.random() * digimonData.length);
+
     };
 
     let counter = 0;
-    const arr = [];
+    let counter2 
+    let randomIndex
+    const arr = [];    
+  let hasUnseenDigimon = false;
     while (counter < numberCards) {
-      const randomIndex = randomNumber();
+      counter2 = 1;      
+      if (!hasUnseenDigimon) {
+        // at least one not-seen digimon in deck
+        do{
+        randomIndex = randomNumber();  
+        counter2++
+      }while (seenDigimon(randomIndex))
+        hasUnseenDigimon = true;
+      }else{
+        randomIndex = randomNumber(); 
+
+      } 
       arr.push(digimonData[randomIndex]);
       counter++;
     }
+    arr.sort(() => Math.random() - 0.5);
 
     return arr;
   }
 
   function changeCurrentDigimon(newData) {
-    newData.forEach((digimon) => {
-      const index = digimonData.findIndex((item) => item === digimon);
-      digimon.number = index;
-    });
+   
     console.log(newData);
 
     setCurrentDigimon(newData);
@@ -134,17 +158,21 @@ function App() {
       return;
     }
     if (!clickedDigimon.includes(name)) {
-      addScore();
+      const newScore = score + 1;
+      addScore(newScore);
+      if( newScore === digimonData.length) {setGameOver=true}else{
+        const newClickedDigimon = [...clickedDigimon, name];
+        setClickedDigimon(newClickedDigimon);
+      }
     } else {
       resetScore();
+      setClickedDigimon([])
     }
-    const newClickedDigimon = [...clickedDigimon, name];
-    setClickedDigimon(newClickedDigimon);
+    
     setIsAnimationComplete(false);
   }
 
-  function addScore() {
-    const newScore = score + 1;
+  function addScore(newScore) {
     setScore(newScore);
     if (newScore > maxScore) setMaxScore(newScore);
   }
@@ -159,16 +187,32 @@ function App() {
         <img src="../public/game.png" />
       </button>
       {!showDex ? (
-        <div className="container">
-          <h2>Which digimon have you not seen?</h2>
-          <h3>Max Score: {maxScore}</h3>
-          <h3>Current Score: {score}</h3>
-          <div className={`card-container`}>
-            {currentDigimon.map((digimon, index) => (
-              <RandomCard key={index} data={digimon} onClick={handleClick} />
-            ))}
-          </div>
-        </div>
+      <div className="container">
+        {!gameOver ? (
+          <>
+            <h2>
+              Which <em>digimon</em> have you not seen?
+            </h2>
+            <h3>Max Score: {maxScore}</h3>
+            <h3>Current Score: {score}</h3>
+            <div className={`card-container`}>
+              {currentDigimon.map((digimon, index) => (
+                <RandomCard key={index} data={digimon} onClick={handleClick} />
+              ))}
+            </div>
+          </>
+        ) : (
+          <>
+            <h2>
+              You have an incredible memory... <em>Amazing</em>
+            </h2>
+            <h3>Max Score: {maxScore}</h3>
+            <h3>Current Score: {score}</h3>
+            <div className={`card-container`} style={{ visibility: 'hidden' }}>            
+            </div>
+          </>
+        )}
+      </div>
       ) : (
         <Dex data={digimonData} />
       )}
