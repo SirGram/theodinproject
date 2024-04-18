@@ -1,14 +1,15 @@
 type Props={
     path: string;
-    title?: string
+    title?: string;
+    height?: string
 }
-export default function CardImage({path, title}: Props) {
+export default function CardImage({path, title, height='full'}: Props) {
   return (
-    <div className=" h-80 overflow-hidden">
+    <div className={` h-${height} overflow-hidden w-full`}>
       <img
         src={path}
         alt={title}
-        className=" w-full h-full object-cover transform transition-transform duration-300 hover:scale-110"
+        className=" w-full h-full transform transition-transform duration-300 hover:scale-110"
       />
     </div>
   );

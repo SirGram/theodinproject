@@ -6,7 +6,7 @@ export default function FeaturedItems({ items }: { items: Comic[] }) {
   return (
     <section className="p-8 bg-gray-100">
       <h2 className=" font-semibold text-4xl text-center mb-9" >New Comics</h2>
-      <ItemCards items = {items}/>
+      <ItemCards items = {items} startIndex={0} currentPage={0}/>
       
     </section>
   );

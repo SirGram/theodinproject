@@ -1,55 +1,85 @@
 import Comic from "../interfaces/Comic";
-import CardImage from "../components/CardImage";
+import CartComic from "../interfaces/CartComic";
 import { useParams } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import Loading from "../components/Loading";
+import { useNavigate } from "react-router-dom";
+import fetchComicData from "../utils/fetchComicData";
+import IssueCards from "../components/IssueCards";
+import IssueCard from "../components/IssueCard";
+import BuyItem from "../components/BuyItem";
 
 export default function CardPage({
   items,
   currentItem,
   setCurrentItem,
+  isLoading,
+  cartItems, updateCartItems
 }: {
   items: Comic[] | [];
   currentItem: Comic | null;
   setCurrentItem: (updateComic: Comic | null) => void;
+  isLoading: boolean;
+  cartItems: CartComic[];
+  updateCartItems: (item: Comic | null, quantity: number) => void;
 }) {
-  const { itemId } = useParams<{ itemId: string }>();
+  const { index } = useParams<{ index: string }>();
+  const parsedIndex = parseInt(index || "") % 100;
+  const [comicSeries, setComicSeries] = useState<Comic[] | []>([]);
+
   useEffect(() => {
-    const targetItem: Comic | null =
-      items.find((item) => {
-        console.log(itemId);
-        console.log(item.id.toString());
-        console.log(itemId === item.id.toString());
-        return item.id.toString() === itemId;
-      }) || null;
+    (async () => {
+      try {
+        const targetItem: Comic | null = items[parsedIndex] || null;
+        setCurrentItem(targetItem);
+        console.log("current item", targetItem);
+        const seriesNumberUrl = targetItem.series?.seriesURI;
+        const seriesNumber = seriesNumberUrl?.split("/").pop();
 
-    setCurrentItem(targetItem);
-    console.log(targetItem);
-  }, [itemId]);
+        console.log(seriesNumber);
+        if (seriesNumber) {
+          const [fetchedSeries, totalNumberIssues] = await fetchComicData(seriesNumber);
+          setComicSeries(fetchedSeries);
+        }
+        console.log(comicSeries);
+      } catch (error) {
+        console.error("Error fetching comic series data:", error);
+      }
+    })();
+  }, [parsedIndex, items]);
 
-  if (currentItem == null) return null;
-  return (
-    <div className="flex">
-      <CardImage
-        path={`${currentItem?.thumbnail?.path}.${currentItem?.thumbnail?.extension}`}
-        title={currentItem?.title}
+  const navigate = useNavigate();
+  if (!isLoading && (parsedIndex < 0 || parsedIndex >= items.length)) {
+    console.log(parsedIndex, items);
+    navigate("/notfound");
+  }
+  const handlePrevButton = () => {
+    const newIndex = parsedIndex - 1;
+    if (newIndex >= 0) navigate(`/store/${newIndex}`);
+  };
+  const handleNextButton = () => {
+    const newIndex = parsedIndex + 1;
+    if (newIndex < items.length) navigate(`/store/${newIndex}`);
+  };
+
+  return (isLoading ?
+    <Loading/>
+    :
+    (
+    <section className="flex flex-col flex-1 py-10 px-5">
+      <IssueCard
+        currentItem={currentItem}
+        handlePrevButton={handlePrevButton}
+        handleNextButton={handleNextButton}
       />
-      <div>
-        <h1>{currentItem?.title}</h1>
-        <h1>{currentItem?.seriesName}</h1>
-        <h1>
-          Creator: {currentItem?.creators.map((creator, index) => (
-            <span key={index}>
-                {creator}
-             {index !== currentItem.creators.length - 1 && ", "}
-            </span>
-            
-          ))}
-        </h1>
-
-        <h1>PageCount: {currentItem?.pageCount}</h1>
-        <h1>Description: {currentItem?.description || currentItem?.description2 || 'No description available'}</h1>
-
+      <div className="flex  w-full">
+        <BuyItem item={currentItem} cartItems = {cartItems} updateCartItems = {updateCartItems}/>
+        <IssueCards
+          items={comicSeries}
+          currentItem={currentItem}
+          setCurrentItem={setCurrentItem}
+        />
       </div>
-    </div>
+    </section>)
   );
 }

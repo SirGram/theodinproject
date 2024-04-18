@@ -2,88 +2,171 @@ import { useEffect, useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import "./index.css";
 import Footer from "./components/Footer.tsx";
-import Header from "./components/Header.tsx";
+import Nav from "./components/Nav.tsx";
 import Offer from "./components/Offer.tsx";
 import messages from "./data/Messages.tsx";
 import fetchComicData from "./utils/fetchComicData.tsx";
 import Home from "./pages/Home.tsx";
 import Store from "./pages/Store.tsx";
-import Comic from "./interfaces/Comic";
 import CardPage from "./pages/CardPage.tsx";
-import Loading from "./pages/Loading.tsx";
+import NotFound from "./pages/NotFound.tsx";
+import Comic from "./interfaces/Comic";
+import CartComic from "./interfaces/CartComic.tsx";
+import { ComicFormat } from "./interfaces/ComicFormat.tsx";
+import Cart from "./modal/Cart.tsx";
+import Account from "./pages/Account.tsx";
 
 function App() {
   const [featuredItems, setFeaturedItems] = useState<Comic[] | []>([]);
   const [items, setItems] = useState<Comic[] | []>([]);
   const [currentItem, setCurrentItem] = useState<Comic | null>(null);
+  const [numberTotalItems, setNumberTotalItems] = useState<number>(0);
+
+  const [page, setPage] = useState<number>(0);
+
+  const [cartItems, setCartItems] = useState<CartComic[] | []>([]);
+  const [isCartOpen, setIsCartOpen] = useState<boolean>(false);
+  const toggleCart = () => {
+    setIsCartOpen(!isCartOpen);
+  };
+  const removeCartItem = (item:CartComic)=>{
+    const existingCartItemIndex: number = cartItems.findIndex(
+      (cartItem) => cartItem.comic.id === item.comic.id
+    );
+    if (existingCartItemIndex !== -1) {
+      const newCartItems = [...cartItems]
+      newCartItems.splice(existingCartItemIndex,1)
+      setCartItems(newCartItems)
+    }
+  }
+  const updateCartItems = (item: Comic | null, quantity: number) => {
+    console.log('function', item, quantity)
+    if (item !== null) {
+      console.log("asdf");
+      const existingCartItemIndex: number = cartItems.findIndex(
+        (cartItem) => cartItem.comic.id === item.id
+      );
+      if (existingCartItemIndex !== -1) {
+        const newCartItems = cartItems.map((cartItem, index) =>
+          index === existingCartItemIndex
+            ? { ...cartItem, quantity: quantity }
+            : cartItem
+        );
+        setCartItems(newCartItems);
+      } else {
+        setCartItems([...cartItems, { comic: item, quantity: quantity }]);
+      }
+    }
+    console.log(cartItems);
+  };
+
+  const [displayMode, setDisplayMode] = useState<boolean>(true);
+  const updateDisplayMode = (value: boolean): void => {
+    setDisplayMode(value);
+  };
+
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const itemsPerPage: number = 10;
   const duration: number = 20;
+  const formats: ComicFormat[] = [
+    "comic",
+    "magazine",
+    "trade paperback",
+    "hardcover",
+    "digest",
+    "graphical novel",
+    "digital comic",
+    "infinite comic",
+  ];
+  const [format, setFormat] = useState<ComicFormat>(formats[0]);
+
+  const getNumberCartItems = (): number => {
+    let number = 0;
+    cartItems.forEach((cartItem) => {
+      number += cartItem.quantity;
+    });
+    return number;
+  };
+  const [numberCartItems, setNumberCartItems] = useState<number>(
+    getNumberCartItems()
+  );
+  useEffect(() => {
+    setNumberCartItems(getNumberCartItems());
+  }, [cartItems]);
+
   useEffect(() => {
     (async () => {
-      const formatDescription = (description: string): string => {
-        return description.replace(/<br\s*\/?>/gi, " ");
-      };
-      const mapComic = (comicData: any): Comic => ({
-        id: comicData.id,
-        title: comicData.title,
-        creators: comicData.creators.items
-          ? comicData.creators.items.map(
-              (creator: { name: string }) => creator.name
-            )
-          : [],
-        description2: comicData.description ? comicData.description : undefined,
-        description: comicData.textObjects[0]
-          ? formatDescription(comicData.textObjects[0].text)
-          : undefined,
-        issueNumber:
-          comicData.issueNumber !== undefined
-            ? comicData.issueNumber
-            : undefined,
-        seriesName: comicData.series ? comicData.series.name : undefined,
-        thumbnail: comicData.thumbnail
-          ? {
-              path: comicData.thumbnail.path,
-              extension: comicData.thumbnail.extension,
-            }
-          : undefined,
-        pageCount:
-          comicData.pageCount !== undefined ? comicData.pageCount : undefined,
-        price: comicData.prices ? comicData.prices[0].price : 0,
-      });
-      const data = await fetchComicData();
-      console.log(data);
-      const comics: Comic[] = data.map(mapComic);
+      setIsLoading(true);
+      const offset = page * 100;
+      console.log(offset);
+      const [comics, numberComics]: [Comic[], number] = await fetchComicData(
+        undefined,
+        format,
+        undefined,
+        offset
+      );
       console.log(comics);
-
       setFeaturedItems(comics.slice(0, 4));
       setItems(comics);
-     setIsLoading(false) 
+      setIsLoading(false);
+      setNumberTotalItems(numberComics);
     })();
-  }, []);
+  }, [page, format]);
 
   return (
     <div id="app" className="flex flex-col  text-black ">
-      <Offer messages={messages} duration={duration} />
-      <Header />
+      <header className="mb-14">
+        {/* <Offer messages={messages} duration={duration} /> */}
+        <Nav numberCartItems={numberCartItems} onOpenCart={toggleCart} />
+      </header>
       <main className="flex flex-1 flex-col">
-        
+        <Cart
+          isCartOpen={isCartOpen}
+          onCartClose={toggleCart}
+          cartItems={cartItems}
+          numberCartItems={numberCartItems}
+          updateCartItems={updateCartItems}
+          removeCartItem={removeCartItem}
+        />
         <Routes>
-          <Route path="/" element={<Home items={featuredItems} isLoading = {isLoading}/>} />
           <Route
-            path="/store"
-            element={<Store items={items} numberItems={itemsPerPage} isLoading = {isLoading}/>}
+            path="/"
+            element={<Home items={featuredItems} isLoading={isLoading} />}
           />
           <Route
-            path="/store/:itemId"
+            path="/account"
+            element={<Account />}
+          />
+          <Route
+            path="/store"
+            element={
+              <Store
+                items={items}
+                isLoading={isLoading}
+                totalItems={numberTotalItems}
+                page={page}
+                setPage={setPage}
+                format={format}
+                setFormat={setFormat}
+                formats={formats}
+                displayMode = {displayMode}
+                updateDisplayMode = {updateDisplayMode}
+              />
+            }
+          />
+          <Route
+            path="/store/:index"
             element={
               <CardPage
                 items={items}
                 currentItem={currentItem}
                 setCurrentItem={setCurrentItem}
+                isLoading={isLoading}
+                cartItems={cartItems}
+                updateCartItems={updateCartItems}
               />
             }
           />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
 
