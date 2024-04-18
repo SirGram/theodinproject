@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: monospace, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -37,3 +37,22 @@
   @apply ml-10
 }
 .previous-page{@apply mr-10}
+
+h1 {
+  @apply text-4xl font-bold; 
+}
+h2 {
+  @apply text-3xl font-bold;
+}
+h3 {
+  @apply text-2xl font-bold;
+}
+h4 {
+  @apply text-xl font-semibold;
+}
+h5 {
+  @apply text-lg font-semibold;
+}
+h6 {
+  @apply text-sm font-semibold;
+}

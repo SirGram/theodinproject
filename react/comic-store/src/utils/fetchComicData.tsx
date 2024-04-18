@@ -1,28 +1,95 @@
-import Comic from "../interfaces/Comic"
+import Comic from "../interfaces/Comic";
+import { ComicFormat } from "../interfaces/ComicFormat";
 
-export default async function fetchComicData():Promise<Comic[]>{
-    const publicKey:string = process.env.PUBLIC_KEY || ''
-    const hash:string = process.env.HASH_KEY || ''
-    const ts:string = '1'
-    console.log(hash)
+type ComicDate = "thisWeek" | "lastWeek" | "thisMonth" | "nextWeek";
 
-    if (!publicKey || !hash) {
-        console.log(hash)
-        console.error('Missing environment variables for authentication');
-        return [];
-    }
+export default async function fetchComicData(
+  series: string | undefined = undefined,
+  format: ComicFormat | undefined = undefined,
+  date: ComicDate | undefined = undefined,
+  offset: number = 0
+): Promise<[Comic[], number]> {
+  const publicKey: string = process.env.PUBLIC_KEY || "";
+  const hash: string = process.env.HASH_KEY || "";
+  const ts: string = "1";
 
-    try {
-        const res = await fetch(`http://gateway.marvel.com/v1/public/comics?dateDescriptor=thisMonth&limit=100&ts=${ts}&apikey=${publicKey}&hash=${hash}`) 
-        if (!res.ok) {
-            throw new Error(`Failed to fetch data: ${res.status} - ${res.statusText}`);
+ 
+
+  const formatDescription = (description: string): string => {
+    return description.replace(/<br\s*\/?>/gi, " ");
+  };
+  const mapComic = (comicData: any): Comic => ({
+    id: comicData.id,
+    title: comicData.title.trim(),
+    creators: comicData.creators.items
+      ? comicData.creators.items.map(
+          (creator: { name: string }) => creator.name
+        )
+      : [],
+    description2: comicData.description ? comicData.description : undefined,
+    description: comicData.textObjects[0]
+      ? comicData.textObjects[0].text
+      : undefined,
+    issueNumber:
+      comicData.issueNumber !== undefined ? comicData.issueNumber : undefined,
+    series: comicData.series
+      ? {
+          seriesName: comicData.series.name,
+          seriesURI: comicData.series.resourceURI,
         }
-        const data = await res.json()
-        return data.data.results;
-        
-    } catch (error) {
-        console.log(error)
-        return []
-        
+      : undefined,
+    thumbnail: comicData.thumbnail
+      ? {
+          path: comicData.thumbnail.path,
+          extension: comicData.thumbnail.extension,
+        }
+      : undefined,
+    pageCount:
+      comicData.pageCount !== undefined ? comicData.pageCount : undefined,
+    price: comicData.prices ? comicData.prices[0].price.toFixed(2) : 0.00,
+    format: comicData.format ? comicData.format : undefined,
+  });
+
+  if (!publicKey || !hash) {
+    console.error("Missing environment variables for authentication");
+    return [[], 0];
+  }
+
+  try {
+    let url = `http://gateway.marvel.com/v1/public/comics?limit=100&ts=${ts}&apikey=${publicKey}&hash=${hash}&formatType=comic&noVariants=true&orderBy=title`;
+
+    if (date !== undefined) {
+      console.log(date);
+      url += `&dateDescriptor=${date}`;
     }
+    if (series !== undefined) {
+      url += `&series=${series}`;
+    }
+    if (format !== undefined) {
+      url = url += `&format=${format}`;
+    }
+    if (offset !== 0) {
+      console.log(offset);
+      url = url += `&offset=${offset}`;
+    }
+    console.log(url);
+
+    const res = await fetch(url);
+
+    if (!res.ok) {
+      throw new Error(
+        `Failed to fetch data: ${res.status} - ${res.statusText}`
+      );
+    }
+
+    const data = await res.json();
+    console.log(data);
+    const comics: Comic[] = data.data.results.map(mapComic);
+    const totalComics: number = data.data.total;
+
+    return [comics, totalComics];
+  } catch (error) {
+    console.error("Error fetching comic data:", error);
+    return [[], 0];
+  }
 }
