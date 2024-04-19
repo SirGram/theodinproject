@@ -12,9 +12,9 @@ import CardPage from "./pages/CardPage.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import Comic from "./interfaces/Comic";
 import CartComic from "./interfaces/CartComic.tsx";
-import { ComicFormat } from "./interfaces/ComicFormat.tsx";
 import Cart from "./modal/Cart.tsx";
 import Account from "./pages/Account.tsx";
+import { ComicFormat, ComicDate, ComicLimit } from "./interfaces/types";
 
 function App() {
   const [featuredItems, setFeaturedItems] = useState<Comic[] | []>([]);
@@ -23,7 +23,6 @@ function App() {
   const [numberTotalItems, setNumberTotalItems] = useState<number>(0);
 
   const [page, setPage] = useState<number>(0);
-
   const [cartItems, setCartItems] = useState<CartComic[] | []>([]);
   const [isCartOpen, setIsCartOpen] = useState<boolean>(false);
   const toggleCart = () => {
@@ -67,7 +66,7 @@ function App() {
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const duration: number = 20;
-  const formats: ComicFormat[] = [
+  const formats: string[] = [
     "comic",
     "magazine",
     "trade paperback",
@@ -78,6 +77,10 @@ function App() {
     "infinite comic",
   ];
   const [format, setFormat] = useState<ComicFormat>(formats[0]);
+  
+  const itemLimitArray: number[] = [10, 20, 50, 100];
+  const [itemLimit, setItemLimit] = useState<ComicLimit>(itemLimitArray[1]);
+  const [titleStartsWith, setTitleStartsWith] = useState<string>("#");
 
   const getNumberCartItems = (): number => {
     let number = 0;
@@ -102,7 +105,7 @@ function App() {
         undefined,
         format,
         undefined,
-        offset
+        offset, itemLimit, titleStartsWith
       );
       console.log(comics);
       setFeaturedItems(comics.slice(0, 4));
@@ -110,7 +113,7 @@ function App() {
       setIsLoading(false);
       setNumberTotalItems(numberComics);
     })();
-  }, [page, format]);
+  }, [page, format, itemLimit, titleStartsWith]);
 
   return (
     <div id="app" className="flex flex-col  text-black ">
@@ -150,6 +153,11 @@ function App() {
                 formats={formats}
                 displayMode = {displayMode}
                 updateDisplayMode = {updateDisplayMode}
+                itemLimit = {itemLimit}
+                setItemLimit = {setItemLimit}
+                itemLimitArray={itemLimitArray}
+                titleStartsWith = {titleStartsWith}
+                setTitleStartsWith = {setTitleStartsWith}
               />
             }
           />
