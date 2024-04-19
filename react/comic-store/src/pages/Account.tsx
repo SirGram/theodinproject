@@ -16,7 +16,7 @@ const Account: React.FC = () => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
     // Handle form submission logic here, e.g., calling an API
-    window.prompt("Form submitted with data:", JSON.stringify(formData));
+    window.alert("Form submitted with data: " + JSON.stringify(formData));
 
   };
 
