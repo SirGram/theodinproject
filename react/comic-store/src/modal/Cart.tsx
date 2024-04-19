@@ -60,7 +60,9 @@ export default function Cart({
            
             <div className="mt-5">
               <h3>Total: $ {totalPrice}</h3>
-              <button className="mt-5 w-full py-2 bg-orange-700 text-white">
+              <button className="mt-5 w-full py-2 bg-orange-700 text-white hover:opacity-50 transition-opacity"
+                onClick={()=>window.alert(`You bought ${numberCartItems} item/s for $ ${totalPrice}!`)}>
+
                 <h3>Checkout</h3>
               </button>
             </div> </div>

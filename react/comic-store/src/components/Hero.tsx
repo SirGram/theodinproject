@@ -10,7 +10,7 @@ export default function Hero() {
         PrincestonComics has everything you need to fuel your fandom.
       </h3>
       <Link to = '/store'>
-      <button className="text-xl mb-4 text-white bg-red-600 pl-6 pr-6 pb-2 pt-2 font-semibold"><h2> Let's shop</h2></button></Link></div>
+      <button className="text-xl mb-4 text-white bg-red-600 pl-6 pr-6 pb-2 pt-2 font-semibold hover:scale-110 transition-all"><h2> Let's shop</h2></button></Link></div>
     </section>
   );
 }

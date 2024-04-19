@@ -19,8 +19,8 @@ export default function BuyItem({
         <h2>$ {item?.price}</h2>
       </div>     
       <button
-        className=" bg-orange-700 font-semibold text-white px-10 py-5 rounded-sm mt-5 w-full transition-opacity hover:opacity-50"
-        onClick={() => updateCartItems(item, quantity)}
+       className={`bg-orange-700 font-semibold text-white px-10 py-5 rounded-sm mt-5 w-full transition-opacity hover:opacity-50 ${isItemInCart() ? 'pointer-events-none' : ''}`}
+       onClick={() => updateCartItems(item, quantity)}
       >
         {isItemInCart()? (<h3>
         Added to cart!</h3>):(
