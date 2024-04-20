@@ -4,28 +4,54 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Loading from "../components/Loading";
 import { useNavigate } from "react-router-dom";
-import fetchComicData from "../utils/fetchComicData";
-import IssueCards from "../components/IssueCards";
+import fetchComicData from "./fetchComicData";
 import IssueCard from "../components/IssueCard";
 import BuyItem from "../components/BuyItem";
+import VisitedItems from "../components/VisitedItems";
+import ScrollCards from "../components/ScrollCards";
 
 export default function CardPage({
   items,
   currentItem,
   setCurrentItem,
   isLoading,
-  cartItems, updateCartItems
+  cartItems,
+  updateCartItems,
+  discountPercentage,
 }: {
   items: Comic[] | [];
   currentItem: Comic | null;
   setCurrentItem: (updateComic: Comic | null) => void;
   isLoading: boolean;
   cartItems: CartComic[];
-  updateCartItems: (item: Comic | null, quantity: number) => void;
+  updateCartItems: (items: Comic[] |[] , quantity: number) => void;
+  discountPercentage: number;
 }) {
   const { index } = useParams<{ index: string }>();
   const parsedIndex = parseInt(index || "") % 100;
   const [comicSeries, setComicSeries] = useState<Comic[] | []>([]);
+  const [visitedItems, setVisitedItems] = useState<Comic[] | []>([]);
+  const [totalNumberIssues, setTotalNumberIssues] = useState<number>(0);
+
+  const updateVisitedItems = (newVisitedItem: Comic | null): void => {
+    if (newVisitedItem !== null) {
+      const newVisitedItems = [...visitedItems];
+      console.log("visited", visitedItems, newVisitedItem);
+      const isAlreadyVisited = visitedItems.some(
+        (item) => item.id === newVisitedItem.id
+      );
+      console.log("isAlreadyVisited", isAlreadyVisited);
+      if (!isAlreadyVisited) {
+        
+        newVisitedItems.unshift(newVisitedItem);
+        if (newVisitedItems.length > 12) {
+          newVisitedItems.pop();
+        }
+
+        setVisitedItems(newVisitedItems);
+      }
+    }
+  };
 
   useEffect(() => {
     (async () => {
@@ -38,8 +64,25 @@ export default function CardPage({
 
         console.log(seriesNumber);
         if (seriesNumber) {
-          const [fetchedSeries, totalNumberIssues] = await fetchComicData(seriesNumber);
-          setComicSeries(fetchedSeries);
+          const [fetchedSeries, issues] = await fetchComicData(
+            seriesNumber,
+            undefined,
+            undefined,
+            undefined,
+            undefined,
+            undefined
+          );
+          //order by issue
+          setComicSeries(fetchedSeries.sort((comicA, comicB) => {
+            if (comicA.issueNumber !== undefined && comicB.issueNumber !== undefined) {
+              
+              return comicB.issueNumber - comicA.issueNumber;
+            }
+           
+            return 0;
+          }));
+          
+          setTotalNumberIssues(issues);
         }
         console.log(comicSeries);
       } catch (error) {
@@ -47,6 +90,10 @@ export default function CardPage({
       }
     })();
   }, [parsedIndex, items]);
+
+  useEffect(() => {
+    updateVisitedItems(currentItem);
+  }, [currentItem]);
 
   const navigate = useNavigate();
   if (!isLoading && (parsedIndex < 0 || parsedIndex >= items.length)) {
@@ -62,24 +109,43 @@ export default function CardPage({
     if (newIndex < items.length) navigate(`/store/${newIndex}`);
   };
 
-  return (isLoading ?
-    <Loading/>
-    :
-    (
-    <section className="flex flex-col flex-1 py-10 px-5">
+  return isLoading ? (
+    <Loading />
+  ) : (
+    <section className="flex px-10 my-5  w-full">
+    <div className="flex flex-col w-full px-5 mt-3">
       <IssueCard
         currentItem={currentItem}
         handlePrevButton={handlePrevButton}
         handleNextButton={handleNextButton}
       />
-      <div className="flex  w-full">
-        <BuyItem item={currentItem} cartItems = {cartItems} updateCartItems = {updateCartItems}/>
-        <IssueCards
+      <div className="flex gap-10  w-full">
+     
+        <ScrollCards
           items={comicSeries}
           currentItem={currentItem}
           setCurrentItem={setCurrentItem}
+          title={`Other Issues (${totalNumberIssues})`}
         />
       </div>
-    </section>)
+      <div className="mt-6 w-full flex flex-1">
+        <ScrollCards
+          items={visitedItems}
+          title="Recently Seen"
+          currentItem={null}
+          setCurrentItem={() => {}}
+        />
+      </div>
+    </div>
+    <div className=" flex-1 flex-col "> {comicSeries && ( 
+        <BuyItem
+          item={currentItem}
+          seriesItems={comicSeries} // Pass seriesItems only when it's defined
+          cartItems={cartItems}
+          updateCartItems={updateCartItems}
+          discountPercentage={discountPercentage}
+        />
+      )}</div>
+    </section>
   );
 }

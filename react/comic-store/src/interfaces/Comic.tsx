@@ -1,18 +1,16 @@
 import { ComicFormat } from "./ComicFormat";
 
-export default interface Comic{
+export default interface Comic {
   id: number;
   title: string;
-  format: ComicFormat
+  format: ComicFormat;
   creators: string[];
   price: number;
   description?: string;
   description2?: string;
   issueNumber?: number;
   series?: { seriesName: string; seriesURI: string };
-  thumbnail?: {
-    path: string;
-    extension: string;
-  };
+  images: { path: string; extension: string }[];
+  thumbnail?: { path: string; extension: string };
   pageCount?: number;
 }

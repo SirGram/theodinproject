@@ -28,15 +28,15 @@
 }
 
 .page-item {
-  @apply list-none  h-8 w-8 flex justify-center items-center ;
+  @apply list-none  flex justify-center items-center ;
 }
 .page-item >a{
-  @apply px-3 h-full content-center;
+  @apply px-2 h-full content-center;
 }
 .next-page{
-  @apply ml-10
+  @apply ml-6
 }
-.previous-page{@apply mr-10}
+.previous-page{@apply mr-6}
 
 h1 {
   @apply text-4xl font-bold; 
