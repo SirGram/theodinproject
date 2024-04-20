@@ -28,7 +28,7 @@ export default function CartCard({
     <div className="flex w-full ">
       <div className=" h-32 w-20 shrink-0">
         <CardImage
-          path={`${cartItem.comic.thumbnail?.path}.${cartItem.comic.thumbnail?.extension}`}
+          path={`${cartItem.comic.images[0]?.path}.${cartItem.comic.images[0]?.extension}`}
           title={cartItem.comic.title}
           height="full"
         />{" "}

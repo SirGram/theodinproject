@@ -16,17 +16,23 @@ function Filters({
   format,
   setFormat,
   formats,
-  titleStartsWith, setTitleStartsWith
-}  : {
+  titleStartsWith,
+  setTitleStartsWith,
+  searchTitle,
+  setSearchTitle,
+}: {
   itemLimitArray: number[];
   itemLimit: number;
   setItemLimit: (newNumber: number) => void;
   format: ComicFormat;
   setFormat: (format: ComicFormat) => void;
   formats: string[];
-  titleStartsWith:string, setTitleStartsWith:(newTitle:string)=>void
+  titleStartsWith: string;
+  setTitleStartsWith: (newTitle: string) => void;
+  searchTitle: string;
+  setSearchTitle: (search: string) => void;
 }) {
-  const searchValue = useRef<HTMLInputElement>(null);
+  const [searchValue, setSearchValue] = useState<string>(searchTitle);
 
   const updateItemLimit = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setItemLimit(Number(e.target.value));
@@ -35,78 +41,117 @@ function Filters({
     console.log("event", e.target.value);
     setFormat(e.target.value as ComicFormat);
   };
-  const updateTitleStartsWith = (letter:string) => {
-    console.log(letter)
+  const updateTitleStartsWith = (letter: string) => {
+    console.log(letter);
     setTitleStartsWith(letter.toLowerCase());
   };
-  const letters: string[] = ["#", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
+  const letters: string[] = [
+    "all",
+    "a",
+    "b",
+    "c",
+    "d",
+    "e",
+    "f",
+    "g",
+    "h",
+    "i",
+    "j",
+    "k",
+    "l",
+    "m",
+    "n",
+    "o",
+    "p",
+    "q",
+    "r",
+    "s",
+    "t",
+    "u",
+    "v",
+    "w",
+    "x",
+    "y",
+    "z",
+  ];
 
   const handleSearchButton = () => {
-    /*  filterByName(searchValue.current?.value || '') */
+    const searchTerm: string = searchValue.toLowerCase() || "";
+    console.log(searchTerm);
+    setSearchTitle(searchTerm);
   };
   return (
     <>
-    
-    <div className="my-5 flex items-center justify-around ">
-      <div className="flex bg-slate-100 items-center  ">
-        <div className=" scale-x-[-1] opacity-30 px-2">
-          <FaSearch />
+      <div className="my-5 flex items-center justify-around ">
+        <div className="flex bg-slate-100 items-center  h-10 ">
+          <input
+            type="text"
+            value={searchValue}
+            onChange={(e)=>{  setSearchValue(e.target.value)}}
+            placeholder=  "Search by word title"
+            className=" w-40 bg-transparent h-full p-2"
+          />{" "}
+          <button
+            onClick={() => handleSearchButton()}
+            className=" opacity-50 px-4 bg-slate-300 h-full hover:opacity-30"
+          >
+            <FaSearch />
+          </button>
         </div>
-        <input
-          ref={searchValue}
-          type="text"
-          placeholder="Search by title"
-          className=" w-40 bg-transparent h-10"
-          onChange={() => handleSearchButton()}
-        />
-      </div>
 
-      <div>
-        <div className="bg-slate-100 pl-2 ">
-          <span className="mr-2">Items per page</span>
-          <select
-            onChange={updateItemLimit}
-            value={itemLimit}
-            className="bg-slate-200 p-2 "
-          >
-            {itemLimitArray.map((number, index) => (
-              <option key={index} value={number}>
-                {number}
-              </option>
-            ))}
-          </select>
+        <div>
+          <div className="bg-slate-100 pl-2 ">
+            <span className="mr-2">Items per page</span>
+            <select
+              onChange={updateItemLimit}
+              value={itemLimit}
+              className="bg-slate-200 p-2 "
+            >
+              {itemLimitArray.map((number, index) => (
+                <option key={index} value={number}>
+                  {number}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+        <div>
+          <div className="bg-slate-100 pl-2 ">
+            <span className="mr-2">Format: </span>
+            <select
+              onChange={updateFormat}
+              value={format}
+              className="bg-slate-200 p-2 "
+            >
+              {formats.map((format, index) => (
+                <option key={index} value={format}>
+                  {format.charAt(0).toUpperCase() + format.slice(1)}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
-      <div>
-        <div className="bg-slate-100 pl-2 ">
-          <span className="mr-2">Format: </span>
-          <select
-            onChange={updateFormat}
-            value={format}
-            className="bg-slate-200 p-2 "
+      <div className="w-full flex justify-around px-20 bg-slate-50 py-1 text-lg">
+        {letters.map((letter) => (
+          <button
+            className={
+              titleStartsWith === letter
+                ? " font-black"
+                : "font-thin text-slate-400 hover:text-black hover:font-black"
+            }
+            onClick={() => updateTitleStartsWith(letter)}
+            key={letter}
           >
-            {formats.map((format, index) => (
-              <option key={index} value={format}>
-                {format.charAt(0).toUpperCase() + format.slice(1)}
-              </option>
-            ))}
-          </select>
-        </div>
+            {letter.toUpperCase()}
+          </button>
+        ))}
       </div>
-    </div>
-    <div className="w-full flex justify-around px-20">
-    {letters.map(letter => (
-      <button 
-      className={titleStartsWith === letter ? " font-black" : "font-thin text-slate-400"}
-      onClick={()=>updateTitleStartsWith(letter)}
-      key={letter}>{letter.toUpperCase()}</button>
-    ))}
-    </div>
     </>
   );
 }
 
-export default function Store({  
+export default function Store({
   itemLimitArray,
   itemLimit,
   setItemLimit,
@@ -118,9 +163,13 @@ export default function Store({
   formats,
   format,
   setFormat,
+  searchTitle,
+  setSearchTitle,
   displayMode,
   updateDisplayMode,
-  titleStartsWith, setTitleStartsWith
+  titleStartsWith,
+  setTitleStartsWith,
+  discountPercentage,
 }: {
   items: Comic[];
   isLoading: boolean;
@@ -130,15 +179,18 @@ export default function Store({
   formats: ComicFormat[];
   format: ComicFormat;
   setFormat: (format: ComicFormat) => void;
+  searchTitle: string;
+  setSearchTitle: (search: string) => void;
   displayMode: boolean;
-  updateDisplayMode: (mode: boolean) => void;  
+  updateDisplayMode: (mode: boolean) => void;
   itemLimitArray: number[];
   itemLimit: number;
   setItemLimit: (newNumber: number) => void;
-  titleStartsWith:string, setTitleStartsWith:(newTitle:string)=>void
+  titleStartsWith: string;
+  setTitleStartsWith: (newTitle: string) => void;
+  discountPercentage: number;
 }) {
   console.log(items);
-
 
   const navigate = useNavigate();
   const startIndex = page * itemLimit;
@@ -161,9 +213,7 @@ export default function Store({
     setFilteredItems(newFilteredItems);
   }; */
 
-
   const handlePageChange = (selectedPage: number) => {
-   
     setPage(selectedPage);
     navigate(`/store?page=${selectedPage + 1}`);
   };
@@ -185,13 +235,13 @@ export default function Store({
             itemLimit={itemLimit}
             itemLimitArray={itemLimitArray}
             setItemLimit={setItemLimit}
-
             format={format}
             formats={formats}
             setFormat={setFormat}
-            /*  filterByName = {filterByName} */
-            
-  titleStartsWith= {titleStartsWith} setTitleStartsWith={setTitleStartsWith}
+            searchTitle={searchTitle}
+            setSearchTitle={setSearchTitle}
+            titleStartsWith={titleStartsWith}
+            setTitleStartsWith={setTitleStartsWith}
           />
           <ItemCards
             items={items}
@@ -199,6 +249,8 @@ export default function Store({
             currentPage={page}
             displayMode={displayMode}
             updateDisplayMode={updateDisplayMode}
+            discountPercentage={discountPercentage}
+            numberItems={totalItems}
           />
           <ReactPaginate
             forcePage={page}
@@ -208,7 +260,7 @@ export default function Store({
             previousClassName={"previous-page"}
             nextClassName={"next-page"}
             onPageChange={(event) => handlePageChange(event.selected)}
-            pageCount={Math.ceil((totalItems / itemLimit)) }
+            pageCount={Math.ceil(totalItems / itemLimit)}
             breakLabel="..."
             previousLabel={
               <IconContext.Provider value={{ color: "#B8C1CC", size: "28px" }}>

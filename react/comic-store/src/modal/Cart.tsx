@@ -14,7 +14,7 @@ export default function Cart({
   onCartClose: () => void;
   cartItems: CartComic[];
   numberCartItems: number;
-  updateCartItems:(item:Comic | null, quantity:number)=>void
+  updateCartItems:(items:Comic[] | [], quantity:number)=>void
   removeCartItem:(item:CartComic)=>void
 }) {
   const getTotalPrice = (): string => {
@@ -36,7 +36,7 @@ export default function Cart({
         <div className=" fixed left-0 top-0 flex w-full h-full backdrop-blur-sm z-10">
           <div className=" absolute flex  z-10 right-0 top-0 bg-white h-screen px-8 py-5 w-2/4 ">
             <button
-              className=" text-xl absolute left-0 top-0 flex items-center justify-center h-8 w-8 outline-slate-950 outline"
+              className="hover:opacity-50 bg-slate-50 text-xl absolute left-0 top-0 flex items-center justify-center h-8 w-8 outline-slate-950 outline"
               onClick={onCartClose}
             >
               <IoClose />

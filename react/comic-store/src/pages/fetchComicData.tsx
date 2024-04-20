@@ -2,14 +2,14 @@ import Comic from "../interfaces/Comic";
 
 import { ComicFormat, ComicDate, ComicLimit } from "../interfaces/types";
 
-
 export default async function fetchComicData(
   series: string | undefined = undefined,
-  format: ComicFormat  = "All",
+  format: ComicFormat | undefined = "all",
   date: ComicDate | undefined = undefined,
   offset: number = 0,
   limit: ComicLimit | undefined = undefined,
-  titleStartsWith:string
+  titleStartsWith: string = "ALL",
+  searchTitle: string = ""
 ): Promise<[Comic[], number]> {
   const publicKey: string = process.env.PUBLIC_KEY || "";
   const hash: string = process.env.HASH_KEY || "";
@@ -23,7 +23,7 @@ export default async function fetchComicData(
     title: comicData.title.trim(),
     creators: comicData.creators.items
       ? comicData.creators.items.map(
-          (creator: { name: string }) => creator.name,
+          (creator: { name: string }) => creator.name
         )
       : [],
     description2: comicData.description ? comicData.description : undefined,
@@ -38,12 +38,17 @@ export default async function fetchComicData(
           seriesURI: comicData.series.resourceURI,
         }
       : undefined,
-    thumbnail: comicData.thumbnail
-      ? {
-          path: comicData.thumbnail.path,
-          extension: comicData.thumbnail.extension,
-        }
-      : undefined,
+    images: comicData.images
+      ? comicData.images.map((image: any) => ({
+          path: image.path,
+          extension: image.extension,
+        }))
+      : [],
+      thumbnail:comicData.thumbnail
+      ? {path: comicData.thumbnail.path,
+      extension: comicData.thumbnail.extension}
+      : undefined
+      ,
     pageCount:
       comicData.pageCount !== undefined ? comicData.pageCount : undefined,
     price: comicData.prices ? comicData.prices[0].price.toFixed(2) : 0.0,
@@ -69,25 +74,31 @@ export default async function fetchComicData(
     if (series !== undefined) {
       url += `&series=${series}`;
     }
-    if (format !== "All") {
+    if (format !== "all" && format !== undefined) {
       url = url += `&format=${format}`;
     }
-    if (offset !== 0) {
+    if (offset !== 0 && format !== undefined) {
       console.log(offset);
       url = url += `&offset=${offset}`;
     }
-    if (titleStartsWith!== "#") {
+    if (
+      titleStartsWith.toLowerCase() !== "all" &&
+      titleStartsWith !== undefined
+    ) {
       console.log(titleStartsWith);
       url = url += `&titleStartsWith=${titleStartsWith}`;
     }
-  
+    if (searchTitle !== "") {
+      url = url += `&title=${searchTitle}`;
+    }
+
     console.log(url);
 
     const res = await fetch(url);
 
     if (!res.ok) {
       throw new Error(
-        `Failed to fetch data: ${res.status} - ${res.statusText}`,
+        `Failed to fetch data: ${res.status} - ${res.statusText}`
       );
     }
 

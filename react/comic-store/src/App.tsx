@@ -5,7 +5,7 @@ import Footer from "./components/Footer.tsx";
 import Nav from "./components/Nav.tsx";
 import Offer from "./components/Offer.tsx";
 import messages from "./data/Messages.tsx";
-import fetchComicData from "./utils/fetchComicData.tsx";
+import fetchComicData from "./pages/fetchComicData.tsx";
 import Home from "./pages/Home.tsx";
 import Store from "./pages/Store.tsx";
 import CardPage from "./pages/CardPage.tsx";
@@ -17,6 +17,8 @@ import Account from "./pages/Account.tsx";
 import { ComicFormat, ComicDate, ComicLimit } from "./interfaces/types";
 
 function App() {
+  const discountPercentage: number = 20;
+
   const [featuredItems, setFeaturedItems] = useState<Comic[] | []>([]);
   const [items, setItems] = useState<Comic[] | []>([]);
   const [currentItem, setCurrentItem] = useState<Comic | null>(null);
@@ -28,35 +30,35 @@ function App() {
   const toggleCart = () => {
     setIsCartOpen(!isCartOpen);
   };
-  const removeCartItem = (item:CartComic)=>{
+  const removeCartItem = (item: CartComic) => {
     const existingCartItemIndex: number = cartItems.findIndex(
       (cartItem) => cartItem.comic.id === item.comic.id
     );
     if (existingCartItemIndex !== -1) {
-      const newCartItems = [...cartItems]
-      newCartItems.splice(existingCartItemIndex,1)
-      setCartItems(newCartItems)
+      const newCartItems = [...cartItems];
+      newCartItems.splice(existingCartItemIndex, 1);
+      setCartItems(newCartItems);
     }
-  }
-  const updateCartItems = (item: Comic | null, quantity: number) => {
-    console.log('function', item, quantity)
-    if (item !== null) {
-      console.log("asdf");
-      const existingCartItemIndex: number = cartItems.findIndex(
-        (cartItem) => cartItem.comic.id === item.id
-      );
-      if (existingCartItemIndex !== -1) {
-        const newCartItems = cartItems.map((cartItem, index) =>
-          index === existingCartItemIndex
-            ? { ...cartItem, quantity: quantity }
-            : cartItem
+  };
+  const updateCartItems = (items: Comic[], quantity: number) => {
+    
+    if (items.length > 0) {
+      
+      const newCartItems: CartComic[] = [...cartItems];
+      items.forEach((item) => {
+        console.log(item)
+        const existingCartItemIndex: number = newCartItems.findIndex(
+          (cartItem) => cartItem.comic.id === item.id
         );
-        setCartItems(newCartItems);
-      } else {
-        setCartItems([...cartItems, { comic: item, quantity: quantity }]);
-      }
+        console.log(existingCartItemIndex)
+        if (existingCartItemIndex === -1) {
+          newCartItems.push({ comic: item, quantity: quantity });
+         
+        }
+      });
+      setCartItems(newCartItems);
+      console.log(newCartItems);
     }
-    console.log(cartItems);
   };
 
   const [displayMode, setDisplayMode] = useState<boolean>(true);
@@ -66,7 +68,8 @@ function App() {
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const duration: number = 20;
-  const formats: string[] = [
+  const formats: ComicFormat[] = [
+    "all",
     "comic",
     "magazine",
     "trade paperback",
@@ -77,10 +80,11 @@ function App() {
     "infinite comic",
   ];
   const [format, setFormat] = useState<ComicFormat>(formats[0]);
-  
+  const [ searchTitle,setSearchTitle] = useState<string>('');
+
   const itemLimitArray: number[] = [10, 20, 50, 100];
   const [itemLimit, setItemLimit] = useState<ComicLimit>(itemLimitArray[1]);
-  const [titleStartsWith, setTitleStartsWith] = useState<string>("#");
+  const [titleStartsWith, setTitleStartsWith] = useState<string>("all");
 
   const getNumberCartItems = (): number => {
     let number = 0;
@@ -99,13 +103,15 @@ function App() {
   useEffect(() => {
     (async () => {
       setIsLoading(true);
-      const offset = page * 100;
+      const offset = page * itemLimit;
       console.log(offset);
       const [comics, numberComics]: [Comic[], number] = await fetchComicData(
         undefined,
         format,
         undefined,
-        offset, itemLimit, titleStartsWith
+        offset,
+        itemLimit,
+        titleStartsWith,searchTitle
       );
       console.log(comics);
       setFeaturedItems(comics.slice(0, 4));
@@ -113,7 +119,7 @@ function App() {
       setIsLoading(false);
       setNumberTotalItems(numberComics);
     })();
-  }, [page, format, itemLimit, titleStartsWith]);
+  }, [page, format, itemLimit, titleStartsWith, searchTitle]);
 
   return (
     <div id="app" className="flex flex-col  text-black ">
@@ -135,10 +141,7 @@ function App() {
             path="/"
             element={<Home items={featuredItems} isLoading={isLoading} />}
           />
-          <Route
-            path="/account"
-            element={<Account />}
-          />
+          <Route path="/account" element={<Account />} />
           <Route
             path="/store"
             element={
@@ -150,14 +153,17 @@ function App() {
                 setPage={setPage}
                 format={format}
                 setFormat={setFormat}
+                searchTitle= {searchTitle}
+                setSearchTitle={setSearchTitle}
                 formats={formats}
-                displayMode = {displayMode}
-                updateDisplayMode = {updateDisplayMode}
-                itemLimit = {itemLimit}
-                setItemLimit = {setItemLimit}
+                displayMode={displayMode}
+                updateDisplayMode={updateDisplayMode}
+                itemLimit={itemLimit}
+                setItemLimit={setItemLimit}
                 itemLimitArray={itemLimitArray}
-                titleStartsWith = {titleStartsWith}
-                setTitleStartsWith = {setTitleStartsWith}
+                titleStartsWith={titleStartsWith}
+                setTitleStartsWith={setTitleStartsWith}
+                discountPercentage={discountPercentage}
               />
             }
           />
@@ -171,6 +177,7 @@ function App() {
                 isLoading={isLoading}
                 cartItems={cartItems}
                 updateCartItems={updateCartItems}
+                discountPercentage={discountPercentage}
               />
             }
           />
