@@ -124,7 +124,7 @@ export default function ScrollCards({
                 currentItem &&
                 currentItem.title === item.title &&
                 currentItem.description === item.description
-                  ? " border-slate-800"
+                  ? " border-slate-800 pointer-events-none"
                   : "border-slate-200"
               }`}
               onClick={() => onClickCard(item)}

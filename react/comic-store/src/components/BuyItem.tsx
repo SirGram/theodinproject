@@ -44,14 +44,13 @@ export default function BuyItem({
         <h3 className="mb-4">Item</h3>
         <div className=" text-center flex flex-col h-full justify-around">
           <div className="justify-around flex  items-center">
-            <h5 className=" line-through">$ {item?.price}</h5>
+            <h5 className=" line-through">${item?.price}</h5>
             <h5 className="  border-2 border-red-500 text-red-500 px-1 w-max">
               {discountPercentage}% OFF
             </h5>
           </div>
           <h2 className=" font-semibold mt-2">
-            ${" "}
-            {(item?.price - (item?.price * discountPercentage) / 100).toFixed(
+            ${(item?.price - (item?.price * discountPercentage) / 100).toFixed(
               2
             )}
           </h2>
@@ -69,12 +68,12 @@ export default function BuyItem({
         <h3 className="mb-4">Series</h3>
         <div className=" text-center flex flex-col h-full justify-around">
           <div className="justify-around flex  items-center">
-            <h5 className=" line-through">$ {seriesPrice}</h5>
+            <h5 className=" line-through">${seriesPrice}</h5>
             <h5 className="  border-2 border-red-500 text-red-500 px-1 w-max">
               {discountPercentage}% OFF
             </h5>
           </div>
-          <h2 className=" font-semibold mt-2">$ {discountedSeriesPrice}</h2>
+          <h2 className=" font-semibold mt-2">${discountedSeriesPrice}</h2>
         </div>
         <button
           className={`bg-orange-700 font-semibold text-white px-2 py-1 rounded-sm mt-3 w-full transition-opacity hover:opacity-50 ${

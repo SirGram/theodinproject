@@ -35,7 +35,7 @@ const Account: React.FC = () => {
             value={formData.username}
             onChange={handleChange}
             required
-            className="mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+            className="mt-1 p-2 block w-full border border-gray-300 rounded-sm focus:outline-none focus:border-indigo-500"
           />
         </div>
         <div className="mb-4">
@@ -49,12 +49,12 @@ const Account: React.FC = () => {
             value={formData.password}
             onChange={handleChange}
             required
-            className="mt-1 p-2 block w-full border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+            className="mt-1 p-2 block w-full border border-gray-300 rounded-sm focus:outline-none focus:border-indigo-500"
           />
         </div>
         <button
           type="submit"
-          className="bg-indigo-500 w-full text-white py-2 px-4 rounded-md hover:bg-indigo-600 focus:outline-none focus:bg-indigo-600"
+          className=" bg-blue-700 w-full text-white py-2 px-4 rounded-sm hover:opacity-50 focus:outline-none focus:bg-blue-700"
         >
           Login
         </button>

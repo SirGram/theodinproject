@@ -9,19 +9,19 @@ export default function CartCard({
   updateCartItems,removeCartItem
 }: {
   cartItem: CartComic;
-  updateCartItems: (item: Comic | null, quantity: number) => void;
+  updateCartItems: (items: Comic[] | [], quantity: number) => void;
   removeCartItem:(item:CartComic)=>void
 }) {
   const substractQuantity = (): void => {
     if (cartItem.quantity > 1) {
       const newQuantity:number = cartItem.quantity - 1;
-      updateCartItems(cartItem.comic, newQuantity);
+      updateCartItems([cartItem.comic], newQuantity);
     }
   };  const addQuantity = (): void => {
 
     if (cartItem.quantity < 99) {  
       const newQuantity:number = cartItem.quantity + 1;
-      updateCartItems(cartItem.comic, newQuantity);
+      updateCartItems([cartItem.comic], newQuantity);
     }
   };
   return (

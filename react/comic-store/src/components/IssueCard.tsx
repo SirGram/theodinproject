@@ -3,6 +3,9 @@ import CardImage from "../components/CardImage";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import Loading from "./Loading.tsx";
 import { useState } from "react";
+import { IoArrowBack } from "react-icons/io5";
+import { MdArrowBack } from "react-icons/md";
+import { Link } from "react-router-dom";
 
 export default function IssueCard({
   currentItem,
@@ -31,7 +34,12 @@ export default function IssueCard({
   console.log('activeImage ',activeImage)
   return (
     <div className="flex flex-col mb-5 w-full">
-      <div className="justify-end w-full flex mb-2">
+      <div className="justify-between w-full flex mb-2">
+        <Link to='/store' className="flex">
+        <button
+        
+        className=" text-2xl px-2 hover:opacity-50 transition-opacity"><MdArrowBack /></button></Link>
+        <div className="flex">
         <button
           onClick={handlePrevButton}
           className="text-xl px-2 hover:opacity-50 transition-opacity"
@@ -43,11 +51,11 @@ export default function IssueCard({
           className="text-xl px-2 hover:opacity-20 transition-opacity"
         >
           <FaChevronRight />
-        </button>
+        </button></div>
       </div>
 
       <div className="flex gap-5 bg-slate-100  w-full h-full">
-        <div className="flex-1 shrink-0 flex flex-col">
+        <div className=" shrink-0 flex flex-col">
           <div className="h-80 w-56">
             <CardImage
               path={`${currentItem?.images[activeImage]?.path}.${currentItem?.images[activeImage]?.extension}`}

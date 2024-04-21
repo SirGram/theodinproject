@@ -31,7 +31,7 @@ export default function Card({
       <div className=" h-80 ">
         <CardImage path={path} title={title} />
       </div></Link>
-      
+
       <div>
         <div className="text-center p-3 flex justify-center items-center flex-col">
 
@@ -46,13 +46,13 @@ export default function Card({
             </Link>
           </div>
           <div className="flex items-center w-full justify-between px-2">
-            <h5 className=" line-through">$ {price}</h5>
+            <h5 className=" line-through">${price}</h5>
             <h5 className="  border-2 border-red-500 text-red-500 px-1 w-max">
               {discountPercentage}% OFF
             </h5>
           </div>
           <h3 className=" font-semibold mt-1">
-            $ {(price - (price * discountPercentage) / 100).toFixed(2)}
+            ${(price - (price * discountPercentage) / 100).toFixed(2)}
           </h3>
         </div>
       </div>
@@ -80,13 +80,13 @@ export default function Card({
             </Link>
           </div>
           <div className="flex items-center w-full justify-between ">
-            <h5 className=" line-through">$ {price}</h5>
+            <h5 className=" line-through">${price}</h5>
             <h5 className="  border-2 border-red-500 text-red-500 px-1 w-max">
               {discountPercentage}% OFF
             </h5>
           </div>
           <h3 className=" font-semibold mt-1">
-            $ {(price - (price * discountPercentage) / 100).toFixed(2)}
+            ${(price - (price * discountPercentage) / 100).toFixed(2)}
           </h3>
         </div>
       </div>
