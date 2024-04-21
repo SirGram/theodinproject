@@ -18,6 +18,8 @@ import { ComicFormat, ComicDate, ComicLimit } from "./interfaces/types";
 
 function App() {
   const discountPercentage: number = 20;
+  const shippingPrice: number = 4.99;
+  const freeShippingLimit: number = 30;
 
   const [featuredItems, setFeaturedItems] = useState<Comic[] | []>([]);
   const [items, setItems] = useState<Comic[] | []>([]);
@@ -28,7 +30,12 @@ function App() {
   const [cartItems, setCartItems] = useState<CartComic[] | []>([]);
   const [isCartOpen, setIsCartOpen] = useState<boolean>(false);
   const toggleCart = () => {
-    setIsCartOpen(!isCartOpen);
+    const invertIsCartOpen = !isCartOpen;
+    if (invertIsCartOpen) {
+      document.body.classList.add("overflow-hidden");
+    } else document.body.classList.remove("overflow-hidden");
+
+    setIsCartOpen(invertIsCartOpen);
   };
   const removeCartItem = (item: CartComic) => {
     const existingCartItemIndex: number = cartItems.findIndex(
@@ -40,6 +47,9 @@ function App() {
       setCartItems(newCartItems);
     }
   };
+  const removeAllCartItems = ():void=>{
+    setCartItems([]);
+  }
   const updateCartItems = (items: Comic[], quantity: number) => {
     
     if (items.length > 0) {
@@ -54,6 +64,8 @@ function App() {
         if (existingCartItemIndex === -1) {
           newCartItems.push({ comic: item, quantity: quantity });
          
+        }else{
+          newCartItems[existingCartItemIndex] = { comic: item, quantity: quantity }
         }
       });
       setCartItems(newCartItems);
@@ -67,7 +79,6 @@ function App() {
   };
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const duration: number = 20;
   const formats: ComicFormat[] = [
     "all",
     "comic",
@@ -128,6 +139,7 @@ function App() {
         <Nav numberCartItems={numberCartItems} onOpenCart={toggleCart} />
       </header>
       <main className="flex flex-1 flex-col">
+      <Offer freeShippingLimit={freeShippingLimit}></Offer>
         <Cart
           isCartOpen={isCartOpen}
           onCartClose={toggleCart}
@@ -135,6 +147,10 @@ function App() {
           numberCartItems={numberCartItems}
           updateCartItems={updateCartItems}
           removeCartItem={removeCartItem}
+          shippingPrice={shippingPrice}
+          freeShippingLimit={freeShippingLimit}
+          discountPercentage={discountPercentage}
+          removeAllCartItems={removeAllCartItems}
         />
         <Routes>
           <Route

@@ -8,26 +8,74 @@ export default function Cart({
   isCartOpen,
   onCartClose,
   cartItems,
-  numberCartItems,updateCartItems, removeCartItem
+  numberCartItems,
+  updateCartItems,
+  removeCartItem,
+  removeAllCartItems,
+  shippingPrice,
+  freeShippingLimit,
+  discountPercentage,
 }: {
   isCartOpen: boolean;
   onCartClose: () => void;
   cartItems: CartComic[];
   numberCartItems: number;
-  updateCartItems:(items:Comic[] | [], quantity:number)=>void
-  removeCartItem:(item:CartComic)=>void
+  updateCartItems: (items: Comic[] | [], quantity: number) => void;
+  removeCartItem: (item: CartComic) => void;
+  removeAllCartItems: () => void;
+  shippingPrice: number;
+  freeShippingLimit: number;
+  discountPercentage: number;
 }) {
-  const getTotalPrice = (): string => {
+  console.log(discountPercentage);
+  const getSubTotalPrice = (): number => {
     let price = 0;
     cartItems.forEach((cartItem) => {
       price += cartItem.comic.price * cartItem.quantity;
     });
-    return price.toFixed(2);
+    return Number(price.toFixed(2));
   };
-  const [totalPrice, setTotalPrice] = useState<string>(getTotalPrice());
+  const [subTotalPrice, setSubTotalPrice] = useState<number>(
+    getSubTotalPrice()
+  );
+
+  const getIsFreeShipping = (): boolean => {
+    return subTotalPrice > freeShippingLimit;
+  };
+  const [isFreeShipping, setIsFreeShipping] = useState<boolean>(
+    getIsFreeShipping()
+  );
+  const getDiscountedPrice = (): number => {
+    const discount: number = Number(
+      ((discountPercentage * subTotalPrice) / 100).toFixed(2)
+    );
+    return discount;
+  };
+
+  const [discountedPrice, setDiscountedPrice] = useState<number>(
+    getDiscountedPrice()
+  );
+
+  const getTotalPrice = (): number => {
+    const total =
+      subTotalPrice + (isFreeShipping ? 0 : shippingPrice) - discountedPrice;
+    return Number(total.toFixed(2));
+  };
+
+  const [totalPrice, setTotalPrice] = useState<number>(getTotalPrice());
+
   useEffect(() => {
+    setSubTotalPrice(getSubTotalPrice());
+    setIsFreeShipping(getIsFreeShipping);
+    setDiscountedPrice(getDiscountedPrice);
     setTotalPrice(getTotalPrice());
-  }, [cartItems]);
+  }, [cartItems, subTotalPrice, isFreeShipping, discountedPrice]);
+  const barWidth = Math.min((subTotalPrice / freeShippingLimit) * 100, 100);
+  console.log(barWidth);
+  const remainingBarPrice = (): number => {
+    const price = Math.max(freeShippingLimit - subTotalPrice, 0);
+    return price;
+  };
 
   return (
     <>
@@ -36,7 +84,7 @@ export default function Cart({
         <div className=" fixed left-0 top-0 flex w-full h-full backdrop-blur-sm z-10">
           <div className=" absolute flex  z-10 right-0 top-0 bg-white h-screen px-8 py-5 w-2/4 ">
             <button
-              className="hover:opacity-50 bg-slate-50 text-xl absolute left-0 top-0 flex items-center justify-center h-8 w-8 outline-slate-950 outline"
+              className="hover:opacity-50 bg-slate-50 text-5xl absolute left-0 top-0 flex items-center justify-center h-8 w-8 outline-slate-950 outline"
               onClick={onCartClose}
             >
               <IoClose />
@@ -45,27 +93,98 @@ export default function Cart({
               {numberCartItems === 0 ? (
                 <h2 className="mb-5 text-center">Cart is empty</h2>
               ) : (
-                <h2 className="mb-5 text-center">
-                  {numberCartItems} {numberCartItems === 1 ? "item" : "items"}{" "}
-                  in the cart
-                </h2>
-              )}
-              <ul className="flex flex-col gap-6 overflow-y-scroll bg-slate-200 p-5 flex-1">
-                {cartItems.map((cartItem, index) => (
-                  <li key={index} className=" bg-slate-100">
-                    <CartCard cartItem={cartItem} updateCartItems={updateCartItems} removeCartItem={removeCartItem}/>
-                  </li>
-                ))}
-              </ul>
-           
-            <div className="mt-5">
-              <h3>Total: $ {totalPrice}</h3>
-              <button className="mt-5 w-full py-2 bg-orange-700 text-white hover:opacity-50 transition-opacity"
-                onClick={()=>window.alert(`You bought ${numberCartItems} item/s for $ ${totalPrice}!`)}>
+                <>
+                  <h2 className="mb-5 text-center">
+                    {numberCartItems} {numberCartItems === 1 ? "item" : "items"}{" "}
+                    in the cart
+                  </h2>
+                  <div className="w-full h-10 bg-slate-300  relative mb-2">
+                    <div
+                      className="absolute top-0 left-0 h-full bg-slate-500"
+                      style={{ width: `${barWidth}%` }}
+                    ></div>
+                    <span
+                      className="absolute text-white w-full h-full flex items-center justify-center"
+                      style={{ textShadow: "0px 0px 4px rgba(0, 0, 0, 1)" }}
+                    >
+                      {" "}
+                      {remainingBarPrice() > 0
+                        ? `Spend $${remainingBarPrice().toFixed(
+                            2
+                          )} more for free shipping`
+                        : "You are elected to free shipping"}
+                    </span>
+                  </div>
+                  <div className="w-full flex justify-end">
+                    <button
+                      className="hover:underline hover:opacity-50"
+                      onClick={removeAllCartItems}
+                    >
+                      Remove All
+                    </button>
+                  </div>
+                  <ul className="flex flex-col gap-6 overflow-y-scroll bg-slate-200 p-5 flex-1">
+                    {cartItems.map((cartItem, index) => (
+                      <li key={index} className=" bg-slate-100">
+                        <CartCard
+                          cartItem={cartItem}
+                          updateCartItems={updateCartItems}
+                          removeCartItem={removeCartItem}
+                        />
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="mt-5 ">
+                    <div className="flex flex-col">
+                      <div className="flex justify-between">
+                        <h4 className="font-thin">SubTotal:</h4>
+                        <h4 className="font-thin text-right">
+                          {" "}
+                          ${subTotalPrice.toFixed(2)}
+                        </h4>
+                      </div>
+                      <div className="flex justify-between">
+                        <h4 className="font-thin">Shipping:</h4>
 
-                <h3>Checkout</h3>
-              </button>
-            </div> </div>
+                        <h4
+                          className={`text-right font-thin ${
+                            isFreeShipping ? "line-through" : ""
+                          }`}
+                        >
+                          {" "}
+                          ${shippingPrice.toFixed(2)}
+                        </h4>
+                      </div>
+                      <div className="flex justify-between">
+                        <h4 className="font-thin">Discount:</h4>
+                        <h4 className="font-thin text-right">
+                          {" "}
+                          -${discountedPrice.toFixed(2)}
+                        </h4>
+                      </div>
+                      <div className="flex justify-between mt-1">
+                        <h3>Total:</h3>
+                        <h3 className="text-right">
+                          {" "}
+                          ${totalPrice.toFixed(2)}
+                        </h3>
+                      </div>
+                    </div>
+
+                    <button
+                      className="mt-5 w-full py-2 bg-orange-700 text-white hover:opacity-50 transition-opacity"
+                      onClick={() =>
+                        window.alert(
+                          `You bought ${numberCartItems} item/s for $${totalPrice}!`
+                        )
+                      }
+                    >
+                      <h3>Checkout</h3>
+                    </button>
+                  </div>{" "}
+                </>
+              )}
+            </div>
           </div>
         </div>
       )}
