@@ -13,12 +13,12 @@ export type ComicFormat =
 
   export enum ComicOrderBy {
     FocDate = "focDate",
-    OnSaleDate = "onSaleDate",
+    OnSaleDate = "onsaleDate",
     Title = "title",
     IssueNumber = "issueNumber",
     Modified = "modified",
     DescFocDate = "-focDate",
-    DescOnSaleDate = "-onSaleDate",
+    DescOnSaleDate = "-onsaleDate",
     DescTitle = "-title",
     DescIssueNumber = "-issueNumber",
     DescModified = "-modified",

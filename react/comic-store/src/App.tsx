@@ -120,7 +120,7 @@ function App() {
   };
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [orderBy, setOrderBy] = useState<ComicOrderBy>(ComicOrderBy.Title);
+  const [orderBy, setOrderBy] = useState<ComicOrderBy>(ComicOrderBy.FocDate);
   const orderByArray: ComicOrderBy[] = Object.values(ComicOrderBy);
   const formats: ComicFormat[] = [
     "all",

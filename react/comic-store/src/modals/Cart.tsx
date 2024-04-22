@@ -20,7 +20,7 @@ export default function Cart({
   onCartClose: () => void;
   cartItems: CartComic[];
   numberCartItems: number;
-  updateCartItems: (items: Comic[] | [], quantity: number) => void;
+  updateCartItems: (items: Comic[] , quantity: number) => void;
   removeCartItem: (item: CartComic) => void;
   removeAllCartItems: () => void;
   shippingPrice: number;
@@ -81,7 +81,7 @@ export default function Cart({
     <>
       {isCartOpen && (
         //modal overlay
-        <div className=" fixed left-0 top-0 flex w-full h-full backdrop-blur-sm z-10">
+        <div className=" fixed left-0 top-0 flex w-full h-full backdrop-brightness-35 z-10">
           <div className=" absolute flex  z-10 right-0 top-0 bg-white h-screen px-8 py-5 w-2/4 ">
             <button
               className="hover:opacity-50 bg-slate-50 text-5xl absolute left-0 top-0 flex items-center justify-center h-8 w-8 outline-slate-950 outline"
@@ -98,22 +98,29 @@ export default function Cart({
                     {numberCartItems} {numberCartItems === 1 ? "item" : "items"}{" "}
                     in the cart
                   </h2>
-                  <div className="w-full h-10 bg-slate-300  relative mb-2">
+                  <div className="w-full h-10 bg-slate-300 relative mb-2">
                     <div
-                      className="absolute top-0 left-0 h-full bg-slate-500"
-                      style={{ width: `${barWidth}%` }}
+                      className="absolute top-0 left-0 h-full bg-black"
+                      style={{ width: `${barWidth}%`, zIndex:2}}
                     ></div>
                     <span
-                      className="absolute text-white w-full h-full flex items-center justify-center"
-                      style={{ textShadow: "0px 0px 4px rgba(0, 0, 0, 1)" }}
+                      className="absolute top-0 left-0 w-full h-full flex items-center justify-center text-white"
+                      style={{
+                        zIndex: 3,
+                    mixBlendMode: "difference" 
+                      }}
                     >
-                      {" "}
                       {remainingBarPrice() > 0
                         ? `Spend $${remainingBarPrice().toFixed(
                             2
                           )} more for free shipping`
-                        : "You are elected to free shipping"}
+                        : "You are eligible for free shipping"}
                     </span>
+                    <div
+                      className="absolute top-0 left-0 w-full h-full bg-orange-700 "
+                      style={{ zIndex: 4, mixBlendMode: "screen" }}
+                    >                      
+                    </div>
                   </div>
                   <div className="w-full flex justify-end">
                     <button

@@ -23,8 +23,8 @@ export default function WishList({
   return (
     <>
       {isWishListOpen && (
-        <div className="h-full top-0 flex items-center justify-center w-full backdrop-blur-lg z-20 absolute">
-          <div className=" bg-white w-3/4 relative h-3/4 flex">
+        <div className="h-full top-0 flex items-center justify-center w-full backdrop-brightness-35 z-20 absolute">
+          <div className=" bg-white w-3/4 relative h-3/4 flex  rounded-sm overflow-hidden">
             <button
               className="hover:opacity-50 bg-slate-50 text-5xl absolute left-0 top-0 flex items-center justify-center h-8 w-8 outline-slate-950 outline"
               onClick={toggleWishList}
