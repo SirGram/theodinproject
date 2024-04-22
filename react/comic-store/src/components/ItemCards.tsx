@@ -14,6 +14,8 @@ export default function ItemCards({
   updateDisplayMode,
   discountPercentage,
   numberItems,
+  wishList,
+  updateWishList,
 }: {
   items: Comic[];
   startIndex: number;
@@ -22,6 +24,8 @@ export default function ItemCards({
   updateDisplayMode: (mode: boolean) => void;
   discountPercentage: number;
   numberItems: number;
+  wishList: Comic[] | [];
+  updateWishList: (items: Comic[] | []) => void;
 }) {
   return (
     <div className="py-5 px-10 gap-2 bg-slate-100">
@@ -50,23 +54,21 @@ export default function ItemCards({
       </div>
       <div
         className={`${
-          displayMode ? "grid grid-cols-auto-fit gap-2" : "flex flex-col"
+          displayMode ? "grid grid-cols-auto-fill gap-2" : "flex flex-col"
         } `}
       >
         {items.map((item, index) => (
           <div key={item.id} className="flex  justify-center ">
-           
-              <Card
-                path={`${item?.images[0]?.path}.${item?.images[0]?.extension}`}
-                title={item.title}
-                price={item.price}
-                discountPercentage={discountPercentage}
-                displayMode={displayMode}
-                startIndex={startIndex}
-                index={index}
-                currentPage={currentPage}
-              />
-       
+            <Card
+              item={item}
+              discountPercentage={discountPercentage}
+              displayMode={displayMode}
+              startIndex={startIndex}
+              index={index}
+              currentPage={currentPage}
+              wishList={wishList}
+              updateWishList={updateWishList}
+            />
           </div>
         ))}
       </div>
