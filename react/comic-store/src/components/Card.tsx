@@ -9,8 +9,8 @@ type Props = {
   startIndex: number;
   index: number;
   currentPage: number;
-  wishList: Comic[] | [];
-  updateWishList: (items: Comic[] | []) => void;
+  wishList: Comic[];
+  updateWishList: (items: Comic[]) => void;
 };
 
 export default function Card({

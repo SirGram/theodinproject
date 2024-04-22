@@ -69,7 +69,7 @@ export default function IssueCard({
                   className={`h-full w-9 ${
                     image === currentItem.images[activeImage]
                       ? " pointer-events-none"
-                      : "p-1 pt-0 hover:opacity-50"
+                      : "p-1 hover:opacity-50"
                   }`}
                 >
                   <button onClick={() => setActiveImage(index)}>

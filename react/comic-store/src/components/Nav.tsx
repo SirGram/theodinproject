@@ -38,7 +38,7 @@ export default function Nav({
     >
       <div className="flex items-center">
         <Link to="/">
-          <img className="max-h-10" src={logo} alt="logo" />
+          <img className="max-h-10 hover:scale-105 transition-all" src={logo} alt="logo" />
         </Link>
       </div>
 

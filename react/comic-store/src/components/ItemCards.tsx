@@ -28,7 +28,7 @@ export default function ItemCards({
   updateWishList: (items: Comic[] | []) => void;
 }) {
   return (
-    <div className="py-5 px-10 gap-2 bg-slate-100">
+    <div className="py-5 px-10 gap-2 bg-slate-50">
       <div className="flex mb-4  gap-2 w-full justify-end">
         <h4 className="flex-1 font-thin italic">{numberItems} results</h4>
         <button
