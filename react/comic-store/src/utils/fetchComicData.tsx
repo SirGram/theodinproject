@@ -1,6 +1,11 @@
 import Comic from "../interfaces/Comic";
 
-import { ComicFormat, ComicDate, ComicLimit } from "../interfaces/types";
+import {
+  ComicFormat,
+  ComicDate,
+  ComicLimit,
+  ComicOrderBy,
+} from "../interfaces/types";
 
 export default async function fetchComicData(
   series: string | undefined = undefined,
@@ -9,15 +14,13 @@ export default async function fetchComicData(
   offset: number = 0,
   limit: ComicLimit | undefined = undefined,
   titleStartsWith: string = "ALL",
-  searchTitle: string = ""
+  searchTitle: string = "",
+  orderBy: ComicOrderBy| undefined
 ): Promise<[Comic[], number]> {
   const publicKey: string = process.env.PUBLIC_KEY || "";
   const hash: string = process.env.HASH_KEY || "";
   const ts: string = "1";
 
-  const formatDescription = (description: string): string => {
-    return description.replace(/<br\s*\/?>/gi, " ");
-  };
   const mapComic = (comicData: any): Comic => ({
     id: comicData.id,
     title: comicData.title.trim(),
@@ -44,11 +47,12 @@ export default async function fetchComicData(
           extension: image.extension,
         }))
       : [],
-      thumbnail:comicData.thumbnail
-      ? {path: comicData.thumbnail.path,
-      extension: comicData.thumbnail.extension}
-      : undefined
-      ,
+    thumbnail: comicData.thumbnail
+      ? {
+          path: comicData.thumbnail.path,
+          extension: comicData.thumbnail.extension,
+        }
+      : undefined,
     pageCount:
       comicData.pageCount !== undefined ? comicData.pageCount : undefined,
     price: comicData.prices ? comicData.prices[0].price.toFixed(2) : 0.0,
@@ -61,7 +65,7 @@ export default async function fetchComicData(
   }
 
   try {
-    let url = `http://gateway.marvel.com/v1/public/comics?&ts=${ts}&apikey=${publicKey}&hash=${hash}&formatType=comic&noVariants=true&orderBy=title`;
+    let url = `http://gateway.marvel.com/v1/public/comics?&ts=${ts}&apikey=${publicKey}&hash=${hash}&formatType=comic&noVariants=true`;
 
     if (limit !== undefined) {
       console.log(offset);
@@ -91,7 +95,9 @@ export default async function fetchComicData(
     if (searchTitle !== "") {
       url = url += `&title=${searchTitle}`;
     }
-
+    if (orderBy !== undefined) {
+      url = url += `&orderBy=${orderBy}`;
+    }
     console.log(url);
 
     const res = await fetch(url);

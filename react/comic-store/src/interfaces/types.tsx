@@ -10,3 +10,17 @@ export type ComicFormat =
   | "graphical novel"
   | "digital comic"
   | "infinite comic";
+
+  export enum ComicOrderBy {
+    FocDate = "focDate",
+    OnSaleDate = "onSaleDate",
+    Title = "title",
+    IssueNumber = "issueNumber",
+    Modified = "modified",
+    DescFocDate = "-focDate",
+    DescOnSaleDate = "-onSaleDate",
+    DescTitle = "-title",
+    DescIssueNumber = "-issueNumber",
+    DescModified = "-modified",
+  }
+  

@@ -55,14 +55,14 @@ export default function IssueCard({
       </div>
 
       <div className="flex gap-5 bg-slate-100  w-full h-full">
-        <div className=" shrink-0 flex flex-col">
+        <div className=" shrink-0 flex flex-col bg-white">
           <div className="h-80 w-56">
             <CardImage
               path={`${currentItem?.images[activeImage]?.path}.${currentItem?.images[activeImage]?.extension}`}
               title={currentItem?.title}
             />
           </div>
-          <div className="my-3 mx-2 h-12 flex gap-2">
+          <div className="my-3 mx-2 h-12 w-56 flex gap-2 flex-wrap">
             {currentItem &&
               currentItem.images.map((image, index) => (
                 <div

@@ -1,4 +1,4 @@
-import { ComicFormat } from "./ComicFormat";
+import { ComicFormat } from "./types";
 
 export default interface Comic {
   id: number;

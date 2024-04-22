@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Loading from "../components/Loading";
 import { useNavigate } from "react-router-dom";
-import fetchComicData from "./fetchComicData";
+import fetchComicData from "../utils/fetchComicData";
 import IssueCard from "../components/IssueCard";
 import BuyItem from "../components/BuyItem";
 import VisitedItems from "../components/VisitedItems";
@@ -14,21 +14,27 @@ export default function CardPage({
   items,
   currentItem,
   setCurrentItem,
+  itemLimit,
   isLoading,
   cartItems,
   updateCartItems,
   discountPercentage,
+  wishList,
+  updateWishList,
 }: {
   items: Comic[] | [];
   currentItem: Comic | null;
   setCurrentItem: (updateComic: Comic | null) => void;
+  itemLimit: number;
   isLoading: boolean;
   cartItems: CartComic[];
-  updateCartItems: (items: Comic[] |[] , quantity: number) => void;
+  updateCartItems: (items: Comic[] | [], quantity: number) => void;
+  wishList: Comic[] | [];
+  updateWishList: (items: Comic[] | []) => void;
   discountPercentage: number;
 }) {
   const { index } = useParams<{ index: string }>();
-  const parsedIndex = parseInt(index || "") % 100;
+  const parsedIndex = parseInt(index || "") % itemLimit;
   const [comicSeries, setComicSeries] = useState<Comic[] | []>([]);
   const [visitedItems, setVisitedItems] = useState<Comic[] | []>([]);
   const [totalNumberIssues, setTotalNumberIssues] = useState<number>(0);
@@ -42,7 +48,6 @@ export default function CardPage({
       );
       console.log("isAlreadyVisited", isAlreadyVisited);
       if (!isAlreadyVisited) {
-        
         newVisitedItems.unshift(newVisitedItem);
         if (newVisitedItems.length > 12) {
           newVisitedItems.pop();
@@ -69,19 +74,24 @@ export default function CardPage({
             undefined,
             undefined,
             undefined,
+            100,
             undefined,
-            undefined
+            undefined,undefined
           );
           //order by issue
-          setComicSeries(fetchedSeries.sort((comicA, comicB) => {
-            if (comicA.issueNumber !== undefined && comicB.issueNumber !== undefined) {
-              
-              return comicB.issueNumber - comicA.issueNumber;
-            }
-           
-            return 0;
-          }));
-          
+          setComicSeries(
+            fetchedSeries.sort((comicA, comicB) => {
+              if (
+                comicA.issueNumber !== undefined &&
+                comicB.issueNumber !== undefined
+              ) {
+                return comicB.issueNumber - comicA.issueNumber;
+              }
+
+              return 0;
+            })
+          );
+
           setTotalNumberIssues(issues);
         }
         console.log(comicSeries);
@@ -113,39 +123,43 @@ export default function CardPage({
     <Loading />
   ) : (
     <section className="flex px-10 my-5  w-full">
-    <div className="flex flex-col w-full px-5 mt-3">
-      <IssueCard
-        currentItem={currentItem}
-        handlePrevButton={handlePrevButton}
-        handleNextButton={handleNextButton}
-      />
-      <div className="flex gap-10  w-full">
-     
-        <ScrollCards
-          items={comicSeries}
+      <div className="flex flex-col w-full px-5 mt-3">
+        <IssueCard
           currentItem={currentItem}
-          setCurrentItem={setCurrentItem}
-          title={`Other Issues (${totalNumberIssues})`}
+          handlePrevButton={handlePrevButton}
+          handleNextButton={handleNextButton}
         />
+        <div className="flex gap-10  w-full">
+          <ScrollCards
+            items={comicSeries}
+            currentItem={currentItem}
+            setCurrentItem={setCurrentItem}
+            title={`Other Issues (${totalNumberIssues})`}
+          />
+        </div>
+        <div className="mt-6 w-full flex flex-1">
+          <ScrollCards
+            items={visitedItems}
+            title="Recently Seen"
+            currentItem={null}
+            setCurrentItem={() => {}}
+          />
+        </div>
       </div>
-      <div className="mt-6 w-full flex flex-1">
-        <ScrollCards
-          items={visitedItems}
-          title="Recently Seen"
-          currentItem={null}
-          setCurrentItem={() => {}}
-        />
+      <div className=" flex-1 flex-col ">
+        {" "}
+        {comicSeries && (
+          <BuyItem
+            item={currentItem}
+            seriesItems={comicSeries} // Pass seriesItems only when it's defined
+            cartItems={cartItems}
+            updateCartItems={updateCartItems}
+            discountPercentage={discountPercentage}
+            wishList={wishList}
+            updateWishList={updateWishList}
+          />
+        )}
       </div>
-    </div>
-    <div className=" flex-1 flex-col "> {comicSeries && ( 
-        <BuyItem
-          item={currentItem}
-          seriesItems={comicSeries} // Pass seriesItems only when it's defined
-          cartItems={cartItems}
-          updateCartItems={updateCartItems}
-          discountPercentage={discountPercentage}
-        />
-      )}</div>
     </section>
   );
 }

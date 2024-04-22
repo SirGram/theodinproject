@@ -38,7 +38,7 @@ export default function CartCard({
           <h6 className="mb-2 h-10 overflow-hidden overflow-ellipsis line-clamp-2">
             {cartItem.comic.title}
           </h6>
-          <span className="text-lg">$ {cartItem.comic.price}</span>
+          <span className="text-lg">${cartItem.comic.price}</span>
         </div>
         <div className="flex items-center justify-start">
           

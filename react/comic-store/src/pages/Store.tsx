@@ -7,7 +7,8 @@ import { IconContext } from "react-icons";
 import Loading from "../components/Loading.tsx";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FaSearch } from "react-icons/fa";
-import { ComicFormat } from "../interfaces/ComicFormat.tsx";
+
+import { ComicOrderBy, ComicFormat } from "../interfaces/types.tsx";
 
 function Filters({
   itemLimitArray,
@@ -20,17 +21,22 @@ function Filters({
   setTitleStartsWith,
   searchTitle,
   setSearchTitle,
+  orderBy,
+  setOrderBy,orderByArray
 }: {
   itemLimitArray: number[];
   itemLimit: number;
   setItemLimit: (newNumber: number) => void;
   format: ComicFormat;
   setFormat: (format: ComicFormat) => void;
-  formats: string[];
+  formats: ComicFormat[];
   titleStartsWith: string;
   setTitleStartsWith: (newTitle: string) => void;
   searchTitle: string;
   setSearchTitle: (search: string) => void;
+  orderBy:ComicOrderBy;
+  setOrderBy:(orderBy:ComicOrderBy )=> void;
+  orderByArray:ComicOrderBy[];
 }) {
   const [searchValue, setSearchValue] = useState<string>(searchTitle);
 
@@ -38,8 +44,10 @@ function Filters({
     setItemLimit(Number(e.target.value));
   };
   const updateFormat = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    console.log("event", e.target.value);
     setFormat(e.target.value as ComicFormat);
+  };
+  const updateOrderBy = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setOrderBy(e.target.value as ComicOrderBy);
   };
   const updateTitleStartsWith = (letter: string) => {
     console.log(letter);
@@ -88,8 +96,8 @@ function Filters({
             type="text"
             value={searchValue}
             onChange={(e)=>{  setSearchValue(e.target.value)}}
-            placeholder=  "Search by word title"
-            className=" w-40 bg-transparent h-full p-2"
+            placeholder=  "Search by title word "
+            className=" w-min min-w-40 bg-transparent h-full p-2"
           />{" "}
           <button
             onClick={() => handleSearchButton()}
@@ -99,7 +107,6 @@ function Filters({
           </button>
         </div>
 
-        <div>
           <div className="bg-slate-100 pl-2 ">
             <span className="mr-2">Items per page</span>
             <select
@@ -114,10 +121,23 @@ function Filters({
               ))}
             </select>
           </div>
-        </div>
+          <div className="bg-slate-100 pl-2 ">
+            <span className="mr-2">Order by</span>
+            <select
+              onChange={updateOrderBy}
+              value={orderBy}
+              className="bg-slate-200 p-2 "
+            >
+              {orderByArray.map((order, index) => (
+                <option key={index} value={order}>
+                  {order}
+                </option>
+              ))}
+            </select>
+          </div>
         <div>
           <div className="bg-slate-100 pl-2 ">
-            <span className="mr-2">Format: </span>
+            <span className="mr-2">Format</span>
             <select
               onChange={updateFormat}
               value={format}
@@ -169,7 +189,8 @@ export default function Store({
   updateDisplayMode,
   titleStartsWith,
   setTitleStartsWith,
-  discountPercentage,
+  discountPercentage, orderBy,
+  setOrderBy,orderByArray, wishList, updateWishList
 }: {
   items: Comic[];
   isLoading: boolean;
@@ -188,7 +209,10 @@ export default function Store({
   setItemLimit: (newNumber: number) => void;
   titleStartsWith: string;
   setTitleStartsWith: (newTitle: string) => void;
-  discountPercentage: number;
+  discountPercentage: number;orderBy:ComicOrderBy;
+  setOrderBy:(orderBy:ComicOrderBy )=> void;
+  orderByArray:ComicOrderBy[]; wishList:Comic[] | [];
+  updateWishList: (items: Comic[] | [])=>void
 }) {
   console.log(items);
 
@@ -242,6 +266,9 @@ export default function Store({
             setSearchTitle={setSearchTitle}
             titleStartsWith={titleStartsWith}
             setTitleStartsWith={setTitleStartsWith}
+            orderBy={orderBy}
+            setOrderBy={setOrderBy}
+            orderByArray={orderByArray}
           />
           <ItemCards
             items={items}
@@ -251,6 +278,8 @@ export default function Store({
             updateDisplayMode={updateDisplayMode}
             discountPercentage={discountPercentage}
             numberItems={totalItems}
+            wishList={wishList}
+            updateWishList={updateWishList}
           />
           <ReactPaginate
             forcePage={page}
