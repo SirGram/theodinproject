@@ -20,7 +20,7 @@ export default function Cart({
   onCartClose: () => void;
   cartItems: CartComic[];
   numberCartItems: number;
-  updateCartItems: (items: Comic[] , quantity: number) => void;
+  updateCartItems: (items: Comic[], quantity: number) => void;
   removeCartItem: (item: CartComic) => void;
   removeAllCartItems: () => void;
   shippingPrice: number;
@@ -101,13 +101,17 @@ export default function Cart({
                   <div className="w-full h-10 bg-slate-300 relative mb-2">
                     <div
                       className="absolute top-0 left-0 h-full bg-black"
-                      style={{ width: `${barWidth}%`, zIndex:2}}
+                      style={{
+                        width: `${barWidth}%`,
+                        zIndex: 2,
+                        transition: "width 0.5s ease",
+                      }}
                     ></div>
                     <span
                       className="absolute top-0 left-0 w-full h-full flex items-center justify-center text-white"
                       style={{
                         zIndex: 3,
-                    mixBlendMode: "difference" 
+                        mixBlendMode: "difference",
                       }}
                     >
                       {remainingBarPrice() > 0
@@ -119,8 +123,7 @@ export default function Cart({
                     <div
                       className="absolute top-0 left-0 w-full h-full bg-orange-700 "
                       style={{ zIndex: 4, mixBlendMode: "screen" }}
-                    >                      
-                    </div>
+                    ></div>
                   </div>
                   <div className="w-full flex justify-end">
                     <button

@@ -9,6 +9,7 @@ import IssueCard from "../components/IssueCard";
 import BuyItem from "../components/BuyItem";
 import VisitedItems from "../components/VisitedItems";
 import ScrollCards from "../components/ScrollCards";
+import fetchItemData from "../utils/fetchItemData";
 
 export default function CardPage({
   items,
@@ -22,21 +23,20 @@ export default function CardPage({
   wishList,
   updateWishList,
 }: {
-  items: Comic[] | [];
+  items: Comic[] ;
   currentItem: Comic | null;
   setCurrentItem: (updateComic: Comic | null) => void;
   itemLimit: number;
   isLoading: boolean;
   cartItems: CartComic[];
-  updateCartItems: (items: Comic[] | [], quantity: number) => void;
-  wishList: Comic[] | [];
-  updateWishList: (items: Comic[] | []) => void;
+  updateCartItems: (items: Comic[] , quantity: number) => void;
+  wishList: Comic[];
+  updateWishList: (items: Comic[] ) => void;
   discountPercentage: number;
 }) {
-  const { index } = useParams<{ index: string }>();
-  const parsedIndex = parseInt(index || "") % itemLimit;
-  const [comicSeries, setComicSeries] = useState<Comic[] | []>([]);
-  const [visitedItems, setVisitedItems] = useState<Comic[] | []>([]);
+  const { id } = useParams<{ id: string }>();
+  const [comicSeries, setComicSeries] = useState<Comic[]>([]);
+  const [visitedItems, setVisitedItems] = useState<Comic[]>([]);
   const [totalNumberIssues, setTotalNumberIssues] = useState<number>(0);
 
   const updateVisitedItems = (newVisitedItem: Comic | null): void => {
@@ -61,10 +61,10 @@ export default function CardPage({
   useEffect(() => {
     (async () => {
       try {
-        const targetItem: Comic | null = items[parsedIndex] || null;
+        const targetItem: Comic | null = await fetchItemData(Number(id));
         setCurrentItem(targetItem);
         console.log("current item", targetItem);
-        const seriesNumberUrl = targetItem.series?.seriesURI;
+        const seriesNumberUrl = targetItem?.series?.seriesURI;
         const seriesNumber = seriesNumberUrl?.split("/").pop();
 
         console.log(seriesNumber);
@@ -76,7 +76,7 @@ export default function CardPage({
             undefined,
             100,
             undefined,
-            undefined,undefined
+            undefined,undefined, 'unset'
           );
           //order by issue
           setComicSeries(
@@ -91,7 +91,6 @@ export default function CardPage({
               return 0;
             })
           );
-
           setTotalNumberIssues(issues);
         }
         console.log(comicSeries);
@@ -99,17 +98,17 @@ export default function CardPage({
         console.error("Error fetching comic series data:", error);
       }
     })();
-  }, [parsedIndex, items]);
+  }, [id]);
 
   useEffect(() => {
     updateVisitedItems(currentItem);
   }, [currentItem]);
 
   const navigate = useNavigate();
-  if (!isLoading && (parsedIndex < 0 || parsedIndex >= items.length)) {
+  /* if (!isLoading && (parsedIndex < 0 || parsedIndex >= items.length)) {
     console.log(parsedIndex, items);
     navigate("/notfound");
-  }
+  } */
   const handlePrevButton = () => {
     const newIndex = parsedIndex - 1;
     if (newIndex >= 0) navigate(`/store/${newIndex}`);

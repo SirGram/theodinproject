@@ -17,12 +17,13 @@ function Filters({
   format,
   setFormat,
   formats,
-  titleStartsWith,
-  setTitleStartsWith,
   searchTitle,
   setSearchTitle,
   orderBy,
-  setOrderBy,orderByArray
+  setOrderBy,
+  orderByArray,
+  startYear,
+  setStartYear,
 }: {
   itemLimitArray: number[];
   itemLimit: number;
@@ -30,18 +31,18 @@ function Filters({
   format: ComicFormat;
   setFormat: (format: ComicFormat) => void;
   formats: ComicFormat[];
-  titleStartsWith: string;
-  setTitleStartsWith: (newTitle: string) => void;
   searchTitle: string;
   setSearchTitle: (search: string) => void;
-  orderBy:ComicOrderBy;
-  setOrderBy:(orderBy:ComicOrderBy )=> void;
-  orderByArray:ComicOrderBy[];
+  orderBy: ComicOrderBy;
+  setOrderBy: (orderBy: ComicOrderBy) => void;
+  orderByArray: ComicOrderBy[];
+  startYear: string;
+  setStartYear: (year: string) => void;
 }) {
   const [searchValue, setSearchValue] = useState<string>(searchTitle);
 
   const updateItemLimit = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setItemLimit(Number(e.target.value));
+    setItemLimit(Number(e.target.value as string));
   };
   const updateFormat = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setFormat(e.target.value as ComicFormat);
@@ -49,6 +50,108 @@ function Filters({
   const updateOrderBy = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setOrderBy(e.target.value as ComicOrderBy);
   };
+  const updateStartYear = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setStartYear(e.target.value as string);
+  };
+
+  const handleSearchButton = () => {
+    const searchTerm: string = searchValue.toLowerCase() || "";
+    console.log(searchTerm);
+    setSearchTitle(searchTerm);
+  };
+  return (
+    <div className=" flex max-h-screen">
+      <div className="p-5 flex flex-1 gap-4 items-start justify-start flex-col">
+        <h3>Filters</h3>
+        <div className="flex bg-slate-100 items-center  h-10 ">
+          <input
+            type="text"
+            value={searchValue}
+            onChange={(e) => {
+              setSearchValue(e.target.value);
+            }}
+            placeholder="Search by title word "
+            className=" w-min min-w-40 bg-transparent h-full p-2"
+          />{" "}
+          <button
+            onClick={() => handleSearchButton()}
+            className=" opacity-50 px-4 bg-slate-300 h-full hover:opacity-30"
+          >
+            <FaSearch />
+          </button>
+        </div>
+        <div className="bg-slate-100 pl-2 w-full flex justify-between items-center">
+          <span className="mr-2 h-full flex items-center">Starting Year </span>
+          <select
+            value={startYear}
+            onChange={(e) => updateStartYear(e)}
+            className="bg-slate-200 p-2"
+          >
+            <option value="unset">Unset</option>
+            {Array.from({ length: 2024 - 1938 + 1 }, (_, i) =>
+              (2024 - i).toString()
+            ).map((year) => (
+              <option key={year} value={year}>
+                {year}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="bg-slate-100 pl-2 flex w-full justify-between items-center">
+          <span className="mr-2 flex items-center">Items per page</span>
+          <select
+            onChange={updateItemLimit}
+            value={itemLimit}
+            className="bg-slate-200 p-2 "
+          >
+            {itemLimitArray.map((number, index) => (
+              <option key={index} value={number}>
+                {number}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="bg-slate-100 pl-2  w-full flex justify-between items-center">
+          <span className="mr-2 flex items-center">Order by</span>
+          <select
+            onChange={updateOrderBy}
+            value={orderBy}
+            className="bg-slate-200 p-2 "
+          >
+            {orderByArray.map((order, index) => (
+              <option key={index} value={order}>
+                {order}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="bg-slate-100 pl-2  w-full flex justify-between items-center">
+          <span className="mr-2 flex items-center">Format</span>
+          <select
+            onChange={updateFormat}
+            value={format}
+            className="bg-slate-200 p-2  w-full justify-between items-center"
+          >
+            {formats.map((format, index) => (
+              <option key={index} value={format}>
+                {format.charAt(0).toUpperCase() + format.slice(1)}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function LettersFilter({
+  titleStartsWith,
+  setTitleStartsWith,
+}: {
+  titleStartsWith: string;
+  setTitleStartsWith: (newTitle: string) => void;
+}) {
   const updateTitleStartsWith = (letter: string) => {
     console.log(letter);
     setTitleStartsWith(letter.toLowerCase());
@@ -82,92 +185,22 @@ function Filters({
     "y",
     "z",
   ];
-
-  const handleSearchButton = () => {
-    const searchTerm: string = searchValue.toLowerCase() || "";
-    console.log(searchTerm);
-    setSearchTitle(searchTerm);
-  };
   return (
-    <>
-      <div className="my-5 flex items-center justify-around ">
-        <div className="flex bg-slate-100 items-center  h-10 ">
-          <input
-            type="text"
-            value={searchValue}
-            onChange={(e)=>{  setSearchValue(e.target.value)}}
-            placeholder=  "Search by title word "
-            className=" w-min min-w-40 bg-transparent h-full p-2"
-          />{" "}
-          <button
-            onClick={() => handleSearchButton()}
-            className=" opacity-50 px-4 bg-slate-300 h-full hover:opacity-30"
-          >
-            <FaSearch />
-          </button>
-        </div>
-
-          <div className="bg-slate-100 pl-2 ">
-            <span className="mr-2">Items per page</span>
-            <select
-              onChange={updateItemLimit}
-              value={itemLimit}
-              className="bg-slate-200 p-2 "
-            >
-              {itemLimitArray.map((number, index) => (
-                <option key={index} value={number}>
-                  {number}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="bg-slate-100 pl-2 ">
-            <span className="mr-2">Order by</span>
-            <select
-              onChange={updateOrderBy}
-              value={orderBy}
-              className="bg-slate-200 p-2 "
-            >
-              {orderByArray.map((order, index) => (
-                <option key={index} value={order}>
-                  {order}
-                </option>
-              ))}
-            </select>
-          </div>
-        <div>
-          <div className="bg-slate-100 pl-2 ">
-            <span className="mr-2">Format</span>
-            <select
-              onChange={updateFormat}
-              value={format}
-              className="bg-slate-200 p-2 "
-            >
-              {formats.map((format, index) => (
-                <option key={index} value={format}>
-                  {format.charAt(0).toUpperCase() + format.slice(1)}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-      </div>
-      <div className="w-full flex justify-around px-20 bg-slate-50 py-1 text-lg">
-        {letters.map((letter) => (
-          <button
-            className={
-              titleStartsWith === letter
-                ? " font-black"
-                : "font-thin text-slate-400 hover:text-black hover:font-black"
-            }
-            onClick={() => updateTitleStartsWith(letter)}
-            key={letter}
-          >
-            {letter.toUpperCase()}
-          </button>
-        ))}
-      </div>
-    </>
+    <div className=" flex flex-1 justify-around px-20 pt-5 bg-slate-50  text-lg">
+      {letters.map((letter) => (
+        <button
+          className={
+            titleStartsWith === letter
+              ? " font-black"
+              : "font-thin text-slate-400 hover:text-black hover:font-black"
+          }
+          onClick={() => updateTitleStartsWith(letter)}
+          key={letter}
+        >
+          {letter.toUpperCase()}
+        </button>
+      ))}
+    </div>
   );
 }
 
@@ -189,8 +222,14 @@ export default function Store({
   updateDisplayMode,
   titleStartsWith,
   setTitleStartsWith,
-  discountPercentage, orderBy,
-  setOrderBy,orderByArray, wishList, updateWishList
+  discountPercentage,
+  orderBy,
+  setOrderBy,
+  orderByArray,
+  wishList,
+  updateWishList,
+  startYear,
+  setStartYear,
 }: {
   items: Comic[];
   isLoading: boolean;
@@ -209,33 +248,19 @@ export default function Store({
   setItemLimit: (newNumber: number) => void;
   titleStartsWith: string;
   setTitleStartsWith: (newTitle: string) => void;
-  discountPercentage: number;orderBy:ComicOrderBy;
-  setOrderBy:(orderBy:ComicOrderBy )=> void;
-  orderByArray:ComicOrderBy[]; wishList:Comic[] | [];
-  updateWishList: (items: Comic[] | [])=>void
+  discountPercentage: number;
+  orderBy: ComicOrderBy;
+  setOrderBy: (orderBy: ComicOrderBy) => void;
+  orderByArray: ComicOrderBy[];
+  wishList: Comic[];
+  updateWishList: (items: Comic[]) => void;
+  startYear: string;
+  setStartYear: (year: string) => void;
 }) {
   console.log(items);
 
   const navigate = useNavigate();
   const startIndex = page * itemLimit;
-
-  /*  
-  useEffect(() => {
-    setFilteredItems(items)
-  
-  }, [items])
-  const [filteredItems, setFilteredItems] = useState<Comic[]>(items);
-  const paginatedItems: Comic[] = useMemo(() => {
-    return filteredItems.slice(startIndex, startIndex + numberItems);
-  }, [filteredItems, page, numberItems]); */
-
-  /*   const filterByName = (name: string) => {
-    console.log(name)
-    console.log('items', items)
-    const newFilteredItems = items.filter((item) => item.title.toLowerCase().includes(name.toLowerCase()));
-    console.log('search items', newFilteredItems)
-    setFilteredItems(newFilteredItems);
-  }; */
 
   const handlePageChange = (selectedPage: number) => {
     setPage(selectedPage);
@@ -250,11 +275,13 @@ export default function Store({
   }, [location.search, setPage]);
 
   return (
-    <section className="  flex-1 ">
+    <section className="  flex-1 flex">
       {isLoading ? (
         <Loading />
       ) : (
         <>
+        <div className="h-full w-80 ">
+          <div className=" fixed ml-2">
           <Filters
             itemLimit={itemLimit}
             itemLimitArray={itemLimitArray}
@@ -264,11 +291,17 @@ export default function Store({
             setFormat={setFormat}
             searchTitle={searchTitle}
             setSearchTitle={setSearchTitle}
-            titleStartsWith={titleStartsWith}
-            setTitleStartsWith={setTitleStartsWith}
             orderBy={orderBy}
             setOrderBy={setOrderBy}
             orderByArray={orderByArray}
+            startYear={startYear}
+            setStartYear={setStartYear}
+          />
+          </div></div>
+          <div className="flex flex-col flex-1 relative bg-slate-50">
+          <LettersFilter
+            titleStartsWith={titleStartsWith}
+            setTitleStartsWith={setTitleStartsWith}
           />
           <ItemCards
             items={items}
@@ -302,6 +335,7 @@ export default function Store({
               </IconContext.Provider>
             }
           />
+          </div>
         </>
       )}
     </section>

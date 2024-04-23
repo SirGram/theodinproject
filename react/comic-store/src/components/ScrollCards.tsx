@@ -131,11 +131,12 @@ export default function ScrollCards({
               style={{ scrollSnapAlign: "start" }}
             >
               <div className="h-48 w-32">
+                {item &&
                 <CardImage
-                  path={`${item.thumbnail?.path}.${item.thumbnail?.extension}`}
+                  path={`${item.images[0].path}.${item.images[0].extension}`}
                   title={item.title}
                   height="full"
-                />
+                />}
               </div>
 
               <h5 className=" text-center w-full">#{item.issueNumber}</h5>

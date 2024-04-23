@@ -35,7 +35,7 @@ export default function Card({
     <div className=" bg-white   mb-5 rounded-sm overflow-hidden w-52 drop-shadow-md">
       <div className="hover:bg-blue-100">
         <Link
-          to={`/store/${startIndex + index}?page=${currentPage}`}
+          to={`/store/${item.id}?page=${currentPage}`}
           className="flex w-fit"
         >
           <div className=" h-80 ">

@@ -1,5 +1,5 @@
 import Comic from "../interfaces/Comic";
-
+import mapComic from "./mapComic";
 import {
   ComicFormat,
   ComicDate,
@@ -15,49 +15,13 @@ export default async function fetchComicData(
   limit: ComicLimit | undefined = undefined,
   titleStartsWith: string = "ALL",
   searchTitle: string = "",
-  orderBy: ComicOrderBy| undefined
+  orderBy: ComicOrderBy| undefined, startYear: string
 ): Promise<[Comic[], number]> {
   const publicKey: string = process.env.PUBLIC_KEY || "";
   const hash: string = process.env.HASH_KEY || "";
   const ts: string = "1";
 
-  const mapComic = (comicData: any): Comic => ({
-    id: comicData.id,
-    title: comicData.title.trim(),
-    creators: comicData.creators.items
-      ? comicData.creators.items.map(
-          (creator: { name: string }) => creator.name
-        )
-      : [],
-    description2: comicData.description ? comicData.description : undefined,
-    description: comicData.textObjects[0]
-      ? comicData.textObjects[0].text
-      : undefined,
-    issueNumber:
-      comicData.issueNumber !== undefined ? comicData.issueNumber : undefined,
-    series: comicData.series
-      ? {
-          seriesName: comicData.series.name,
-          seriesURI: comicData.series.resourceURI,
-        }
-      : undefined,
-    images: comicData.images
-      ? comicData.images.map((image: any) => ({
-          path: image.path,
-          extension: image.extension,
-        }))
-      : [],
-    thumbnail: comicData.thumbnail
-      ? {
-          path: comicData.thumbnail.path,
-          extension: comicData.thumbnail.extension,
-        }
-      : undefined,
-    pageCount:
-      comicData.pageCount !== undefined ? comicData.pageCount : undefined,
-    price: comicData.prices ? comicData.prices[0].price.toFixed(2) : 0.0,
-    format: comicData.format ? comicData.format : undefined,
-  });
+ 
 
   if (!publicKey || !hash) {
     console.error("Missing environment variables for authentication");
@@ -98,7 +62,10 @@ export default async function fetchComicData(
     if (orderBy !== undefined) {
       url = url += `&orderBy=${orderBy}`;
     }
-    console.log(url);
+    if (startYear !== 'unset') {
+      url = url += `&startYear=${startYear}`;
+    }
+    console.log(startYear);
 
     const res = await fetch(url);
 

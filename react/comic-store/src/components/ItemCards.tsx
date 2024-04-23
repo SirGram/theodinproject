@@ -24,8 +24,7 @@ export default function ItemCards({
   updateDisplayMode: (mode: boolean) => void;
   discountPercentage: number;
   numberItems: number;
-  wishList: Comic[] | [];
-  updateWishList: (items: Comic[] | []) => void;
+  updateWishList: (items: Comic[]) => void;
 }) {
   return (
     <div className="py-5 px-10 gap-2 bg-slate-50">
