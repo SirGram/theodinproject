@@ -4,10 +4,9 @@ import "./index.css";
 import Footer from "./components/Footer.tsx";
 import Nav from "./components/Nav.tsx";
 import Offer from "./components/Offer.tsx";
-import fetchComicData from "./utils/fetchComicData.tsx";
+import fetchComicData from "./utils/fetchComics.tsx";
 import Home from "./pages/Home.tsx";
-import Store from "./pages/Store.tsx";
-import CardPage from "./pages/CardPage.tsx";
+import Store from "./pages/Store/Store.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import Comic from "./interfaces/Comic";
 import CartComic from "./interfaces/CartComic.tsx";
@@ -20,21 +19,25 @@ import {
   ComicOrderBy,
 } from "./interfaces/types";
 import WishList from "./modals/WishList.tsx";
+import Books from "./pages/Store/Books.tsx";
+import LettersFilter from "./pages/Store/components/LetterFilter.tsx";
+import Filters from "./pages/Store/components/Filters.tsx";
+import ComicPage from "./pages/ComicPage/ComicPage.tsx";
 
 function App() {
   const discountPercentage: number = 20;
   const shippingPrice: number = 4.99;
   const freeShippingLimit: number = 30;
 
-  const [featuredItems, setFeaturedItems] = useState<Comic[] >([]);
-  const [items, setItems] = useState<Comic[] >([]);
+  const [featuredItems, setFeaturedItems] = useState<Comic[]>([]);
+  const [items, setItems] = useState<Comic[]>([]);
   const [currentItem, setCurrentItem] = useState<Comic | null>(null);
   const [numberTotalItems, setNumberTotalItems] = useState<number>(0);
 
   const [page, setPage] = useState<number>(0);
 
   const [wishList, setWishList] = useState<Comic[]>([]);
-  const updateWishList = (items: Comic[] ) => {
+  const updateWishList = (items: Comic[]) => {
     if (items.length > 0) {
       const newCartItems: Comic[] = [...wishList];
 
@@ -54,9 +57,9 @@ function App() {
       console.log(wishList);
     }
   };
-  const removeWishList = ()=>{
+  const removeWishList = () => {
     setWishList([]);
-  }
+  };
   const [isWishListOpen, setIsWishListOpen] = useState<boolean>(false);
   const toggleWishList = () => {
     const invertIsWishListOpen: boolean = !isWishListOpen;
@@ -123,7 +126,7 @@ function App() {
   };
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [startYear, setStartYear] = useState<string>('unset');
+  const [startYear, setStartYear] = useState<string>("unset");
   const [orderBy, setOrderBy] = useState<ComicOrderBy>(ComicOrderBy.FocDate);
   const orderByArray: ComicOrderBy[] = Object.values(ComicOrderBy);
   const formats: ComicFormat[] = [
@@ -171,7 +174,8 @@ function App() {
         itemLimit,
         titleStartsWith,
         searchTitle,
-        orderBy, startYear
+        orderBy,
+        startYear
       );
       console.log(comics);
       setFeaturedItems(comics.slice(0, 4));
@@ -179,7 +183,15 @@ function App() {
       setIsLoading(false);
       setNumberTotalItems(numberComics);
     })();
-  }, [page, format, itemLimit, titleStartsWith, searchTitle, orderBy,startYear]);
+  }, [
+    page,
+    format,
+    itemLimit,
+    titleStartsWith,
+    searchTitle,
+    orderBy,
+    startYear,
+  ]);
 
   return (
     <div id="app" className="flex flex-col  text-black ">
@@ -192,7 +204,7 @@ function App() {
         />
       </header>
       <main className="flex flex-1 flex-col">
-        <Offer freeShippingLimit={freeShippingLimit} ></Offer>
+        <Offer freeShippingLimit={freeShippingLimit}></Offer>
         <Cart
           isCartOpen={isCartOpen}
           onCartClose={toggleCart}
@@ -221,42 +233,51 @@ function App() {
             element={<Home items={featuredItems} isLoading={isLoading} />}
           />
           <Route path="/account" element={<Account />} />
+          <Route path="/store" element={<Store />} />
           <Route
-            path="/store"
+            path="/store/books"
             element={
-              <Store
+              <Books
+                itemLimit={itemLimit}
                 items={items}
                 isLoading={isLoading}
                 totalItems={numberTotalItems}
                 page={page}
                 setPage={setPage}
-                format={format}
-                setFormat={setFormat}
-                searchTitle={searchTitle}
-                setSearchTitle={setSearchTitle}
-                formats={formats}
                 displayMode={storeDisplayMode}
                 updateDisplayMode={updateStoreDisplayMode}
-                itemLimit={itemLimit}
-                setItemLimit={setItemLimit}
                 itemLimitArray={itemLimitArray}
-                titleStartsWith={titleStartsWith}
-                setTitleStartsWith={setTitleStartsWith}
+                setItemLimit={setItemLimit}
                 discountPercentage={discountPercentage}
-                orderBy={orderBy}
-                setOrderBy={setOrderBy}
-                orderByArray={orderByArray}
                 wishList={wishList}
                 updateWishList={updateWishList}
-                startYear={startYear}
-                setStartYear={setStartYear}
-              />
+              >
+                <Filters
+                  itemLimit={itemLimit}
+                  itemLimitArray={itemLimitArray}
+                  setItemLimit={setItemLimit}
+                  format={format}
+                  formats={formats}
+                  setFormat={setFormat}
+                  searchTitle={searchTitle}
+                  setSearchTitle={setSearchTitle}
+                  orderBy={orderBy}
+                  setOrderBy={setOrderBy}
+                  orderByArray={orderByArray}
+                  startYear={startYear}
+                  setStartYear={setStartYear}
+                />
+                <LettersFilter
+                  titleStartsWith={titleStartsWith}
+                  setTitleStartsWith={setTitleStartsWith}
+                />
+              </Books>
             }
           />
           <Route
-            path="/store/:id"
+            path="/store/books/:id"
             element={
-              <CardPage
+              <ComicPage
                 items={items}
                 currentItem={currentItem}
                 setCurrentItem={setCurrentItem}

@@ -35,7 +35,7 @@ export default function Card({
     <div className=" bg-white   mb-5 rounded-sm overflow-hidden w-52 drop-shadow-md">
       <div className="hover:bg-blue-100">
         <Link
-          to={`/store/${item.id}?page=${currentPage}`}
+          to={`/store/books/${item.id}?page=${currentPage}`}
           className="flex w-fit"
         >
           <div className=" h-80 ">
@@ -47,7 +47,7 @@ export default function Card({
           <div className="text-center p-3 flex justify-center items-center flex-col">
             <div className="  overflow-hidden  overflow-ellipsis line-clamp-2 h-14 w-full mb-3 ">
               <Link
-                to={`/store/${startIndex + index}?page=${currentPage}`}
+                  to={`/store/books/${item.id}?page=${currentPage}`}
                 className="flex w-fit"
               >
                 <h4 className="text-lg hover:underline">{title}</h4>
@@ -84,7 +84,7 @@ export default function Card({
     <div className="w-full flex  bg-white mb-5 rounded-sm overflow-hidden  drop-shadow-md">
       <div className="flex-1 flex  hover:bg-blue-100">
         <Link
-          to={`/store/${startIndex + index}?page=${currentPage}`}
+           to={`/store/books/${item.id}?page=${currentPage}`}
           className=""
         >
           <div className=" h-40 w-28">
@@ -95,7 +95,7 @@ export default function Card({
           <div className=" flex flex-col justify-around  h-full w-full  px-10 py-2">
             <div className="  overflow-hidden  overflow-ellipsis line-clamp-2 h-14 w-full  ">
               <Link
-                to={`/store/${startIndex + index}?page=${currentPage}`}
+                  to={`/store/books/${item.id}?page=${currentPage}`}
                 className="flex w-fit"
               >
                 <h4 className="hover:underline">{title}</h4>

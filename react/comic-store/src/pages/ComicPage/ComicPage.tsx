@@ -1,15 +1,17 @@
-import Comic from "../interfaces/Comic";
-import CartComic from "../interfaces/CartComic";
+import Comic from "../../interfaces/Comic";
+import CartComic from "../../interfaces/CartComic";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import Loading from "../components/Loading";
+import Loading from "../../components/Loading";
 import { useNavigate } from "react-router-dom";
-import fetchComicData from "../utils/fetchComicData";
-import IssueCard from "../components/IssueCard";
-import BuyItem from "../components/BuyItem";
+import fetchComicData from "../../utils/fetchComics";
+import IssueCard from "./components/ComicInfo";
+import BuyItem from "./components/BuyItem";
 import VisitedItems from "../components/VisitedItems";
-import ScrollCards from "../components/ScrollCards";
-import fetchItemData from "../utils/fetchItemData";
+import ScrollCards from "../../components/ScrollCards";
+import fetchItemData from "../../utils/fetchComic";
+import ComicInfo from "./components/ComicInfo";
+import fetchComic from "../../utils/fetchComic";
 
 export default function CardPage({
   items,
@@ -61,7 +63,7 @@ export default function CardPage({
   useEffect(() => {
     (async () => {
       try {
-        const targetItem: Comic | null = await fetchItemData(Number(id));
+        const targetItem: Comic | null = await fetchComic(Number(id));
         setCurrentItem(targetItem);
         console.log("current item", targetItem);
         const seriesNumberUrl = targetItem?.series?.seriesURI;
@@ -123,7 +125,7 @@ export default function CardPage({
   ) : (
     <section className="flex px-10 my-5  w-full">
       <div className="flex flex-col w-full px-5 mt-3">
-        <IssueCard
+        <ComicInfo
           currentItem={currentItem}
           handlePrevButton={handlePrevButton}
           handleNextButton={handleNextButton}

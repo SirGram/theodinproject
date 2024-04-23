@@ -7,7 +7,7 @@ import {
   ComicOrderBy,
 } from "../interfaces/types";
 
-export default async function fetchComicData(
+export default async function fetchComics(
   series: string | undefined = undefined,
   format: ComicFormat | undefined = "all",
   date: ComicDate | undefined = undefined,
