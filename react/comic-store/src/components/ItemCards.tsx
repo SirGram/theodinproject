@@ -14,8 +14,8 @@ export default function ItemCards({
   updateDisplayMode,
   discountPercentage,
   numberItems,
-  wishList,
   updateWishList,
+  wishList
 }: {
   items: Comic[];
   startIndex: number;
@@ -24,6 +24,7 @@ export default function ItemCards({
   updateDisplayMode: (mode: boolean) => void;
   discountPercentage: number;
   numberItems: number;
+  wishList:Comic[];
   updateWishList: (items: Comic[]) => void;
 }) {
   return (

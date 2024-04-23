@@ -1,5 +1,5 @@
-import Comic from "../interfaces/Comic";
-import CartComic from "../interfaces/CartComic";
+import Comic from "../../../interfaces/Comic";
+import CartComic from "../../../interfaces/CartComic";
 import { FaHeart, FaHeartBroken } from "react-icons/fa";
 
 export default function BuyItem({

@@ -1,7 +1,7 @@
-import Comic from "../interfaces/Comic";
-import CardImage from "../components/CardImage";
+import Comic from "../../../interfaces/Comic.tsx";
+import CardImage from "../../../components/CardImage.tsx";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import Loading from "./Loading.tsx";
+import Loading from "../../../components/Loading.tsx";
 import { useState } from "react";
 import { IoArrowBack } from "react-icons/io5";
 import { MdArrowBack } from "react-icons/md";
@@ -22,7 +22,7 @@ export default function IssueCard({
   return (
     <div className="flex flex-col mb-7 w-full">
       <div className="justify-between w-full flex mb-2">
-        <Link to="/store" className="flex">
+        <Link to="/store/books" className="flex">
           <button className=" text-2xl px-2 hover:opacity-50 transition-opacity">
             <MdArrowBack />
           </button>

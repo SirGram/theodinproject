@@ -1,7 +1,7 @@
 import Comic from "../interfaces/Comic";
 import mapComic from "./mapComic";
 
-export default async function fetchItemData(
+export default async function fetchComic(
   comicId: number 
 ): Promise<Comic | null> {
   const publicKey: string = process.env.PUBLIC_KEY || "";

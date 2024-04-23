@@ -40,7 +40,7 @@ export default function WishList({
             ) : (
               <div className=" flex flex-col flex-1  max-h-full w-full">
                 {" "}
-                <h2 className="p-5 text-center pb-1">
+                <h2 className="p-5 text-center pb-0">
                   Wishlist
                 </h2><div className="w-full flex justify-end px-10">
                 <button className="w-f hover:underline " onClick={()=>removeWishList([])}>Remove All</button></div>
