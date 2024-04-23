@@ -11,6 +11,6 @@ export default interface Comic {
   issueNumber?: number;
   series?: { seriesName: string; seriesURI: string };
   images: { path: string; extension: string }[];
-  thumbnail?: { path: string; extension: string };
+ 
   pageCount?: number;
 }

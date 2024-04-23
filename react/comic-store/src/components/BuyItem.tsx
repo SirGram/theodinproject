@@ -15,9 +15,9 @@ export default function BuyItem({
   cartItems: CartComic[];
   updateCartItems: (items: Comic[] | null, quantity: number) => void;
   discountPercentage: number;
-  seriesItems: Comic[] | [];
-  wishList: Comic[] | [];
-  updateWishList: (items: Comic[] | []) => void;
+  seriesItems: Comic[] ;
+  wishList: Comic[] ;
+  updateWishList: (items: Comic[] ) => void;
 }) {
   const quantity: number = 1;
 

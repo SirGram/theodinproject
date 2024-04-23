@@ -7,7 +7,7 @@ export type ComicFormat =
   | "trade paperback"
   | "hardcover"
   | "digest"
-  | "graphical novel"
+  | "graphic novel"
   | "digital comic"
   | "infinite comic";
 

@@ -26,15 +26,15 @@ function App() {
   const shippingPrice: number = 4.99;
   const freeShippingLimit: number = 30;
 
-  const [featuredItems, setFeaturedItems] = useState<Comic[] | []>([]);
-  const [items, setItems] = useState<Comic[] | []>([]);
+  const [featuredItems, setFeaturedItems] = useState<Comic[] >([]);
+  const [items, setItems] = useState<Comic[] >([]);
   const [currentItem, setCurrentItem] = useState<Comic | null>(null);
   const [numberTotalItems, setNumberTotalItems] = useState<number>(0);
 
   const [page, setPage] = useState<number>(0);
 
-  const [wishList, setWishList] = useState<Comic[] | []>([]);
-  const updateWishList = (items: Comic[] | []) => {
+  const [wishList, setWishList] = useState<Comic[]>([]);
+  const updateWishList = (items: Comic[] ) => {
     if (items.length > 0) {
       const newCartItems: Comic[] = [...wishList];
 
@@ -54,6 +54,9 @@ function App() {
       console.log(wishList);
     }
   };
+  const removeWishList = ()=>{
+    setWishList([]);
+  }
   const [isWishListOpen, setIsWishListOpen] = useState<boolean>(false);
   const toggleWishList = () => {
     const invertIsWishListOpen: boolean = !isWishListOpen;
@@ -63,7 +66,7 @@ function App() {
 
     setIsWishListOpen(invertIsWishListOpen);
   };
-  const [cartItems, setCartItems] = useState<CartComic[] | []>([]);
+  const [cartItems, setCartItems] = useState<CartComic[]>([]);
   const [isCartOpen, setIsCartOpen] = useState<boolean>(false);
   const toggleCart = () => {
     const invertIsCartOpen: boolean = !isCartOpen;
@@ -120,6 +123,7 @@ function App() {
   };
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [startYear, setStartYear] = useState<string>('unset');
   const [orderBy, setOrderBy] = useState<ComicOrderBy>(ComicOrderBy.FocDate);
   const orderByArray: ComicOrderBy[] = Object.values(ComicOrderBy);
   const formats: ComicFormat[] = [
@@ -129,7 +133,7 @@ function App() {
     "trade paperback",
     "hardcover",
     "digest",
-    "graphical novel",
+    "graphic novel",
     "digital comic",
     "infinite comic",
   ];
@@ -167,7 +171,7 @@ function App() {
         itemLimit,
         titleStartsWith,
         searchTitle,
-        orderBy
+        orderBy, startYear
       );
       console.log(comics);
       setFeaturedItems(comics.slice(0, 4));
@@ -175,7 +179,7 @@ function App() {
       setIsLoading(false);
       setNumberTotalItems(numberComics);
     })();
-  }, [page, format, itemLimit, titleStartsWith, searchTitle, orderBy]);
+  }, [page, format, itemLimit, titleStartsWith, searchTitle, orderBy,startYear]);
 
   return (
     <div id="app" className="flex flex-col  text-black ">
@@ -188,7 +192,7 @@ function App() {
         />
       </header>
       <main className="flex flex-1 flex-col">
-        <Offer freeShippingLimit={freeShippingLimit}></Offer>
+        <Offer freeShippingLimit={freeShippingLimit} ></Offer>
         <Cart
           isCartOpen={isCartOpen}
           onCartClose={toggleCart}
@@ -209,10 +213,11 @@ function App() {
           updateDisplayMode={updateWishListDisplayMode}
           isWishListOpen={isWishListOpen}
           toggleWishList={toggleWishList}
+          removeWishList={removeWishList}
         />
         <Routes>
           <Route
-            path="/"
+            path="/home"
             element={<Home items={featuredItems} isLoading={isLoading} />}
           />
           <Route path="/account" element={<Account />} />
@@ -243,11 +248,13 @@ function App() {
                 orderByArray={orderByArray}
                 wishList={wishList}
                 updateWishList={updateWishList}
+                startYear={startYear}
+                setStartYear={setStartYear}
               />
             }
           />
           <Route
-            path="/store/:index"
+            path="/store/:id"
             element={
               <CardPage
                 items={items}

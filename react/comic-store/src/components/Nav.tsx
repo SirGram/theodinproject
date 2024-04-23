@@ -17,7 +17,7 @@ export default function Nav({
   const location = useLocation();
   const isOnStoreRoute = location.pathname.includes("/store");
   const isOnAccountRoute = location.pathname.includes("/account");
-  const isOnHomeRoute = location.pathname.includes("/account");
+  const isOnHomeRoute = location.pathname.includes("/home");
 
   useEffect(() => {
     const handleScroll = () => {
@@ -37,7 +37,7 @@ export default function Nav({
       }`}
     >
       <div className="flex items-center">
-        <Link to="/">
+        <Link to="/home">
           <img className="max-h-10 hover:scale-105 transition-all" src={logo} alt="logo" />
         </Link>
       </div>
@@ -59,6 +59,15 @@ export default function Nav({
           }`}
         >
           ACCOUNT
+        </h4>
+      </Link>
+      <Link to="/home" className={`${isOnHomeRoute ? "pointer-events-none" : ""}`}>
+        <h4
+          className={`hover:opacity-50 transition-opacity border-b-4 ${
+            isOnHomeRoute ? "border-black pointer-events-none" : "border-white"
+          }`}
+        >
+          HOME
         </h4>
       </Link>
         <button

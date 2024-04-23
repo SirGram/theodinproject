@@ -9,7 +9,7 @@ export default function CartCard({
   updateCartItems,removeCartItem
 }: {
   cartItem: CartComic;
-  updateCartItems: (items: Comic[] | [], quantity: number) => void;
+  updateCartItems: (items: Comic[] , quantity: number) => void;
   removeCartItem:(item:CartComic)=>void
 }) {
   const substractQuantity = (): void => {
