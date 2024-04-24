@@ -2,7 +2,6 @@ import CartComic from "../interfaces/CartComic";
 import Comic from "../interfaces/Comic";
 import CartCard from "../components/CartCard";
 import { IoClose } from "react-icons/io5";
-import { useState, useEffect } from "react";
 
 export default function Cart({
   isCartOpen,
@@ -27,55 +26,39 @@ export default function Cart({
   freeShippingLimit: number;
   discountPercentage: number;
 }) {
-  console.log(discountPercentage);
   const getSubTotalPrice = (): number => {
     let price = 0;
     cartItems.forEach((cartItem) => {
       price += cartItem.comic.price * cartItem.quantity;
     });
-    return Number(price.toFixed(2));
+    return Number(price);
   };
-  const [subTotalPrice, setSubTotalPrice] = useState<number>(
-    getSubTotalPrice()
-  );
-
   const getIsFreeShipping = (): boolean => {
     return subTotalPrice > freeShippingLimit;
   };
-  const [isFreeShipping, setIsFreeShipping] = useState<boolean>(
-    getIsFreeShipping()
-  );
+
   const getDiscountedPrice = (): number => {
-    const discount: number = Number(
-      ((discountPercentage * subTotalPrice) / 100).toFixed(2)
-    );
+    const discount: number = Number((discountPercentage * subTotalPrice) / 100);
     return discount;
   };
-
-  const [discountedPrice, setDiscountedPrice] = useState<number>(
-    getDiscountedPrice()
-  );
-
   const getTotalPrice = (): number => {
     const total =
       subTotalPrice + (isFreeShipping ? 0 : shippingPrice) - discountedPrice;
-    return Number(total.toFixed(2));
+    return Number(total);
   };
+  const subTotalPrice: number = getSubTotalPrice();
+  const isFreeShipping: boolean = getIsFreeShipping();
+  const discountedPrice: number = getDiscountedPrice();
+  const totalPrice: number = getTotalPrice();
+  const barWidth: number = Math.min(
+    (subTotalPrice / freeShippingLimit) * 100,
+    100,
+  );
 
-  const [totalPrice, setTotalPrice] = useState<number>(getTotalPrice());
-
-  useEffect(() => {
-    setSubTotalPrice(getSubTotalPrice());
-    setIsFreeShipping(getIsFreeShipping);
-    setDiscountedPrice(getDiscountedPrice);
-    setTotalPrice(getTotalPrice());
-  }, [cartItems, subTotalPrice, isFreeShipping, discountedPrice]);
-  const barWidth = Math.min((subTotalPrice / freeShippingLimit) * 100, 100);
-  console.log(barWidth);
-  const remainingBarPrice = (): number => {
-    const price = Math.max(freeShippingLimit - subTotalPrice, 0);
-    return price;
-  };
+  const remainingBarPrice: number = Math.max(
+    freeShippingLimit - subTotalPrice,
+    0,
+  );
 
   return (
     <>
@@ -114,9 +97,9 @@ export default function Cart({
                         mixBlendMode: "difference",
                       }}
                     >
-                      {remainingBarPrice() > 0
-                        ? `Spend $${remainingBarPrice().toFixed(
-                            2
+                      {remainingBarPrice > 0
+                        ? `Spend $${remainingBarPrice.toFixed(
+                            2,
                           )} more for free shipping`
                         : "You are eligible for free shipping"}
                     </span>
@@ -185,7 +168,7 @@ export default function Cart({
                       className="mt-5 w-full py-2 bg-orange-700 text-white hover:opacity-50 transition-opacity"
                       onClick={() =>
                         window.alert(
-                          `You bought ${numberCartItems} item/s for $${totalPrice}!`
+                          `You bought ${numberCartItems} item/s for $${totalPrice}!`,
                         )
                       }
                     >
