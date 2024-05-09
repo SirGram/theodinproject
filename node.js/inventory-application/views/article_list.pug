@@ -1,0 +1,15 @@
+extends layout
+
+block content
+  h1= title  
+  if article_list.length  
+    ul
+      each article in article_list
+        li
+          a(href=article.url) #{article.name}          
+          hr
+  else  
+    p There are no articles.
+    hr
+
+  a(href='/catalog/article/create') Create new article

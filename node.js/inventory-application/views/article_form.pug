@@ -1,0 +1,46 @@
+extends layout
+
+block content
+  h1= title
+
+  form(method='POST')
+    div.form-group
+      label(for='title') Name:
+      input#name.form-control(type='text' placeholder='Name of article' name='name' required value=(undefined===article ? '' : article.name) )
+    div.form-group
+      label(for='brand') Brand:
+      select#brand.form-control(name='brand' )
+        option(value='') --Please select a brand--
+        for brand in brands
+          if article
+            if article.brand._id.toString()===brand._id.toString()
+              option(value=brand._id selected) #{brand.name}
+            else
+              option(value=brand._id) #{brand.name}
+          else
+            option(value=brand._id) #{brand.name}
+    div.form-group
+      label(for='summary') Description:
+      textarea#description.form-control(placeholder='Description' name='description' )= undefined===article ? '' : article.description
+    div.form-group
+      label(for='price') Price:
+      input#price.form-control(type='text' placeholder='$ 56' name='price' value=(undefined===article ? '' : article.price) required)
+    div.form-group
+      label Categories:
+      div
+        for category in categories
+          div(style='display: inline; padding-right:10px;')
+
+            - let isChecked = article && article.category.includes(category._id.toString())
+            if isChecked
+              input.checkbox-input(type='checkbox' name='category', id=category._id, value=category._id, checked)
+            else
+              input.checkbox-input(type='checkbox' name='category', id=category._id, value=category._id)
+            label(for=category._id) &nbsp;#{category.name}
+          br
+    button.btn.btn-primary(type='submit') Submit
+
+  if errors
+    ul
+      for error in errors
+        li!= error.msg

@@ -1,0 +1,21 @@
+extends layout
+
+block content
+    h1 #{title}
+    if category
+        p Name: #{category.name}
+        p Description: #{category.description}
+        if articles && articles.length > 0
+            p Number of items in store: #{articles.length}
+            ul
+                each article in articles 
+                    li 
+                        a(href=article.url)= article.name
+        else
+            p No articles found for this brand.
+            hr
+        a(href=category.url + '/update') Update this category
+        hr
+        a(href=category.url + '/delete') Delete this category
+    else
+        p Category not found.

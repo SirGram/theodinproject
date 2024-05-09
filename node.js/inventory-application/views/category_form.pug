@@ -1,0 +1,18 @@
+extends layout
+
+block content
+  h1=title
+
+  form(method='POST')
+    div.form-group
+      label(for='name') Name:
+      input#name.form-control(type='text', placeholder='Name (Electronics)' name='name' required value=(undefined===category ? '' : category.name) )
+      label(for='description') Description:
+      input#description.form-control(requiredtype='text', placeholder='Description ( Devices and appliances that utilize electrical circuits.)' name='description' value=(undefined===category ? '' : category.description))
+    div.form-group
+     button.btn.btn-primary(type='submit') Submit
+
+  if errors
+    ul
+      for error in errors
+        li!= error.msg

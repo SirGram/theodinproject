@@ -1,0 +1,23 @@
+extends layout
+
+block content
+    h1 #{title}
+    if article
+        p Name: #{article.name}
+        p Description: #{article.description}
+        p Price: $#{article.price}
+        p Brand: #{article.brand.name}
+        if article.category.length > 0
+            p Categories:
+            ul
+                each category in article.category 
+                    li 
+                        a(href=category.url) #{category.name}
+        else
+            p No article found.
+            hr
+        a(href=article.url + '/update') Update this article
+        hr
+        a(href=article.url + '/delete') Delete this article
+    else
+        p Article not found.
