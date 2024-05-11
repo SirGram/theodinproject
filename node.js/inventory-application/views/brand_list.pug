@@ -1,0 +1,17 @@
+extends layout
+
+block content
+  h1= title
+  if brand_list.length
+    ul
+      each brand in brand_list
+        div
+          a(href=brand.url) #{brand.name}            
+          | Date Foundation: #{brand.year_foundation_number}
+          hr
+
+  else
+    p There are no brands.
+  hr
+  a(href='/catalog/brand/create') Create new brand
+            

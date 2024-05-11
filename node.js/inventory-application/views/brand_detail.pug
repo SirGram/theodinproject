@@ -1,0 +1,21 @@
+extends layout
+
+block content
+    h1 #{title}
+    if brand
+        p Name: #{brand.name}
+        p Date of foundation: #{brand.year_foundation_number}
+        if articles && articles.length > 0
+            p Number of items in store: #{articles.length}
+            ul
+                each article in articles 
+                    li 
+                        a(href=article.url)= article.name
+        else
+            p No articles found for this brand.
+            hr
+        a(href=brand.url + '/update') Update this brand
+        hr
+        a(href=brand.url + '/delete') Delete this brand
+    else
+        p Brand not found.

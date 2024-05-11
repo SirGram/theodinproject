@@ -1,0 +1,16 @@
+extends layout
+
+block content
+
+    h1 #{title} 
+    p #{article.name} | Price: #{article.price}
+    p Description: #{article.description}
+
+    p Do you really want to delete this Article?
+    br
+
+    form(method='POST')
+        div.form-group
+        input#articleid.form-control(type='hidden' name='articleid', value=article._id )
+
+        button.btn.btn-primary(type='submit') Delete 

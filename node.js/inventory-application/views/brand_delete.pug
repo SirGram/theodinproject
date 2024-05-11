@@ -1,0 +1,26 @@
+extends layout
+
+block content
+
+  h1 #{title} 
+  p #{brand.name} | Date Foundation:#{brand.year_foundation_number}
+
+  if brand_articles.length
+
+    p #[strong Delete the following articles before attempting to delete this brand.]
+    div(style='margin-left:20px;margin-top:20px')
+      h4 Articles
+      dl
+        each article in brand_articles
+          dt
+            a(href=article.url) #{article.name}
+          dd #{article.description}
+
+  else
+    p Do you really want to delete this Brand?
+
+    form(method='POST')
+      div.form-group
+        input#brandid.form-control(type='hidden', name='brandid', value=brand._id )
+
+      button.btn.btn-primary(type='submit') Delete
