@@ -4,14 +4,14 @@ import {
 
 import { User } from './user';
 
-interface Message extends Document {
+interface IMessage extends Document {
   _id?: string;
   content: string;
   timestamp: Date;
-  sender: User;
+  sender: typeof User;
 }
 
-const MessageSchema = new Schema<Message>({
+const MessageSchema = new Schema<IMessage>({
   content: {
     type: String,
     required: true,
@@ -20,4 +20,4 @@ const MessageSchema = new Schema<Message>({
   sender: { type: Schema.Types.ObjectId, ref: 'User' },
 });
 
-export const Message = model<Message>('Message', MessageSchema);
+export const Message = model<IMessage>('Message', MessageSchema);

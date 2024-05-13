@@ -3,7 +3,7 @@ import {
   ObjectId,
 } from 'mongoose';
 
-export interface User extends Document {
+export interface IUser extends Document {
   _id?: string;
   userName: string;
   firstName: string;
@@ -13,7 +13,7 @@ export interface User extends Document {
   registrationDate: Date;
 }
 
-const UserSchema = new Schema<User>({
+const UserSchema = new Schema<IUser>({
   userName: { type: String, required: true },
   firstName: { type: String, required: true },
   lastName: { type: String, required: false },
@@ -22,4 +22,4 @@ const UserSchema = new Schema<User>({
   registrationDate: { type: Date, default: Date.now },
 });
 
-export const User = model<User>('User', UserSchema);
+export const User = model<IUser>('User', UserSchema);
