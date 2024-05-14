@@ -2,14 +2,7 @@ import {
   model, models, Schema, Document,
 } from 'mongoose';
 
-import { User } from './user';
-
-interface IMessage extends Document {
-  _id?: string;
-  content: string;
-  timestamp: Date;
-  sender: typeof User;
-}
+import { IMessage } from '../types/interfaces';
 
 const MessageSchema = new Schema<IMessage>({
   content: {
@@ -17,7 +10,7 @@ const MessageSchema = new Schema<IMessage>({
     required: true,
   },
   timestamp: { type: Date, default: Date.now },
-  sender: { type: Schema.Types.ObjectId, ref: 'User' },
+  sender: { type: Schema.Types.ObjectId, ref: 'User', required: true },
 });
 
 export const Message = model<IMessage>('Message', MessageSchema);

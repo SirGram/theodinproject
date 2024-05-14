@@ -2,16 +2,7 @@ import {
   model, models, Schema, Document,
   ObjectId,
 } from 'mongoose';
-
-export interface IUser extends Document {
-  _id?: string;
-  userName: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-  registrationDate: Date;
-}
+import { IUser } from '../types/interfaces';
 
 const UserSchema = new Schema<IUser>({
   userName: { type: String, required: true },

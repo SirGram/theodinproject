@@ -1,28 +1,17 @@
-/* eslint-disable */
-import express, { Express, Request, Response } from "express";
-import dotenv from "dotenv";
-const passport = require('passport');
 
-dotenv.config()
+import express, { Express, Request, Response } from 'express';
+import dotenv from 'dotenv';
+const passport = require('passport');
+import { connectToDB } from './config/db';
+import { User } from './models/user.model';
+import app from './app';
+
+dotenv.config();
 const port = process.env.PORT;
 
-const app = express()
-app.get("/", (req: Request, res: Response) => {
-  res.send("Express + TypeScript Server");
-});
-
+//mongoose
+connectToDB();
 
 app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);
 });
-
-//mongoose
-const mongoose = require('mongoose');
-mongoose.set('strictQuery', false);
-const mongoDB = process.env.MONGODB;
-
-
-main().catch((err) => console.log(err));
-async function main() {
-  await mongoose.connect(mongoDB);
-}
