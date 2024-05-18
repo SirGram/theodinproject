@@ -1,15 +1,14 @@
 import { Types } from "mongoose";
-import { AvatarGenerator } from "random-avatar-generator";
 
 export interface IUser {
     _id?: Types.ObjectId;
     userName: string;
     firstName: string;
-    lastName?: string;
+    lastName: string;
     email: string;
     password: string;
     registrationDate: Date;
-    avatar?:string;
+    avatar:string;
     signature?:string
     isPro: boolean
   }
@@ -17,5 +16,5 @@ export interface IUser {
     _id?: Types.ObjectId;
     content: string;
     timestamp: Date;
-    sender: Types.ObjectId;
+    sender: IUser;
   }

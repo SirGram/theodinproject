@@ -40,6 +40,8 @@ var mongoose_1 = require("mongoose");
 var user_model_1 = require("../models/user.model");
 var message_model_1 = require("../models/message.model");
 var db_1 = require("../config/db");
+var random_avatar_generator_1 = require("random-avatar-generator");
+var bcryptjs_1 = require("bcryptjs");
 function dropData() {
     return __awaiter(this, void 0, void 0, function () {
         var err_1;
@@ -48,19 +50,19 @@ function dropData() {
                 case 0:
                     _a.trys.push([0, 3, , 4]);
                     // Drop previous db
-                    return [4 /*yield*/, mongoose_1.default.connection.db.dropCollection('users')];
+                    return [4 /*yield*/, mongoose_1.default.connection.db.dropCollection("users")];
                 case 1:
                     // Drop previous db
                     _a.sent();
-                    console.log('Collection users is dropped.');
-                    return [4 /*yield*/, mongoose_1.default.connection.db.dropCollection('messages')];
+                    console.log("Collection users is dropped.");
+                    return [4 /*yield*/, mongoose_1.default.connection.db.dropCollection("messages")];
                 case 2:
                     _a.sent();
-                    console.log('Collection messages is dropped.');
+                    console.log("Collection messages is dropped.");
                     return [3 /*break*/, 4];
                 case 3:
                     err_1 = _a.sent();
-                    console.error('Error dropping data:', err_1);
+                    console.error("Error dropping data:", err_1);
                     return [3 /*break*/, 4];
                 case 4: return [2 /*return*/];
             }
@@ -69,68 +71,174 @@ function dropData() {
 }
 function populateData() {
     return __awaiter(this, void 0, void 0, function () {
-        var users, messages, err_2;
-        var _this = this;
+        function createUsers(userData) {
+            return __awaiter(this, void 0, void 0, function () {
+                var createdUsers, _i, userData_1, user, hashedPassword, newUser, savedUser, error_1;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            _a.trys.push([0, 6, , 7]);
+                            createdUsers = [];
+                            _i = 0, userData_1 = userData;
+                            _a.label = 1;
+                        case 1:
+                            if (!(_i < userData_1.length)) return [3 /*break*/, 5];
+                            user = userData_1[_i];
+                            return [4 /*yield*/, (0, bcryptjs_1.hash)(user.password, 10)];
+                        case 2:
+                            hashedPassword = _a.sent();
+                            newUser = new user_model_1.User({
+                                userName: user.userName,
+                                firstName: user.firstName,
+                                lastName: user.lastName,
+                                email: user.email,
+                                password: hashedPassword,
+                                avatar: generator.generateRandomAvatar(),
+                                registrationDate: new Date(),
+                                isPro: user.isPro,
+                                signature: user.signature,
+                            });
+                            return [4 /*yield*/, newUser.save()];
+                        case 3:
+                            savedUser = _a.sent();
+                            createdUsers.push(savedUser);
+                            console.log("User \"".concat(user.userName, "\" created successfully!"));
+                            _a.label = 4;
+                        case 4:
+                            _i++;
+                            return [3 /*break*/, 1];
+                        case 5: return [2 /*return*/, createdUsers];
+                        case 6:
+                            error_1 = _a.sent();
+                            console.error("Error creating users: ".concat(error_1));
+                            return [2 /*return*/, []];
+                        case 7: return [2 /*return*/];
+                    }
+                });
+            });
+        }
+        function createMessages(messageData, userData) {
+            return __awaiter(this, void 0, void 0, function () {
+                var messages, createdMessages, error_2;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            _a.trys.push([0, 2, , 3]);
+                            messages = [
+                                {
+                                    content: messageData[0],
+                                    sender: userData[0]._id,
+                                    timestamp: new Date(),
+                                },
+                                {
+                                    content: messageData[1],
+                                    sender: userData[0]._id,
+                                    timestamp: new Date(),
+                                },
+                                {
+                                    content: messageData[2],
+                                    sender: userData[1]._id,
+                                    timestamp: new Date(),
+                                },
+                                {
+                                    content: messageData[3],
+                                    sender: userData[2]._id,
+                                    timestamp: new Date(),
+                                },
+                            ];
+                            return [4 /*yield*/, message_model_1.Message.insertMany(messages)];
+                        case 1:
+                            createdMessages = _a.sent();
+                            console.log("Messages created successfully!");
+                            return [2 /*return*/, createdMessages];
+                        case 2:
+                            error_2 = _a.sent();
+                            console.error("Error creating messages: ".concat(error_2));
+                            return [2 /*return*/, []];
+                        case 3: return [2 /*return*/];
+                    }
+                });
+            });
+        }
+        var generator, userData, messageData, createdUsers, createdMessages, err_2;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    _a.trys.push([0, 5, 6, 8]);
-                    return [4 /*yield*/, (0, db_1.connectToDB)()];
+                    generator = new random_avatar_generator_1.AvatarGenerator();
+                    _a.label = 1;
                 case 1:
-                    _a.sent();
-                    return [4 /*yield*/, dropData()];
+                    _a.trys.push([1, 6, 7, 9]);
+                    return [4 /*yield*/, (0, db_1.connectToDB)()];
                 case 2:
                     _a.sent();
-                    return [4 /*yield*/, user_model_1.User.create([
-                            {
-                                userName: 'user1',
-                                firstName: 'John',
-                                lastName: 'Doe',
-                                email: 'user1@example.com',
-                                password: 'hash_the_password',
-                            },
-                            {
-                                userName: 'user2',
-                                firstName: 'Jane',
-                                lastName: 'Smith',
-                                email: 'user2@example.com',
-                                password: 'hash_the_password',
-                            },
-                        ])];
+                    return [4 /*yield*/, dropData()];
                 case 3:
-                    users = _a.sent();
-                    return [4 /*yield*/, Promise.all(users.map(function (user) { return __awaiter(_this, void 0, void 0, function () {
-                            var messageContent, message;
-                            return __generator(this, function (_a) {
-                                try {
-                                    messageContent = "Message from ".concat(user.userName);
-                                    message = new message_model_1.Message({ content: messageContent, sender: user._id });
-                                    return [2 /*return*/, message.save()];
-                                }
-                                catch (error) {
-                                    console.error("Error creating message for user ".concat(user.userName, ":"), error);
-                                }
-                                return [2 /*return*/];
-                            });
-                        }); }))];
+                    _a.sent();
+                    userData = [
+                        {
+                            userName: "user1",
+                            firstName: "John",
+                            lastName: "Doe",
+                            email: "user1@example.com",
+                            password: "password1",
+                            registrationDate: new Date(),
+                            avatar: generator.generateRandomAvatar(),
+                            signature: "I make videogames in my spare time. Wanna see them? Check them out at mystore.com",
+                            isPro: true,
+                        },
+                        {
+                            userName: "user2",
+                            firstName: "Jane",
+                            lastName: "Smith",
+                            email: "user2@example.com",
+                            password: "password2",
+                            registrationDate: new Date(),
+                            avatar: generator.generateRandomAvatar(),
+                            signature: "My dog's name is Belly",
+                            isPro: false,
+                        },
+                        {
+                            userName: "user3",
+                            firstName: "Hercules",
+                            lastName: "Copper",
+                            email: "user3@example.com",
+                            password: "password3",
+                            registrationDate: new Date(),
+                            avatar: generator.generateRandomAvatar(),
+                            isPro: true,
+                        },
+                    ];
+                    messageData = [
+                        "Hello everyone.",
+                        "Is anybody there?",
+                        "Yes, we're here. How are you?",
+                        "Nice to meet you guys. This website is awesome!",
+                    ];
+                    return [4 /*yield*/, createUsers(userData)];
                 case 4:
-                    messages = _a.sent();
-                    console.log('Created users:', users);
-                    console.log('Created messages:', messages);
-                    return [3 /*break*/, 8];
+                    createdUsers = _a.sent();
+                    if (createdUsers.length === 0) {
+                        throw new Error("No users created, cannot create messages");
+                    }
+                    return [4 /*yield*/, createMessages(messageData, createdUsers)];
                 case 5:
+                    createdMessages = _a.sent();
+                    console.log("Created users:", createdUsers);
+                    console.log("Created messages:", createdMessages);
+                    return [3 /*break*/, 9];
+                case 6:
                     err_2 = _a.sent();
-                    console.error('Error populating data:', err_2);
-                    return [3 /*break*/, 8];
-                case 6: return [4 /*yield*/, mongoose_1.default.connection.close()];
-                case 7:
+                    console.error("Error populating data:", err_2);
+                    return [3 /*break*/, 9];
+                case 7: return [4 /*yield*/, mongoose_1.default.connection.close()];
+                case 8:
                     _a.sent();
                     return [7 /*endfinally*/];
-                case 8: return [2 /*return*/];
+                case 9: return [2 /*return*/];
             }
         });
     });
 }
 populateData()
-    .then(function () { return console.log('Process done'); })
-    .catch(function (error) { return console.error('Error populating database:', error); });
+    .then(function () { return console.log("Process done"); })
+    .catch(function (error) { return console.error("Error populating database:", error); });

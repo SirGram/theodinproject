@@ -9,15 +9,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createUser = void 0;
-const bcryptjs_1 = require("bcryptjs");
+exports.registerUser = void 0;
 const user_model_1 = require("../models/user.model");
-const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const random_avatar_generator_1 = require("random-avatar-generator");
+const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userName, firstName, lastName, email, password, registrationDate, } = req.body;
+    const generator = new random_avatar_generator_1.AvatarGenerator();
+    const avatar = generator.generateRandomAvatar();
     try {
-        const existingUser = yield user_model_1.User.findOne({ email });
+        const existingUser = yield user_model_1.User.findOne({ userName });
         if (existingUser)
-            return res.status(400).json({ message: 'Email already exists' });
+            return res.status(400).json({ message: 'User  already exists' });
+        const existingEmail = yield user_model_1.User.findOne({ email });
+        if (existingEmail)
+            return res.status(400).json({ message: 'Email  already exists' });
         const newUser = yield user_model_1.User.create({
             userName,
             firstName,
@@ -25,15 +30,13 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             email,
             password,
             registrationDate,
+            avatar,
         });
-        const hashedPassword = yield (0, bcryptjs_1.hash)(password, 10);
-        newUser.password = hashedPassword;
-        yield newUser.save();
-        res.json({ message: 'Registration successful!', user: newUser });
+        return res.status(200).json({ message: 'Registration successful!' });
     }
     catch (err) {
         console.error(err);
-        res.status(500).json({ message: 'Server error' });
+        return res.status(500).json({ message: 'Server error' });
     }
 });
-exports.createUser = createUser;
+exports.registerUser = registerUser;

@@ -20,22 +20,25 @@ const createMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             sender,
         });
         yield newMessage.save();
-        res.json({ message: "Message created succesfully", userMessage: newMessage });
+        res.json({
+            message: "Message created succesfully",
+            userMessage: newMessage,
+        });
     }
     catch (err) {
         console.log(err);
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({ message: "Server error" });
     }
 });
 exports.createMessage = createMessage;
 const getMessages = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const messages = yield message_model_1.Message.find({});
+        const messages = yield message_model_1.Message.find({}).populate("sender", "-password");
         res.json(messages);
     }
     catch (err) {
         console.error(err);
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({ message: "Server error" });
     }
 });
 exports.getMessages = getMessages;
