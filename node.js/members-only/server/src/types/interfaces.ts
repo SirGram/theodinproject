@@ -19,3 +19,5 @@ export interface IUser {
     timestamp: Date;
     sender: Types.ObjectId;
   }
+
+ 

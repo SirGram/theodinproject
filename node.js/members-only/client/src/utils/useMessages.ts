@@ -8,7 +8,7 @@ export const useMessages = () => {
   const [messages, setMessages] = useState<IMessage[]>([]);
 
   useEffect(() => {
-    const url = 'http://localhost:3000/api/messages'
+    const url = 'http://localhost:3001/api/messages'
     const fetchData = async () => {
       try {
         const fetchedMessages = await axios.get(url);

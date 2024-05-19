@@ -1,10 +1,12 @@
 import { Router } from "express";
-import { createMessage, getMessages } from "../controllers/message.controller";
+import { createMessage, deleteMessage, getMessages } from "../controllers/message.controller";
+import authMiddleware from "../middleware/authMiddleware";
 const router = Router()
 
 // /api/messages
 router.get("/", getMessages)
-router.post("/", createMessage)
+router.post("/", authMiddleware, createMessage)
+router.delete("/:id", authMiddleware, deleteMessage)
 
 
 export default router

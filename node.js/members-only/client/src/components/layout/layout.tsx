@@ -1,15 +1,15 @@
 import Nav from "../Nav";
 import Footer from "../Footer";
-import { ReactElement, useContext } from "react";
-import { ModalContext, ModalContextType } from "../../context/ModalContext";
+import { ReactElement, useContext, ReactNode } from "react";
+import { ModalContext, ModalContextType, useModalContext } from "../../context/ModalContext";
 import LogInModal from "../modals/LogInModal";
+import NewMessageModal from "../modals/NewMessageModal";
 export function Layout({
   children,
 }: {
-  children: ReactElement[] | ReactElement;
+  children: ReactNode;
 }) {
-  const context = useContext(ModalContext) as ModalContextType;
-  const { isLoginModalOpen, setIsLoginModalOpen } = context;
+  const { isLoginModalOpen, isNewMessageModalOpen } = useModalContext();
   return (
     <>
       <div className="flex flex-col relative h-full min-h-screen">
@@ -18,6 +18,7 @@ export function Layout({
         <Footer />
       </div>
       {isLoginModalOpen && <LogInModal />}
+      {isNewMessageModalOpen && <NewMessageModal />}
     </>
   );
 }

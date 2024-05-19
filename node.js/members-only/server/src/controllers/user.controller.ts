@@ -34,3 +34,7 @@ export const registerUser = async (req: Request, res: Response) => {
     return res.status(500).json({ message: 'Server error' });
   }
 };
+
+export const me = async (req: Request, res: Response) => {
+  res.status(200).json({ user: req.user });
+};

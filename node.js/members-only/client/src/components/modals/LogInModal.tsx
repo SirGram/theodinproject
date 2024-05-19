@@ -1,26 +1,42 @@
 import React, { useContext, useState } from "react";
-import { ModalContext, ModalContextType } from "../../context/ModalContext";
-import { Link } from "react-router-dom";
-import SubmitButton from "../SubmitButton";
+import {
+  ModalContext,
+  ModalContextType,
+  useModalContext,
+} from "../../context/ModalContext";
+import { Link, useNavigate } from "react-router-dom";
+import SubmitButton from "../RoundedButton";
 import axios from "axios";
 import ExitButton from "../ExitButton";
 import { useAuth } from "../../context/AuthContext";
-
 export default function LogInModal() {
-  const {login} = useAuth()
+  const { login } = useAuth();
+  const { setIsLoginModalOpen } = useModalContext();
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
-
+  const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+
+  const navigate = useNavigate();
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    setMessage("");
+    setError("");
     try {
-      const {email, password} = formData
-     const response = await login(email, password)
-     console.log(response)
+      const { email, password } = formData;
+      const response = await login(email, password);
+      if (response) {
+        setMessage(response.message);
+        console.log(message);
+        setInterval(() => {
+          navigate("/");
+          setIsLoginModalOpen(false);
+        }, 1000);
+      }
     } catch (error) {
       console.error("Log in error:", error);
       if (axios.isAxiosError(error)) {
@@ -36,8 +52,6 @@ export default function LogInModal() {
     });
   };
 
-  const context = useContext(ModalContext) as ModalContextType;
-  const { setIsLoginModalOpen } = context;
 
   return (
     <>
@@ -85,12 +99,17 @@ export default function LogInModal() {
             {error && (
               <div className="mb-4 text-red-500 text-center">{error}</div>
             )}
+            {message && (
+              <div className="mb-4 text-green-500 text-center">{message}</div>
+            )}
 
             <SubmitButton text="Sign In" />
           </form>
           <div className="bg-zinc-400 h-1 w-full mt-2"></div>
           <div className="mt-2 text-left flex gap-2 items-center">
-          <h2 className="font-bold text-center">Don&apos;t have an account?</h2>
+            <h2 className="font-bold text-center">
+              Don&apos;t have an account?
+            </h2>
 
             <Link
               to="/signup"
@@ -100,7 +119,7 @@ export default function LogInModal() {
               <SubmitButton text="Sign Up" />
             </Link>
           </div>
-          <ExitButton onClick={()=>setIsLoginModalOpen(false)}/>
+          <ExitButton onClick={() => setIsLoginModalOpen(false)} />
         </div>
       </div>
     </>

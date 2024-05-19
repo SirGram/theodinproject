@@ -39,7 +39,7 @@ export const signIn = async (req: Request, res: Response) => {
         return res.status(200).json({
           status: 200,
           success: true,
-          msg: "login success",
+          message: "Login success",
           token: token,
           user: {
             _id: user.id,
@@ -54,3 +54,5 @@ export const signIn = async (req: Request, res: Response) => {
   };
 
 }
+
+

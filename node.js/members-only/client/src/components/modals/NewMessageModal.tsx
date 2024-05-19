@@ -1,12 +1,11 @@
 import React, { useContext, useState } from "react";
 import { ModalContext, ModalContextType } from "../../context/ModalContext";
 import { Link } from "react-router-dom";
-import SubmitButton from "../SubmitButton";
+import SubmitButton from "../RoundedButton";
 
 export default function NewMessageModal() {
   const [formData, setFormData] = useState({
     content: "",
-    sender: "",
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -39,48 +38,21 @@ export default function NewMessageModal() {
                 Email
               </label>
               <input
-                placeholder="example@mail.com"
-                name="email"
-                type="email"
-                id="email"
-                value={formData.email}
+                placeholder="This website sucks"
+                name="content"
+                type="content"
+                id="content"
+                value={formData.content}
                 onChange={(e) => handleChange(e)}
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 required
               />
             </div>
-            <div className="mb-4">
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Password
-              </label>
-              <input
-                name="password"
-                placeholder="mypassword"
-                type="password"
-                id="password"
-                value={formData.password}
-                onChange={(e) => handleChange(e)}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                required
-              />
-            </div>
+           
 
-            <SubmitButton text="Sign In" />
+            <SubmitButton text="Send Message" />
           </form>
-          <div className="bg-zinc-400 h-1 w-full mt-2"></div>
-          <div className="mt-2 text-left flex gap-2 items-center">
-            <h2 className="font-bold  text-center">Don't have an account? </h2>
-            <Link
-              to="/signup"
-              className="flex-1 mt-2"
-              onClick={() => setIsLoginModalOpen(false)}
-            >
-              <SubmitButton text="Sign Up" />
-            </Link>
-          </div>
+         
         </div>
       </div>
     </>

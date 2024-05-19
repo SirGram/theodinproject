@@ -8,6 +8,9 @@ import React, {
 export type ModalContextType = {
   isLoginModalOpen: boolean;
   setIsLoginModalOpen: (isOpen: boolean) => void;
+  isNewMessageModalOpen:boolean;
+  
+  setIsNewMessageModalOpen: (isOpen: boolean) => void;
 };
 
 export const ModalContext = createContext<ModalContextType>({} as ModalContextType);
@@ -19,10 +22,13 @@ export default function ModalContextProvider({
   children: ReactNode;
 }) {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isNewMessageModalOpen, setIsNewMessageModalOpen] = useState(false);
 
   const value: ModalContextType = {
     isLoginModalOpen,
-    setIsLoginModalOpen: setIsLoginModalOpen,
+    setIsLoginModalOpen,
+    isNewMessageModalOpen,
+    setIsNewMessageModalOpen
   };
 
   return (

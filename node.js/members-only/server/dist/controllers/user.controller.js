@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.registerUser = void 0;
+exports.me = exports.registerUser = void 0;
 const user_model_1 = require("../models/user.model");
 const random_avatar_generator_1 = require("random-avatar-generator");
 const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -40,3 +40,7 @@ const registerUser = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.registerUser = registerUser;
+const me = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    res.status(200).json({ user: req.user });
+});
+exports.me = me;

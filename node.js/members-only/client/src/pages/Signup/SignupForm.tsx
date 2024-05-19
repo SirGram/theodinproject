@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { MouseEvent, useState } from "react";
-import SubmitButton from "../../components/SubmitButton";
+import SubmitButton from "../../components/RoundedButton";
 import { useAuth } from "../../context/AuthContext";
 
 const SignupForm = () => {
