@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
 import { Author } from 'src/authors/schemas/author.schema';
-import { Blog } from 'src/blogs/blog.schema';
+import { Blog } from 'src/blogs/schemas/blog.schema';
 
 export type CommentDocument = HydratedDocument<Comment>;
 
