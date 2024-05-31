@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
-import { User } from 'src/users/schemas/user.schema';
+import { User } from 'src/schemas/user.schema';
 
 export type BlogDocument = HydratedDocument<Blog>;
 
@@ -24,7 +24,7 @@ export class Blog {
   @Prop({ type: Date })
   lastEditionDate?: Date;
 
-  @Prop({ type: Boolean, required: true })
+  @Prop({ type: Boolean, required: true, default: false })
   published: boolean;
 
   @Prop({ type: Number, default: 0 })
@@ -33,7 +33,11 @@ export class Blog {
   @Prop({ type: Number, default: 0 })
   visits: number;
 
-  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }] })
+  @Prop({
+    type: [
+      { type: mongoose.Schema.Types.ObjectId, ref: 'Comment', default: [] },
+    ],
+  })
   comments: Comment[];
 }
 
