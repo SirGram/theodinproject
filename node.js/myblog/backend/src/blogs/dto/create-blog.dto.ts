@@ -7,11 +7,29 @@ import {
   IsArray,
   IsNumber,
   IsMongoId,
+  isEmail,
+  IsEmail,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { User } from 'src/schemas/user.schema';
-import { Comment } from 'src/comments/schemas/comment.schema';
+
+export class CreateCommentDto {
+  @ApiProperty({
+    description: 'Full name',
+    example: 'John Doe',
+  })
+  @IsString()
+  @IsNotEmpty()
+  fullname: string;
+
+  @ApiProperty({
+    description: 'Email',
+    example: 'email@example.com',
+  })
+  @IsEmail()
+  @IsNotEmpty()
+  content: string;
+}
 
 export class CreateBlogDto {
   @ApiProperty({
@@ -20,22 +38,22 @@ export class CreateBlogDto {
   })
   @IsString()
   @IsNotEmpty()
-  readonly title: string;
+  title: string;
 
   @ApiProperty({
-    description: 'The content of the blog',
+    description: 'The content of the blog in MARKDOWN',
     example: 'Lorem ipsum dolor sit amet',
   })
   @IsString()
   @IsNotEmpty()
-  readonly content: string;
+  content: string;
 
   @ApiProperty({
     description: 'The ID of the user who created the blog',
     example: '613f8e96b97e5a16d8ccf5d4',
   })
   @IsMongoId()
-  readonly user: User;
+  userId: string;
 
   @ApiProperty({
     description: 'The URL of the image associated with the blog',
@@ -44,17 +62,7 @@ export class CreateBlogDto {
   })
   @IsString()
   @IsOptional()
-  readonly image?: string;
-
-  @ApiProperty({
-    description: 'The creation date of the blog',
-    example: '2024-05-30T12:00:00.000Z',
-    required: false,
-  })
-  @IsDate()
-  @IsOptional()
-  @Type(() => Date)
-  readonly creationDate: Date;
+  image?: string;
 
   @ApiProperty({
     description: 'Indicates if the blog is published',
@@ -63,7 +71,7 @@ export class CreateBlogDto {
   })
   @IsBoolean()
   @IsOptional()
-  readonly published: boolean;
+  published: boolean;
 
   @ApiProperty({
     description: 'The number of likes received by the blog',
@@ -72,7 +80,7 @@ export class CreateBlogDto {
   })
   @IsNumber()
   @IsOptional()
-  readonly likes?: number;
+  likes?: number;
 
   @ApiProperty({
     description: 'The number of visits received by the blog',
@@ -81,15 +89,5 @@ export class CreateBlogDto {
   })
   @IsNumber()
   @IsOptional()
-  readonly visits?: number;
-
-  @ApiProperty({
-    description: 'Array of comment IDs associated with the blog',
-    example: ['613f8e96b97e5a16d8ccf5d4'],
-    required: false,
-  })
-  @IsArray()
-  @IsOptional()
-  @IsMongoId({ each: true })
-  readonly comments?: Comment[];
+  visits?: number;
 }

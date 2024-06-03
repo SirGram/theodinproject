@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { User } from 'src/schemas/user.schema';
 import { UserSettings } from 'src/schemas/userSettings.schema';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -14,23 +15,29 @@ export class UsersService {
   ) {}
 
   async createUser({ settings, ...createUserDto }: CreateUserDto) {
-    if (settings) {
-      const newSettings = new this.userSettingsModel(settings);
-      console.log(newSettings)
-      const savedNewSettings = await newSettings.save();
-      const newUser = new this.userModel({
-        ...createUserDto,
-        settings: savedNewSettings._id,
-      });
-      return newUser.save();
-    }
-    const newUser = new this.userModel(createUserDto);
+    const settingsData = settings || {};
+    const newSettings = new this.userSettingsModel(settingsData);
+    const savedNewSettings = await newSettings.save();
+    const newUser = new this.userModel({
+      ...createUserDto,
+      settings: savedNewSettings._id,
+    });
+    console.log();
     return newUser.save();
   }
-  getUsers() {
-    return this.userModel.find().populate(['settings', 'blogs']);
+  async updateUser(id: string, { settings, ...updateUserDto }: UpdateUserDto) {
+    const user = await this.userModel.findById(id);
+    if (settings) {
+      await this.userSettingsModel.findByIdAndUpdate(user.settings, settings);
+    }
+    return this.userModel.findByIdAndUpdate(id, updateUserDto);
   }
-  getUserById(id: string) {
-    return this.userModel.findById(id).populate(['settings', 'blogs']);
+
+  async getUsers() {
+    return this.userModel.find().select('username fullname registrationDate');
+  }
+
+  async findOne(username: string): Promise<User | undefined> {
+    return this.userModel.findOne({ username: username });
   }
 }

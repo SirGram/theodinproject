@@ -10,7 +10,7 @@ import {
 
 export class CreateUserSettingsDto {
   @ApiPropertyOptional({
-    description: 'User biography',
+    description: 'User comment',
     example: 'Software developer with 10 years of experience.',
   })
   @IsOptional()
