@@ -1,23 +1,12 @@
 import { formatDate, formatDateMonthAndYear } from "@/lib/utils";
-import React from "react";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "../../../../shared/frontend/src/components/ui/avatar";
 import { Link } from "react-router-dom";
 import { BiLike } from "react-icons/bi";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card";
-import { Button } from "@/components/ui/button";
 import HoverAvatarCard from "@/components/HoverAvatarCard";
+import { BlogEntry } from "@/types/types";
 
 
 
-function EntryCard({ entry }) {
+function EntryCard({ entry }:{entry:BlogEntry}) {
   return (
     <div className="flex flex-row  w-full">
       {/* Left side:*/}
@@ -30,7 +19,7 @@ function EntryCard({ entry }) {
       </div>
       {/* Right side: */}
       <div className="flex flex-col justify-between mx-6 flex-1">
-        <Link className="hover:underline flex my-2" to={`/entry/${entry.id -1}`}>
+        <Link className="hover:underline flex my-2" to={`/blogs/${entry._id}`}>
           <h2 className="text-xl font-bold h-full items-center  flex">
             {entry.title}
           </h2>
@@ -40,7 +29,8 @@ function EntryCard({ entry }) {
           <div className="flex gap-3 items-center justify-between">
             <p className="flex items-center h-10">
               
-              <HoverAvatarCard entry={entry}/>{formatDate(entry.date)}
+              <HoverAvatarCard entry={entry}/>
+              {formatDate(new Date(entry.creationDate))}
             </p>
           </div>
           <span className="flex items-center gap-1">

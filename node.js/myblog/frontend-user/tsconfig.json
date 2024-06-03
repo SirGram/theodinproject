@@ -5,6 +5,8 @@
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
+    "experimentalDecorators": true,
+    "strictPropertyInitialization": false,
 
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -28,6 +30,6 @@
       ]
     }
   },
-  "include": ["src", "src/components/Nav.tsx", "../shared/frontend/src/components/ui", "../shared/frontend/src/lib/mockData.ts"],
+  "include": ["src", "src/components/Nav.tsx", "../shared/frontend/src/components/ui", "src/lib/mockData.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
