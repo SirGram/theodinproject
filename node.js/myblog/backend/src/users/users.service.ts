@@ -5,11 +5,13 @@ import { User } from 'src/schemas/user.schema';
 import { UserSettings } from 'src/schemas/userSettings.schema';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { Blog } from 'src/schemas/blog.schema';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel(User.name) private userModel: Model<User>,
+    @InjectModel(Blog.name) private blogModel: Model<Blog>,
     @InjectModel(UserSettings.name)
     private userSettingsModel: Model<UserSettings>,
   ) {}
@@ -34,10 +36,26 @@ export class UsersService {
   }
 
   async getUsers() {
-    return this.userModel.find().select('username fullname registrationDate');
+    return this.userModel
+      .find()
+      .select('username fullname email registrationDate');
   }
 
   async findOne(username: string): Promise<User | undefined> {
-    return this.userModel.findOne({ username: username });
+    return this.userModel.findOne({ username: username }).populate('settings');
+  }
+
+  async deleteUser(id: string) {
+    const user = await this.userModel.findById(id);
+    if (!user) {
+      throw new Error('User not found');
+    }
+    await this.blogModel.deleteMany({ user: id });
+    const deletedUser = await this.userModel.findByIdAndDelete(id);
+    if (!deletedUser) {
+      throw new Error('Failed to delete user');
+    }
+
+    return deletedUser;
   }
 }
