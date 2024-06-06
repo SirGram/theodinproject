@@ -19,6 +19,7 @@ module.exports = {
     extend: {
       fontFamily: {
         futuristic: ['Orbitron', 'sans-serif'],
+        roboto: ['Roboto', 'sans-serif'],
       },
       
       colors: {

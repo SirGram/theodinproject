@@ -12,9 +12,10 @@ export default function HoverCardMarkdownHelp(){
         <HoverCardTrigger asChild>
           <Button variant="link">?</Button>
         </HoverCardTrigger>
-        <HoverCardContent className="w-80">
+        <HoverCardContent className="w-80 bg-background">
           <div className="flex">
           <ul className="list-disc pl-4 list-none">
+                    <li><code>&amp;nbsp;  Line break</code> </li>
                     <li><code># Heading 1</code> </li>
                     <li><code>## Heading 2</code></li>
                     <li><code>### Heading 3</code> </li>

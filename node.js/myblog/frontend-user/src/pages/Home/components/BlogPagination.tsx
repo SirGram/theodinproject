@@ -5,9 +5,9 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "../../components/ui/pagination";
+} from "../../../components/ui/pagination";
 
-export function PaginationDemo({ currentPage, totalPages, onPageChange }:{currentPage:number, totalPages:number, onPageChange:(value:number)=>void}) {
+export default function BlogPagination({ currentPage, totalPages, onPageChange }:{currentPage:number, totalPages:number, onPageChange:(value:number)=>void}) {
   const handlePrevious = () => {
     if (currentPage > 1) onPageChange(currentPage - 1);
   };

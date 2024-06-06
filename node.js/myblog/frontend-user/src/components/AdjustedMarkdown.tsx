@@ -1,9 +1,10 @@
-import { ReactNode } from "react";
+
 import Markdown from "react-markdown";
 
 import {
     materialLight,
-    nord,
+    
+    pojoaque,
   } from "react-syntax-highlighter/dist/esm/styles/prism";
   
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
@@ -14,6 +15,7 @@ export default function AdjustedMarkdown({children}:{children:string}){
   const { theme } = useTheme();
     return(
         <Markdown
+        className={"font-roboto"}
         children={children}
         components={{
           code(props) {
@@ -33,7 +35,7 @@ export default function AdjustedMarkdown({children}:{children:string}){
                 PreTag="div"
                 children={String(children).replace(/\n$/, "")}
                 language={match[1]}
-                style={currentTheme === "dark" ? nord : materialLight}
+                style={currentTheme === "dark" ? pojoaque : materialLight}
               />
             ) : (
               <code {...rest} className={className}>

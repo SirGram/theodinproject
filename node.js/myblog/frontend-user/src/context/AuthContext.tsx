@@ -1,12 +1,14 @@
-import React, { ReactNode, createContext, useContext, useMemo, useState } from 'react';
+import React, { ReactNode, createContext, useContext, useState } from 'react';
 import axios from 'axios';
 import { baseUrl } from '@/api/api';
+import { IUser } from '@/types/types';
+
 
   type AuthContextType = {
-    auth: any ;
+    auth: IUser | null ;
     isAuthenticated: boolean;
     login: (username: string, password: string) => Promise<void>;
-    logout: () => void;
+    logout: () => Promise<void>;
   };
   export const AuthContext = createContext<AuthContextType>(
     {} as AuthContextType
@@ -20,7 +22,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
 
-    async function login(username:string, password:string):Promise<void>{
+     const login= async(username:string, password:string):Promise<void>=>{
         try {
           const response = await axios.post(`${baseUrl}/auth/login`, {
             username,
@@ -34,7 +36,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           console.error('Login failed', error);
         }
       }
-      async function logout(){
+      async function logout():Promise<void>{
         setAuth(null);
         setIsAuthenticated(false)
         localStorage.removeItem('token');
@@ -47,5 +49,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       {children}
     </AuthContext.Provider>
   );
-};
+}
+
 

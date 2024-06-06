@@ -4,8 +4,11 @@ export interface IUser {
   _id: string;
   fullname: string;
   username: string;
+  password?:string;
+  email?:string;
   registrationDate: string;
-  settings?: {
+  settings: {
+    _id?: string;
     about?: string;
     avatarImage?: string;
   };
@@ -26,4 +29,5 @@ export interface IBlogEntry {
   likes: number;
   visits: number;
   comments: IComment[];
+  lastEditionDate?:string
 }
