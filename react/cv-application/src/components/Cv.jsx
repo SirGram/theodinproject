@@ -1,4 +1,3 @@
-import React from "react";
 import { Document, Page, Text, View, Image } from "@react-pdf/renderer";
 import { Font } from "@react-pdf/renderer";
 import {
@@ -71,7 +70,6 @@ const styleSheet = (data) => {
       flex: 1,
       height: "100%",
       color: "whitesmoke",
-      justifyContent: "center",
       display: "flex",
       flexDirection: "column",
       justifyContent: "left",
@@ -268,9 +266,9 @@ const styleSheet = (data) => {
 function Photo({ data, styles }) {
   const findImage = () => {
     if (data.sex === "female") {
-      return "../../public/female.png";
+      return "/female.png";
     } else {
-      return "../../public/male.png";
+      return "/male.png";
     }
   };
   return (

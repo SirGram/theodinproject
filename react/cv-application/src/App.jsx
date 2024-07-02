@@ -1,4 +1,3 @@
-import React from "react";
 import { useState, useEffect } from "react";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import "./App.css";
@@ -149,7 +148,7 @@ function App() {
               <div className="field-selector">
                 <PDFDownloadLink
                   document={<Cv data={data} />}
-                  fileName="your_cv.pdf"
+                  fileName="/your_cv.pdf"
                   style={{
                     borderRadius: "50%",
                     height: "3rem",

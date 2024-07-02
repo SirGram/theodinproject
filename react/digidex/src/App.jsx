@@ -4,7 +4,11 @@ import "./App.css";
 const Footer = () => (
   <footer>
     <p>
-      <a href="https://github.com/SirGram" target="_blank" rel="noopener noreferrer">
+      <a
+        href="https://github.com/SirGram"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         &copy;SirGram
       </a>{" "}
       {new Date().getFullYear()}
@@ -73,7 +77,10 @@ const App = () => {
       const response = await fetch(api);
       if (!response.ok) throw new Error("Network response was not ok");
       const data = await response.json();
-      const numberedData = data.map((digimon, index) => ({ ...digimon, number: index }));
+      const numberedData = data.map((digimon, index) => ({
+        ...digimon,
+        number: index,
+      }));
       setDigimonData(numberedData);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -101,12 +108,13 @@ const App = () => {
   }, [digimonData, clickedDigimon]);
 
   const changeCurrentDigimonData = useCallback(() => {
-    const seenDigimon = (num) => clickedDigimon.some((el) => el === digimonData[num].name);
+    const seenDigimon = (num) =>
+      clickedDigimon.some((el) => el === digimonData[num].name);
     const randomNumber = () => Math.floor(Math.random() * digimonData.length);
-    
+
     const arr = [];
     let hasUnseenDigimon = false;
-    
+
     while (arr.length < NUMBER_OF_CARDS) {
       let randomIndex;
       if (!hasUnseenDigimon) {
@@ -119,7 +127,7 @@ const App = () => {
       }
       arr.push(digimonData[randomIndex]);
     }
-    
+
     return arr.sort(() => Math.random() - 0.5);
   }, [digimonData, clickedDigimon, NUMBER_OF_CARDS]);
 
@@ -128,44 +136,52 @@ const App = () => {
     setCurrentDigimon(newData);
   }, [changeCurrentDigimonData]);
 
-  const handleClick = useCallback((name) => {
-    if (!isAnimationComplete) return;
+  const handleClick = useCallback(
+    (name) => {
+      if (!isAnimationComplete) return;
 
-    if (!clickedDigimon.includes(name)) {
-      const newScore = score + 1;
-      setScore(newScore);
-      setMaxScore((prev) => Math.max(prev, newScore));
-      if (newScore === digimonData.length) {
-        setGameOver(true);
+      if (!clickedDigimon.includes(name)) {
+        const newScore = score + 1;
+        setScore(newScore);
+        setMaxScore((prev) => Math.max(prev, newScore));
+        if (newScore === digimonData.length) {
+          setGameOver(true);
+        } else {
+          setClickedDigimon((prev) => [...prev, name]);
+        }
       } else {
-        setClickedDigimon((prev) => [...prev, name]);
+        setScore(0);
+        setClickedDigimon([]);
       }
-    } else {
-      setScore(0);
-      setClickedDigimon([]);
-    }
-    
-    setIsAnimationComplete(false);
-  }, [isAnimationComplete, clickedDigimon, score, digimonData.length]);
+
+      setIsAnimationComplete(false);
+    },
+    [isAnimationComplete, clickedDigimon, score, digimonData.length],
+  );
 
   return (
     <>
-      <button className="game-image" onClick={() => setShowDex((prev) => !prev)}>
+      <button
+        className="game-image"
+        onClick={() => setShowDex((prev) => !prev)}
+      >
         <img src="/game.png" alt="Toggle Dex view" />
       </button>
       {!showDex ? (
         <div className="container">
           {!gameOver ? (
             <>
-              <h2>Which <em>digimon</em> have you not seen?</h2>
+              <h2>
+                Which <em>digimon</em> have you not seen?
+              </h2>
               <h3>Max Score: {maxScore}</h3>
               <h3>Current Score: {score}</h3>
               <div className="card-container">
                 {currentDigimon.map((digimon) => (
-                  <RandomCard 
-                    key={digimon.number} 
-                    data={digimon} 
-                    onClick={handleClick} 
+                  <RandomCard
+                    key={digimon.number}
+                    data={digimon}
+                    onClick={handleClick}
                     isAnimationComplete={isAnimationComplete}
                   />
                 ))}
@@ -173,10 +189,15 @@ const App = () => {
             </>
           ) : (
             <>
-              <h2>You have an incredible memory... <em>Amazing</em></h2>
+              <h2>
+                You have an incredible memory... <em>Amazing</em>
+              </h2>
               <h3>Max Score: {maxScore}</h3>
               <h3>Current Score: {score}</h3>
-              <div className="card-container" style={{ visibility: 'hidden' }} />
+              <div
+                className="card-container"
+                style={{ visibility: "hidden" }}
+              />
             </>
           )}
         </div>
